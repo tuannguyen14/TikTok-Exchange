@@ -1,0 +1,16 @@
+{
+  "HomePage": {
+    "title": "Home Page",
+    "description": "Welcome to our website"
+  },
+  "Navigation": {
+    "dashboard": "Dashboard",
+    "exchange": "Exchange",
+    "myVideos": "My Videos",
+    "profile": "Profile",
+    "settings": "Settings",
+    "credits": "Credits",
+    "logout": "Logout",
+    "guest": "Guest"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "HomePage": {
+    "title": "Trang chủ",
+    "description": "Chào mừng bạn đến với trang web"
+  },
+  "Navigation": {
+    "dashboard": "Tổng quan",
+    "exchange": "Trao đổi",
+    "myVideos": "Video của tôi",
+    "profile": "Hồ sơ",
+    "settings": "Cài đặt",
+    "credits": "Credits",
+    "logout": "Đăng xuất",
+    "guest": "Khách"
+  }
+}
