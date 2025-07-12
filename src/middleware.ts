@@ -8,7 +8,7 @@ import { routing } from '@/i18n/routing'
 const PROTECTED_ROUTES = [
   '/dashboard',
   '/exchange', 
-  '/videos',
+  '/campaigns',
   '/profile',
 ]
 

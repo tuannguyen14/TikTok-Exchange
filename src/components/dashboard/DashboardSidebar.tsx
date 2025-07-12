@@ -89,7 +89,7 @@ export default function DashboardSidebar({ profile, locale, t }: DashboardSideba
           <Button 
             variant="outline" 
             className="w-full justify-start"
-            onClick={() => router.push(`/${locale}/videos/new`)}
+            onClick={() => router.push(`/${locale}/campaigns/new`)}
           >
             <Plus className="w-4 h-4 mr-2" />
             {t('quickActions.createCampaign')}

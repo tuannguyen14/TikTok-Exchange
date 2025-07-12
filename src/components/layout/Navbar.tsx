@@ -93,8 +93,8 @@ export default function Navbar() {
     { 
       key: 'videos', 
       icon: Video, 
-      href: `/${locale}/videos`,
-      label: t('myVideos'),
+      href: `/${locale}/campaigns`,
+      label: t('myCampaigns'),
       authRequired: true
     },
     { 

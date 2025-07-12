@@ -10,7 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import type { CampaignFormData } from '@/app/[locale]/videos/new/CreateCampaignClient';
+import type { CampaignFormData } from '@/app/[locale]/campaigns/new/CreateCampaignClient';
 
 interface CreateCampaignFormProps {
   formData: CampaignFormData;

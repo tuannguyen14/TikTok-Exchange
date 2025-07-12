@@ -42,7 +42,7 @@ export function isProtectedRoute(pathname: string): boolean {
   const protectedRoutes = [
     '/dashboard',
     '/exchange', 
-    '/videos',
+    '/campaigns',
     '/profile',
   ]
   

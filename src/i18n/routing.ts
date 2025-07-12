@@ -22,9 +22,9 @@ export const routing = defineRouting({
       en: '/exchange',
       vi: '/exchange'
     },
-    '/videos': {
-      en: '/videos',
-      vi: '/videos'
+    '/campaigns': {
+      en: '/campaigns',
+      vi: '/campaigns'
     },
     '/profile': {
       en: '/profile',

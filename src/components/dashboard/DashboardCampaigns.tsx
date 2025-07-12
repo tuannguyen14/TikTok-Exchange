@@ -12,12 +12,15 @@ import {
   Eye,
   Heart,
   MessageCircle,
-  UserPlus
+  UserPlus,
+  RefreshCw,
+  AlertCircle
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { campaignAPI } from '@/lib/api/campaigns';
 
 interface Campaign {
@@ -35,16 +38,19 @@ interface DashboardCampaignsProps {
   campaigns: Campaign[];
   locale: string;
   t: (key: string) => string;
+  onCampaignStatusUpdate?: (campaignId: string, status: 'active' | 'paused') => Promise<boolean>;
 }
 
 export default function DashboardCampaigns({ 
   campaigns: initialCampaigns, 
   locale, 
-  t 
+  t,
+  onCampaignStatusUpdate
 }: DashboardCampaignsProps) {
   const router = useRouter();
   const [campaigns, setCampaigns] = useState(initialCampaigns);
   const [updating, setUpdating] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const getActionIcon = (actionType: string) => {
     switch (actionType) {
@@ -69,10 +75,23 @@ export default function DashboardCampaigns({
   const toggleCampaignStatus = async (campaignId: string, currentStatus: string) => {
     const newStatus = currentStatus === 'active' ? 'paused' : 'active';
     setUpdating(campaignId);
+    setError(null);
     
     try {
-      const result = await campaignAPI.updateCampaign(campaignId, newStatus);
-      if (result.success) {
+      // Use the callback if provided, otherwise fallback to direct API call
+      let success = false;
+      
+      if (onCampaignStatusUpdate) {
+        success = await onCampaignStatusUpdate(campaignId, newStatus);
+      } else {
+        const result = await campaignAPI.updateCampaign(campaignId, newStatus);
+        success = result.success;
+        if (!success) {
+          setError(result.error || 'Failed to update campaign');
+        }
+      }
+      
+      if (success) {
         setCampaigns(prev => prev.map(campaign => 
           campaign.id === campaignId 
             ? { ...campaign, status: newStatus as any }
@@ -81,6 +100,27 @@ export default function DashboardCampaigns({
       }
     } catch (error) {
       console.error('Update campaign error:', error);
+      setError('An error occurred while updating the campaign');
+    } finally {
+      setUpdating(null);
+    }
+  };
+
+  const refreshCampaigns = async () => {
+    try {
+      setUpdating('refresh');
+      setError(null);
+
+      const result = await campaignAPI.getUserCampaigns({ limit: 5 });
+      
+      if (result.success && result.data) {
+        setCampaigns(result.data.campaigns || []);
+      } else {
+        setError(result.error || 'Failed to refresh campaigns');
+      }
+    } catch (error) {
+      console.error('Refresh campaigns error:', error);
+      setError('An error occurred while refreshing campaigns');
     } finally {
       setUpdating(null);
     }
@@ -93,16 +133,35 @@ export default function DashboardCampaigns({
           <Video className="w-5 h-5 text-[#FE2C55]" />
           <span>{t('campaigns.title')}</span>
         </CardTitle>
-        <Button 
-          variant="ghost" 
-          size="sm"
-          onClick={() => router.push(`/${locale}/videos`)}
-        >
-          {t('campaigns.viewAll')}
-          <ArrowRight className="w-4 h-4 ml-1" />
-        </Button>
+        <div className="flex items-center space-x-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={refreshCampaigns}
+            disabled={updating === 'refresh'}
+          >
+            <RefreshCw className={`w-4 h-4 mr-1 ${updating === 'refresh' ? 'animate-spin' : ''}`} />
+            Refresh
+          </Button>
+          <Button 
+            variant="ghost" 
+            size="sm"
+            onClick={() => router.push(`/${locale}/campaigns`)}
+          >
+            {t('campaigns.viewAll')}
+            <ArrowRight className="w-4 h-4 ml-1" />
+          </Button>
+        </div>
       </CardHeader>
       <CardContent className="space-y-4">
+        {/* Error Alert */}
+        {error && (
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+
         {campaigns.length > 0 ? (
           campaigns.map((campaign, index) => (
             <motion.div
@@ -143,20 +202,24 @@ export default function DashboardCampaigns({
                 >
                   {t(`campaigns.status.${campaign.status}`)}
                 </Badge>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => toggleCampaignStatus(campaign.id, campaign.status)}
-                  disabled={updating === campaign.id}
-                >
-                  {updating === campaign.id ? (
-                    <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
-                  ) : campaign.status === 'active' ? (
-                    <Pause className="w-4 h-4" />
-                  ) : (
-                    <Play className="w-4 h-4" />
-                  )}
-                </Button>
+                
+                {campaign.status !== 'completed' && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => toggleCampaignStatus(campaign.id, campaign.status)}
+                    disabled={updating === campaign.id}
+                    title={campaign.status === 'active' ? 'Pause campaign' : 'Resume campaign'}
+                  >
+                    {updating === campaign.id ? (
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                    ) : campaign.status === 'active' ? (
+                      <Pause className="w-4 h-4" />
+                    ) : (
+                      <Play className="w-4 h-4" />
+                    )}
+                  </Button>
+                )}
               </div>
             </motion.div>
           ))
@@ -166,7 +229,7 @@ export default function DashboardCampaigns({
             <p>{t('campaigns.noCampaigns')}</p>
             <Button 
               variant="link" 
-              onClick={() => router.push(`/${locale}/videos/new`)}
+              onClick={() => router.push(`/${locale}/campaigns/new`)}
               className="text-[#FE2C55] hover:text-[#FF4081] mt-2"
             >
               {t('campaigns.createFirst')}

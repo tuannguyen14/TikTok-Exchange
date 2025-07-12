@@ -4,11 +4,14 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
+import { RefreshCw } from 'lucide-react';
+
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
 import DashboardStats from '@/components/dashboard/DashboardStats';
 import DashboardCampaigns from '@/components/dashboard/DashboardCampaigns';
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
-import type { Profile, User } from '@/types/auth';
+import { Button } from '@/components/ui/button';
+import type { Profile } from '@/types/auth';
 
 interface DashboardStats {
   totalCredits: number;
@@ -33,18 +36,29 @@ interface Campaign {
 interface DashboardClientProps {
   locale: string;
   profile: Profile;
-  initialData: {
-    campaigns: Campaign[];
-    stats: DashboardStats;
-  };
+  campaigns: Campaign[];
+  stats: DashboardStats;
+  refreshing?: boolean;
+  onRefresh?: () => Promise<void>;
+  onCampaignStatusUpdate?: (campaignId: string, status: 'active' | 'paused') => Promise<boolean>;
 }
 
 export default function DashboardClient({ 
   locale, 
   profile, 
-  initialData 
+  campaigns,
+  stats,
+  refreshing = false,
+  onRefresh,
+  onCampaignStatusUpdate
 }: DashboardClientProps) {
   const t = useTranslations('Dashboard');
+
+  const handleRefresh = async () => {
+    if (onRefresh) {
+      await onRefresh();
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
@@ -54,12 +68,29 @@ export default function DashboardClient({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
+          className="flex flex-col md:flex-row md:items-center justify-between space-y-4 md:space-y-0"
         >
-          <DashboardHeader 
-            profile={profile}
-            locale={locale}
-            t={t}
-          />
+          <div className="flex-1">
+            <DashboardHeader 
+              profile={profile}
+              locale={locale}
+              t={t}
+            />
+          </div>
+          
+          {/* Refresh Button */}
+          {onRefresh && (
+            <Button
+              onClick={handleRefresh}
+              disabled={refreshing}
+              variant="outline"
+              size="sm"
+              className="self-start md:self-auto flex items-center space-x-2"
+            >
+              <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+              <span>{refreshing ? 'Refreshing...' : 'Refresh'}</span>
+            </Button>
+          )}
         </motion.div>
 
         {/* Stats Cards */}
@@ -69,7 +100,7 @@ export default function DashboardClient({
           transition={{ duration: 0.5, delay: 0.1 }}
         >
           <DashboardStats 
-            stats={initialData.stats}
+            stats={stats}
             t={t}
           />
         </motion.div>
@@ -84,9 +115,10 @@ export default function DashboardClient({
             className="lg:col-span-2"
           >
             <DashboardCampaigns 
-              campaigns={initialData.campaigns}
+              campaigns={campaigns}
               locale={locale}
               t={t}
+              onCampaignStatusUpdate={onCampaignStatusUpdate}
             />
           </motion.div>
 

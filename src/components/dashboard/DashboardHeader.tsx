@@ -62,7 +62,7 @@ export default function DashboardHeader({ profile, locale, t }: DashboardHeaderP
       </div>
       
       <Button 
-        onClick={() => router.push(`/${locale}/videos/new`)}
+        onClick={() => router.push(`/${locale}/campaigns/new`)}
         className="bg-gradient-to-r from-[#FE2C55] to-[#FF4081] hover:from-[#FF4081] hover:to-[#FE2C55] text-white shadow-lg hover:shadow-xl transition-all duration-200"
       >
         <Plus className="w-4 h-4 mr-2" />
