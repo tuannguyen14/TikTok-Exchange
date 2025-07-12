@@ -25,7 +25,7 @@ LEFT JOIN (
 CREATE VIEW public.active_campaigns AS
 SELECT 
     c.*,
-    p.username as creator_username,
+    p.email as creator_email,
     p.tiktok_username as creator_tiktok,
     v.title as video_title,
     v.video_url,

@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useTranslations, useLocale } from 'next-intl'
+import LocaleSelector from '@/components/common/LocaleSelector'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   Menu, 
@@ -17,7 +18,9 @@ import {
   ChevronDown,
   Coins,
   TrendingUp,
-  Loader2
+  Loader2,
+  LogIn,
+  UserPlus
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
@@ -25,58 +28,26 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-
-// Types
-interface UserData {
-  credits: number
-  avatar?: string
-  name?: string
-  email?: string
-}
-
-interface NavbarProps {}
+import { useAuth } from '@/hooks/useAuth'
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [userData, setUserData] = useState<UserData | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
   
   const t = useTranslations('Navigation')
   const locale = useLocale()
   const router = useRouter()
-
-  // Fetch user data
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        setIsLoading(true)
-        
-        // Simulate API call - replace with actual API endpoint
-        const response = await fetch('/api/user/profile', {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            'Content-Type': 'application/json'
-          }
-        })
-        
-        if (response.ok) {
-          const data: UserData = await response.json()
-          setUserData(data)
-        } else {
-          console.error('Failed to fetch user data')
-        }
-      } catch (error) {
-        console.error('Error fetching user data:', error)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    // fetchUserData()
-  }, [])
+  
+  // Use auth context
+  const { 
+    isAuthenticated, 
+    loading, 
+    profile, 
+    signOut 
+  } = useAuth()
 
   // Handle language change
   const handleLocaleChange = (newLocale: string) => {
@@ -86,35 +57,41 @@ export default function Navbar() {
   }
 
   // Handle logout
-  const handleLogout = () => {
-    localStorage.removeItem('token')
-    router.push('/login')
+  const handleLogout = async () => {
+    const { error } = await signOut()
+    if (!error) {
+      router.push(`/${locale}/auth/login`)
+    }
   }
 
   const navigationItems = [
     { 
       key: 'dashboard', 
       icon: Home, 
-      href: '/dashboard',
-      label: t('dashboard')
+      href: `/${locale}/dashboard`,
+      label: t('dashboard'),
+      authRequired: true
     },
     { 
       key: 'exchange', 
       icon: ArrowLeftRight, 
-      href: '/exchange',
-      label: t('exchange')
+      href: `/${locale}/exchange`,
+      label: t('exchange'),
+      authRequired: true
     },
     { 
       key: 'videos', 
       icon: Video, 
-      href: '/videos',
-      label: t('myVideos')
+      href: `/${locale}/videos`,
+      label: t('myVideos'),
+      authRequired: true
     },
     { 
       key: 'profile', 
       icon: User, 
-      href: '/profile',
-      label: t('profile')
+      href: `/${locale}/profile`,
+      label: t('profile'),
+      authRequired: true
     }
   ]
 
@@ -127,31 +104,36 @@ export default function Navbar() {
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen)
 
+  // Filter navigation items based on auth status
+  const visibleNavItems = navigationItems.filter(item => 
+    !item.authRequired || isAuthenticated
+  )
+
   return (
     <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200 dark:bg-gray-900/95 dark:border-gray-800">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
+          <Link href={`/${locale}`} className="flex items-center space-x-2">
             <motion.div 
-              className="w-8 h-8 bg-gradient-to-r from-pink-500 to-purple-600 rounded-lg flex items-center justify-center"
+              className="w-8 h-8 bg-gradient-to-r from-[#FE2C55] to-[#25F4EE] rounded-lg flex items-center justify-center"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
               <TrendingUp className="w-5 h-5 text-white" />
             </motion.div>
-            <span className="text-xl font-bold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
-              TikBoost
+            <span className="text-xl font-bold bg-gradient-to-r from-[#FE2C55] to-[#25F4EE] bg-clip-text text-transparent">
+              TikGrow
             </span>
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            {navigationItems.map((item) => (
+            {visibleNavItems.map((item) => (
               <Link
                 key={item.key}
                 href={item.href}
-                className="flex items-center space-x-2 text-gray-700 hover:text-purple-600 dark:text-gray-300 dark:hover:text-purple-400 transition-colors duration-200"
+                className="flex items-center space-x-2 text-gray-700 hover:text-[#FE2C55] dark:text-gray-300 dark:hover:text-[#25F4EE] transition-colors duration-200"
               >
                 <item.icon className="w-4 h-4" />
                 <span className="font-medium">{item.label}</span>
@@ -159,15 +141,10 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* Right Side - Credits, Language, Profile */}
+          {/* Right Side - Credits, Language, Profile/Auth */}
           <div className="flex items-center space-x-4">
-            {/* Credits Display */}
-            {isLoading ? (
-              <div className="hidden sm:flex items-center space-x-2 bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-full">
-                <Loader2 className="w-4 h-4 animate-spin text-gray-400" />
-                <span className="text-sm text-gray-500">Loading...</span>
-              </div>
-            ) : (
+            {/* Credits Display - Only show when authenticated */}
+            {isAuthenticated && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -175,7 +152,7 @@ export default function Navbar() {
               >
                 <Coins className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />
                 <span className="text-sm font-semibold text-yellow-700 dark:text-yellow-300">
-                  {userData?.credits?.toLocaleString() || 0}
+                  {profile?.credits?.toLocaleString() || 0}
                 </span>
                 <Badge variant="secondary" className="text-xs">
                   {t('credits')}
@@ -184,68 +161,84 @@ export default function Navbar() {
             )}
 
             {/* Language Selector */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="flex items-center space-x-1">
-                  <Globe className="w-4 h-4" />
-                  <span className="hidden sm:inline">{currentLanguage?.flag}</span>
-                  <ChevronDown className="w-3 h-3" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                {languages.map((lang) => (
-                  <DropdownMenuItem
-                    key={lang.code}
-                    onClick={() => handleLocaleChange(lang.code)}
-                    className="flex items-center space-x-2 cursor-pointer"
-                  >
-                    <span>{lang.flag}</span>
-                    <span>{lang.name}</span>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <LocaleSelector variant="dropdown" showFlag={true} showName={false} size="sm" />
 
-            {/* User Profile */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="flex items-center space-x-2 px-2">
-                  <Avatar className="w-8 h-8">
-                    <AvatarImage src={userData?.avatar} alt={userData?.name || 'User'} />
-                    <AvatarFallback>
-                      {userData?.name ? userData.name.charAt(0).toUpperCase() : 'U'}
-                    </AvatarFallback>
-                  </Avatar>
-                  <ChevronDown className="w-3 h-3" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
-                <div className="px-2 py-1.5 text-sm text-gray-500 dark:text-gray-400 border-b">
-                  {userData?.name || t('guest')}
-                  {userData?.email && (
-                    <div className="text-xs text-gray-400">{userData.email}</div>
-                  )}
-                </div>
-                <DropdownMenuItem asChild>
-                  <Link href="/profile" className="flex items-center space-x-2">
-                    <User className="w-4 h-4" />
-                    <span>{t('profile')}</span>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/settings" className="flex items-center space-x-2">
-                    <Settings className="w-4 h-4" />
-                    <span>{t('settings')}</span>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem 
-                  onClick={handleLogout}
-                  className="text-red-600 dark:text-red-400 cursor-pointer"
+            {/* Auth Section */}
+            {loading ? (
+              <div className="flex items-center space-x-2">
+                <Loader2 className="w-4 h-4 animate-spin text-gray-400" />
+                <span className="text-sm text-gray-500 hidden sm:inline">Loading...</span>
+              </div>
+            ) : isAuthenticated ? (
+              /* User Profile Dropdown */
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="flex items-center space-x-2 px-2">
+                    <Avatar className="w-8 h-8">
+                      <AvatarImage src={profile?.avatar_url} alt={profile?.email || 'User'} />
+                      <AvatarFallback className="bg-gradient-to-r from-[#FE2C55] to-[#25F4EE] text-white">
+                        {profile?.email ? profile.email.charAt(0).toUpperCase() : 'U'}
+                      </AvatarFallback>
+                    </Avatar>
+                    <ChevronDown className="w-3 h-3" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <div className="px-2 py-1.5 text-sm text-gray-500 dark:text-gray-400 border-b">
+                    <div className="font-medium text-gray-900 dark:text-white">
+                      {profile?.email || 'User'}
+                    </div>
+                    {profile?.tiktok_username && (
+                      <div className="text-xs text-[#FE2C55]">@{profile.tiktok_username}</div>
+                    )}
+                  </div>
+                  <DropdownMenuItem asChild>
+                    <Link href={`/${locale}/profile`} className="flex items-center space-x-2">
+                      <User className="w-4 h-4" />
+                      <span>{t('profile')}</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href={`/${locale}/profile/settings`} className="flex items-center space-x-2">
+                      <Settings className="w-4 h-4" />
+                      <span>{t('settings')}</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem 
+                    onClick={handleLogout}
+                    className="text-red-600 dark:text-red-400 cursor-pointer"
+                  >
+                    {t('logout')}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              /* Auth Buttons for Guest Users */
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  asChild
+                  className="hidden sm:flex"
                 >
-                  {t('logout')}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                  <Link href={`/${locale}/auth/login`}>
+                    <LogIn className="w-4 h-4 mr-2" />
+                    Đăng nhập
+                  </Link>
+                </Button>
+                <Button
+                  size="sm"
+                  asChild
+                  className="bg-gradient-to-r from-[#FE2C55] to-[#FF4081] hover:from-[#FF4081] hover:to-[#FE2C55]"
+                >
+                  <Link href={`/${locale}/auth/login`}>
+                    <UserPlus className="w-4 h-4 mr-2" />
+                    Đăng ký
+                  </Link>
+                </Button>
+              </div>
+            )}
 
             {/* Mobile Menu Button */}
             <Button
@@ -271,34 +264,54 @@ export default function Navbar() {
             >
               <div className="flex flex-col space-y-3">
                 {/* Mobile Credits Display */}
-                {isLoading ? (
-                  <div className="flex items-center justify-center px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg">
-                    <Loader2 className="w-4 h-4 animate-spin text-gray-400 mr-2" />
-                    <span className="text-sm text-gray-500">Loading...</span>
-                  </div>
-                ) : (
+                {isAuthenticated && profile && (
                   <div className="flex items-center justify-between px-4 py-2 bg-gradient-to-r from-yellow-100 to-orange-100 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-lg">
                     <div className="flex items-center space-x-2">
                       <Coins className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />
                       <span className="text-sm font-semibold text-yellow-700 dark:text-yellow-300">
-                        {userData?.credits?.toLocaleString() || 0} {t('credits')}
+                        {profile.credits.toLocaleString()} {t('credits')}
                       </span>
                     </div>
                   </div>
                 )}
 
                 {/* Mobile Navigation Items */}
-                {navigationItems.map((item) => (
+                {visibleNavItems.map((item) => (
                   <Link
                     key={item.key}
                     href={item.href}
                     onClick={() => setIsMenuOpen(false)}
-                    className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:text-purple-600 hover:bg-purple-50 dark:text-gray-300 dark:hover:text-purple-400 dark:hover:bg-purple-900/20 rounded-lg transition-colors duration-200"
+                    className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:text-[#FE2C55] hover:bg-red-50 dark:text-gray-300 dark:hover:text-[#25F4EE] dark:hover:bg-gray-800/50 rounded-lg transition-colors duration-200"
                   >
                     <item.icon className="w-5 h-5" />
                     <span className="font-medium">{item.label}</span>
                   </Link>
                 ))}
+
+                {/* Mobile Auth Buttons */}
+                {!isAuthenticated && (
+                  <div className="flex flex-col space-y-2 px-4 pt-2 border-t border-gray-200 dark:border-gray-700">
+                    <Button
+                      variant="outline"
+                      asChild
+                      className="w-full justify-start"
+                    >
+                      <Link href={`/${locale}/auth/login`}>
+                        <LogIn className="w-4 h-4 mr-2" />
+                        Đăng nhập
+                      </Link>
+                    </Button>
+                    <Button
+                      asChild
+                      className="w-full justify-start bg-gradient-to-r from-[#FE2C55] to-[#FF4081]"
+                    >
+                      <Link href={`/${locale}/auth/register`}>
+                        <UserPlus className="w-4 h-4 mr-2" />
+                        Đăng ký
+                      </Link>
+                    </Button>
+                  </div>
+                )}
               </div>
             </motion.div>
           )}
@@ -307,22 +320,3 @@ export default function Navbar() {
     </nav>
   )
 }
-
-// Translation keys cần thêm vào messages:
-/*
-{
-
-}
-*/
-
-// API Endpoint cần tạo:
-/*
-GET /api/user/profile
-Authorization: Bearer <token>
-Response: {
-  credits: number,
-  avatar?: string,
-  name?: string,
-  email?: string
-}
-*/

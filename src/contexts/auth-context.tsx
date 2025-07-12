@@ -1,348 +1,362 @@
-// contexts/auth-context.tsx
 'use client';
 
-import { createContext, useContext, useEffect, useState } from 'react';
-import { User, Session, AuthError } from '@supabase/supabase-js';
-import { createBrowserClient } from '@supabase/ssr';
-import { supabaseUrl, supabaseAnonKey } from '@/lib/supabase/supabase';
+import { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import { normalizeError, getUserFriendlyErrorMessage, logError, retryAsync } from '@/lib/utils/errors';
+import type { User, AuthState, Profile, ApiResponse } from '@/types/auth';
 
-// Profile interface matching your database schema
-export interface Profile {
-  id: string;
-  username: string;
-  full_name?: string;
-  avatar_url?: string;
-  tiktok_username?: string;
-  credits: number;
-  total_earned: number;
-  total_spent: number;
-  status: 'active' | 'inactive' | 'suspended';
-  created_at: string;
-  updated_at: string;
+export interface AuthContextType extends AuthState {
+  signUp: (email: string, password: string) => Promise<{ error: string | null; success: boolean }>;
+  signIn: (email: string, password: string) => Promise<{ error: string | null; success: boolean }>;
+  signOut: () => Promise<{ error: string | null; success: boolean }>;
+  updateProfile: (updates: Partial<Profile>) => Promise<{ error: string | null; success: boolean }>;
+  refreshProfile: () => Promise<{ error: string | null; success: boolean }>;
+  connectTikTok: (tiktokUsername: string) => Promise<{ error: string | null; success: boolean }>;
+  resetPassword: (email: string) => Promise<{ error: string | null; success: boolean }>;
+  changePassword: (currentPassword: string, newPassword: string) => Promise<{ error: string | null; success: boolean }>;
+  checkSession: () => Promise<void>;
 }
 
-// Auth state interface
-interface AuthState {
-  user: User | null;
-  profile: Profile | null;
-  session: Session | null;
-  loading: boolean;
-  error: string | null;
-}
-
-// Auth context methods
-interface AuthContextType extends AuthState {
-//   signUp: (email: string, password: string, username: string, fullName?: string) => Promise<{ error: AuthError | null }>;
-  signIn: (email: string, password: string) => Promise<{ error: AuthError | null }>;
-  signOut: () => Promise<void>;
-  updateProfile: (updates: Partial<Profile>) => Promise<{ error: Error | null }>;
-  refreshProfile: () => Promise<void>;
-  connectTikTok: (tiktokUsername: string) => Promise<{ error: Error | null }>;
-  updateCredits: (amount: number, type: 'earn' | 'spend') => Promise<{ error: Error | null }>;
-}
-
+// Create context
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// API utility functions with better error handling
+const apiCall = async <T = any>(
+  endpoint: string,
+  options: RequestInit = {}
+): Promise<{ data: T | null; error: string | null; success: boolean }> => {
+  try {
+    const response = await retryAsync(async () => {
+      const res = await fetch(endpoint, {
+        headers: {
+          'Content-Type': 'application/json',
+          ...options.headers,
+        },
+        credentials: 'include', // Important for cookies
+        ...options,
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+      }
+
+      return res;
+    }, 2, 1000); // Retry up to 2 times with 1s delay
+
+    const result: ApiResponse<T> = await response.json();
+
+    return {
+      data: result.data || null,
+      error: result.success ? null : (result.error || result.message || 'Unknown error'),
+      success: result.success
+    };
+  } catch (error) {
+    const normalizedError = normalizeError(error);
+    const userFriendlyMessage = getUserFriendlyErrorMessage(normalizedError);
+
+    logError(error, `API call to ${endpoint}`);
+
+    return {
+      data: null,
+      error: userFriendlyMessage,
+      success: false
+    };
+  }
+};
+
+// Auth Provider Component
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<AuthState>({
     user: null,
     profile: null,
-    session: null,
     loading: true,
     error: null,
+    isAuthenticated: false,
   });
 
-  // Create browser client
-  const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey);
-
-  // Fetch user profile
-  const fetchProfile = async (userId: string): Promise<Profile | null> => {
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single();
-
-      if (error) throw error;
-      return data;
-    } catch (error) {
-      console.error('Error fetching profile:', error);
-      return null;
-    }
-  };
-
-  // Initialize auth state
-  useEffect(() => {
-    const initializeAuth = async () => {
-      try {
-        // Get initial session
-        const { data: { session }, error } = await supabase.auth.getSession();
-        
-        if (error) {
-          setState(prev => ({ ...prev, error: error.message, loading: false }));
-          return;
-        }
-
-        if (session?.user) {
-          const profile = await fetchProfile(session.user.id);
-          setState({
-            user: session.user,
-            profile,
-            session,
-            loading: false,
-            error: null,
-          });
-        } else {
-          setState({
-            user: null,
-            profile: null,
-            session: null,
-            loading: false,
-            error: null,
-          });
-        }
-      } catch (error) {
-        setState(prev => ({ 
-          ...prev, 
-          error: error instanceof Error ? error.message : 'Unknown error',
-          loading: false 
-        }));
-      }
-    };
-
-    initializeAuth();
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (event === 'SIGNED_IN' && session?.user) {
-          const profile = await fetchProfile(session.user.id);
-          setState({
-            user: session.user,
-            profile,
-            session,
-            loading: false,
-            error: null,
-          });
-        } else if (event === 'SIGNED_OUT') {
-          setState({
-            user: null,
-            profile: null,
-            session: null,
-            loading: false,
-            error: null,
-          });
-        }
-      }
-    );
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  // Sign up method
-  const signUp = async (email: string, password: string, username: string, fullName?: string) => {
+  // Check session from API
+  const checkSession = useCallback(async () => {
     try {
       setState(prev => ({ ...prev, loading: true, error: null }));
 
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            username,
-            full_name: fullName,
-          },
-        },
+      const { data, error, success } = await apiCall<{ user: User; profile: Profile }>('/api/auth/session');
+
+      if (success && data) {
+        setState({
+          user: data.user,
+          profile: data.profile,
+          loading: false,
+          error: null,
+          isAuthenticated: true,
+        });
+      } else {
+        setState({
+          user: null,
+          profile: null,
+          loading: false,
+          error: error,
+          isAuthenticated: false,
+        });
+      }
+    } catch (error) {
+      setState({
+        user: null,
+        profile: null,
+        loading: false,
+        error: error instanceof Error ? error.message : 'Session check failed',
+        isAuthenticated: false,
+      });
+    }
+  }, []);
+
+  // Initialize auth state
+  useEffect(() => {
+    checkSession();
+  }, [checkSession]);
+
+  // Sign up method (simplified - no username required)
+  const signUp = async (
+    email: string,
+    password: string
+  ): Promise<{ error: string | null; success: boolean }> => {
+    try {
+      setState(prev => ({ ...prev, loading: true, error: null }));
+
+      const { data, error, success } = await apiCall('/api/auth/register', {
+        method: 'POST',
+        body: JSON.stringify({
+          email,
+          password,
+        }),
       });
 
-      if (error) {
-        setState(prev => ({ ...prev, error: error.message, loading: false }));
-        return { error };
+      if (success) {
+        // After successful signup, check session to get user data
+        await checkSession();
+        return { error: null, success: true };
+      } else {
+        setState(prev => ({ ...prev, error, loading: false }));
+        return { error: error || 'Sign up failed', success: false };
       }
-
-      // Create profile if user is created
-      if (data.user) {
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .insert([
-            {
-              id: data.user.id,
-              username,
-              full_name: fullName,
-              credits: 50, // Initial credits
-              total_earned: 0,
-              total_spent: 0,
-              status: 'active',
-            },
-          ]);
-
-        if (profileError) {
-          console.error('Error creating profile:', profileError);
-          setState(prev => ({ ...prev, error: profileError.message, loading: false }));
-          return { error: profileError };
-        }
-      }
-
-      setState(prev => ({ ...prev, loading: false }));
-      return { error: null };
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const errorMessage = error instanceof Error ? error.message : 'Sign up failed';
       setState(prev => ({ ...prev, error: errorMessage, loading: false }));
-      return { error: { message: errorMessage } as AuthError };
+      return { error: errorMessage, success: false };
     }
   };
 
   // Sign in method
-  const signIn = async (email: string, password: string) => {
+  const signIn = async (
+    email: string,
+    password: string
+  ): Promise<{ error: string | null; success: boolean }> => {
     try {
       setState(prev => ({ ...prev, loading: true, error: null }));
 
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+      const { data, error, success } = await apiCall<{ user: User; profile: Profile }>('/api/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ email, password }),
       });
 
-      if (error) {
-        setState(prev => ({ ...prev, error: error.message, loading: false }));
-        return { error };
+      if (success && data) {
+        setState({
+          user: data.user,
+          profile: data.profile,
+          loading: false,
+          error: null,
+          isAuthenticated: true,
+        });
+        return { error: null, success: true };
+      } else {
+        setState(prev => ({ ...prev, error, loading: false }));
+        return { error: error || 'Sign in failed', success: false };
       }
-
-      setState(prev => ({ ...prev, loading: false }));
-      return { error: null };
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const errorMessage = error instanceof Error ? error.message : 'Sign in failed';
       setState(prev => ({ ...prev, error: errorMessage, loading: false }));
-      return { error: { message: errorMessage } as AuthError };
+      return { error: errorMessage, success: false };
     }
   };
 
   // Sign out method
-  const signOut = async () => {
+  const signOut = async (): Promise<{ error: string | null; success: boolean }> => {
     try {
-      setState(prev => ({ ...prev, loading: true }));
-      await supabase.auth.signOut();
+      setState(prev => ({ ...prev, loading: true, error: null }));
+
+      const { error, success } = await apiCall('/api/auth/logout', {
+        method: 'POST',
+      });
+
+      // Always clear local state, even if API call fails
       setState({
         user: null,
         profile: null,
-        session: null,
         loading: false,
-        error: null,
+        error: success ? null : error,
+        isAuthenticated: false,
       });
+
+      return { error: success ? null : error, success };
     } catch (error) {
-      setState(prev => ({ 
-        ...prev, 
-        error: error instanceof Error ? error.message : 'Unknown error',
-        loading: false 
-      }));
+      const errorMessage = error instanceof Error ? error.message : 'Sign out failed';
+      setState({
+        user: null,
+        profile: null,
+        loading: false,
+        error: errorMessage,
+        isAuthenticated: false,
+      });
+      return { error: errorMessage, success: false };
     }
   };
 
   // Update profile method
-  const updateProfile = async (updates: Partial<Profile>) => {
+  const updateProfile = async (
+    updates: Partial<Profile>
+  ): Promise<{ error: string | null; success: boolean }> => {
     try {
       if (!state.user) {
-        return { error: new Error('User not authenticated') };
+        return { error: 'User not authenticated', success: false };
       }
 
-      const { error } = await supabase
-        .from('profiles')
-        .update({ ...updates, updated_at: new Date().toISOString() })
-        .eq('id', state.user.id);
+      setState(prev => ({ ...prev, loading: true, error: null }));
 
-      if (error) {
-        return { error };
+      const { data, error, success } = await apiCall<Profile>('/api/user/profile', {
+        method: 'PUT',
+        body: JSON.stringify(updates),
+      });
+
+      if (success && data) {
+        setState(prev => ({
+          ...prev,
+          profile: data,
+          loading: false,
+          error: null,
+        }));
+        return { error: null, success: true };
+      } else {
+        setState(prev => ({ ...prev, error, loading: false }));
+        return { error: error || 'Profile update failed', success: false };
       }
-
-      // Refresh profile
-      await refreshProfile();
-      return { error: null };
     } catch (error) {
-      return { error: error instanceof Error ? error : new Error('Unknown error') };
+      const errorMessage = error instanceof Error ? error.message : 'Profile update failed';
+      setState(prev => ({ ...prev, error: errorMessage, loading: false }));
+      return { error: errorMessage, success: false };
     }
   };
 
   // Refresh profile method
-  const refreshProfile = async () => {
-    if (!state.user) return;
-
-    const profile = await fetchProfile(state.user.id);
-    setState(prev => ({ ...prev, profile }));
-  };
-
-  // Connect TikTok method
-  const connectTikTok = async (tiktokUsername: string) => {
+  const refreshProfile = async (): Promise<{ error: string | null; success: boolean }> => {
     try {
       if (!state.user) {
-        return { error: new Error('User not authenticated') };
+        return { error: 'User not authenticated', success: false };
       }
 
-      const { error } = await supabase
-        .from('profiles')
-        .update({ 
-          tiktok_username: tiktokUsername,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', state.user.id);
+      const { data, error, success } = await apiCall<Profile>('/api/user/profile');
 
-      if (error) {
-        return { error };
+      if (success && data) {
+        setState(prev => ({
+          ...prev,
+          profile: data,
+          error: null,
+        }));
+        return { error: null, success: true };
+      } else {
+        return { error: error || 'Profile refresh failed', success: false };
       }
-
-      await refreshProfile();
-      return { error: null };
     } catch (error) {
-      return { error: error instanceof Error ? error : new Error('Unknown error') };
+      const errorMessage = error instanceof Error ? error.message : 'Profile refresh failed';
+      return { error: errorMessage, success: false };
     }
   };
 
-  // Update credits method
-  const updateCredits = async (amount: number, type: 'earn' | 'spend') => {
+  // Connect TikTok method
+  const connectTikTok = async (
+    tiktokUsername: string
+  ): Promise<{ error: string | null; success: boolean }> => {
     try {
-      if (!state.user || !state.profile) {
-        return { error: new Error('User not authenticated') };
+      if (!state.user) {
+        return { error: 'User not authenticated', success: false };
       }
 
-      const newCredits = type === 'earn' 
-        ? state.profile.credits + amount 
-        : state.profile.credits - amount;
+      setState(prev => ({ ...prev, loading: true, error: null }));
 
-      if (newCredits < 0) {
-        return { error: new Error('Insufficient credits') };
+      const { data, error, success } = await apiCall<Profile>('/api/user/tiktok', {
+        method: 'POST',
+        body: JSON.stringify({ tiktok_username: tiktokUsername }),
+      });
+
+      if (success && data) {
+        setState(prev => ({
+          ...prev,
+          profile: data,
+          loading: false,
+          error: null,
+        }));
+        return { error: null, success: true };
+      } else {
+        setState(prev => ({ ...prev, error, loading: false }));
+        return { error: error || 'TikTok connection failed', success: false };
       }
-
-      const updates = {
-        credits: newCredits,
-        total_earned: type === 'earn' ? state.profile.total_earned + amount : state.profile.total_earned,
-        total_spent: type === 'spend' ? state.profile.total_spent + amount : state.profile.total_spent,
-        updated_at: new Date().toISOString()
-      };
-
-      const { error } = await supabase
-        .from('profiles')
-        .update(updates)
-        .eq('id', state.user.id);
-
-      if (error) {
-        return { error };
-      }
-
-      await refreshProfile();
-      return { error: null };
     } catch (error) {
-      return { error: error instanceof Error ? error : new Error('Unknown error') };
+      const errorMessage = error instanceof Error ? error.message : 'TikTok connection failed';
+      setState(prev => ({ ...prev, error: errorMessage, loading: false }));
+      return { error: errorMessage, success: false };
+    }
+  };
+
+  // Reset password method
+  const resetPassword = async (
+    email: string
+  ): Promise<{ error: string | null; success: boolean }> => {
+    try {
+      const { error, success } = await apiCall('/api/auth/reset-password', {
+        method: 'POST',
+        body: JSON.stringify({ email }),
+      });
+
+      return { error: success ? null : (error || 'Reset password failed'), success };
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Reset password failed';
+      return { error: errorMessage, success: false };
+    }
+  };
+
+  // Change password method
+  const changePassword = async (
+    currentPassword: string,
+    newPassword: string
+  ): Promise<{ error: string | null; success: boolean }> => {
+    try {
+      if (!state.user) {
+        return { error: 'User not authenticated', success: false };
+      }
+
+      const { error, success } = await apiCall('/api/auth/change-password', {
+        method: 'POST',
+        body: JSON.stringify({
+          current_password: currentPassword,
+          new_password: newPassword,
+        }),
+      });
+
+      return { error: success ? null : (error || 'Password change failed'), success };
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Password change failed';
+      return { error: errorMessage, success: false };
     }
   };
 
   const value: AuthContextType = {
     ...state,
-    // signUp,
+    signUp,
     signIn,
     signOut,
     updateProfile,
     refreshProfile,
     connectTikTok,
-    updateCredits,
+    resetPassword,
+    changePassword,
+    checkSession,
   };
 
   return (
@@ -366,7 +380,7 @@ export function withAuth<P extends object>(
   Component: React.ComponentType<P>
 ) {
   return function AuthenticatedComponent(props: P) {
-    const { user, loading } = useAuth();
+    const { isAuthenticated, loading } = useAuth();
 
     if (loading) {
       return (
@@ -376,7 +390,7 @@ export function withAuth<P extends object>(
       );
     }
 
-    if (!user) {
+    if (!isAuthenticated) {
       return (
         <div className="flex items-center justify-center min-h-screen">
           <div className="text-center">
@@ -388,5 +402,28 @@ export function withAuth<P extends object>(
     }
 
     return <Component {...props} />;
+  };
+}
+
+// Utility hook for auth status
+export function useAuthStatus() {
+  const { isAuthenticated, loading } = useAuth();
+  return { isAuthenticated, loading };
+}
+
+// Utility hook for user profile only (updated for email)
+export function useProfile() {
+  const { profile, refreshProfile } = useAuth();
+  return { profile, refreshProfile };
+}
+
+// Utility hook for credits only
+export function useUserCredits() {
+  const { profile, refreshProfile } = useAuth();
+  return {
+    credits: profile?.credits || 0,
+    totalEarned: profile?.total_earned || 0,
+    totalSpent: profile?.total_spent || 0,
+    refreshCredits: refreshProfile,
   };
 }

@@ -1,16 +1,308 @@
 {
   "HomePage": {
-    "title": "Trang chủ",
-    "description": "Chào mừng bạn đến với trang web"
+    "title": "Trang Chủ",
+    "description": "Chào mừng bạn đến với trang web của chúng tôi"
   },
   "Navigation": {
-    "dashboard": "Tổng quan",
-    "exchange": "Trao đổi",
-    "myVideos": "Video của tôi",
-    "profile": "Hồ sơ",
-    "settings": "Cài đặt",
-    "credits": "Credits",
-    "logout": "Đăng xuất",
+    "dashboard": "Bảng Điều Khiển",
+    "exchange": "Trao Đổi",
+    "myVideos": "Video Của Tôi",
+    "profile": "Hồ Sơ",
+    "settings": "Cài Đặt",
+    "credits": "Điểm",
+    "logout": "Đăng Xuất",
     "guest": "Khách"
+  },
+  "Dashboard": {
+    "title": "Bảng Điều Khiển",
+    "welcome": "Chào mừng trở lại",
+    "linkTikTok": {
+      "title": "Liên Kết Tài Khoản TikTok",
+      "description": "Kết nối tên người dùng TikTok của bạn để bắt đầu tạo chiến dịch và kiếm điểm",
+      "button": "Liên Kết Tài Khoản TikTok",
+      "security": "Chúng tôi chỉ cần tên người dùng TikTok để xác minh. Chúng tôi không bao giờ yêu cầu mật khẩu hay truy cập tài khoản của bạn.",
+      "benefits": {
+        "boost": {
+          "title": "Tăng Tương Tác",
+          "description": "Nhận tương tác thực trên video TikTok của bạn"
+        },
+        "earn": {
+          "title": "Kiếm Điểm",
+          "description": "Tương tác với người khác để kiếm điểm"
+        },
+        "grow": {
+          "title": "Phát Triển Cộng Đồng",
+          "description": "Kết nối với các nhà sáng tạo TikTok khác"
+        }
+      },
+      "credits": {
+        "title": "Cách Điểm Hoạt Động",
+        "view": "Xem +1",
+        "like": "Thích +2",
+        "comment": "Bình luận +3",
+        "follow": "Theo dõi +5"
+      }
+    },
+    "stats": {
+      "totalCredits": "Tổng Điểm",
+      "activeCampaigns": "Chiến Dịch Đang Hoạt Động",
+      "totalActions": "Tổng Hành Động",
+      "creditsSpent": "Điểm Đã Dùng",
+      "earned": "đã kiếm được",
+      "completed": "đã hoàn thành",
+      "allTime": "Tất cả thời gian",
+      "totalInvestment": "Tổng Đầu Tư"
+    },
+    "campaigns": {
+      "title": "Chiến Dịch Gần Đây",
+      "viewAll": "Xem Tất Cả",
+      "noCampaigns": "Chưa có chiến dịch nào",
+      "createFirst": "Tạo chiến dịch đầu tiên của bạn",
+      "status": {
+        "active": "Đang Hoạt Động",
+        "paused": "Tạm Dừng",
+        "completed": "Đã Hoàn Thành"
+      }
+    },
+    "quickActions": {
+      "title": "Hành Động Nhanh",
+      "startEarning": "Bắt Đầu Kiếm Điểm",
+      "createCampaign": "Tạo Chiến Dịch Mới",
+      "viewProfile": "Xem Hồ Sơ"
+    },
+    "activity": {
+      "title": "Hoạt Động Gần Đây",
+      "noActivity": "Chưa có hoạt động gần đây",
+      "receivedAction": "Nhận {action}",
+      "creditsEarned": "+{credits} điểm đã kiếm"
+    },
+    "createCampaign": "Tạo Chiến Dịch",
+    "analytics": "Phân Tích",
+    "greeting": {
+      "morning": "Chào buổi sáng",
+      "afternoon": "Chào buổi chiều",
+      "evening": "Chào buổi tối"
+    }
+  },
+  "Profile": {
+    "title": "Hồ Sơ",
+    "description": "Quản lý tài khoản và liên kết TikTok của bạn",
+    "backToDashboard": "Quay lại Bảng Điều Khiển",
+    "memberSince": "Thành viên từ",
+    "tiktokNotConnected": "Chưa liên kết TikTok",
+    "tabs": {
+      "overview": "Tổng Quan",
+      "stats": "Thống Kê",
+      "settings": "Cài Đặt",
+      "history": "Lịch Sử"
+    },
+    "overview": {
+      "campaigns": "Chiến Dịch",
+      "earned": "Đã Kiếm",
+      "actions": "Hành Động",
+      "received": "Đã Nhận",
+      "tiktokStats": "Thống Kê TikTok",
+      "followers": "Người Theo Dõi",
+      "following": "Đang Theo Dõi",
+      "likes": "Lượt Thích",
+      "videos": "Video",
+      "campaignProgress": "Tiến Độ Chiến Dịch",
+      "completionRate": "Tỷ Lệ Hoàn Thành",
+      "active": "Đang Hoạt Động",
+      "completed": "Đã Hoàn Thành"
+    },
+    "stats": {
+      "creditsOverview": "Tổng Quan Điểm",
+      "currentBalance": "Số Dư Hiện Tại",
+      "totalEarned": "Tổng Điểm Đã Kiếm",
+      "totalSpent": "Tổng Điểm Đã Dùng",
+      "netCredits": "Điểm Ròng",
+      "activityOverview": "Tổng Quan Hoạt Động",
+      "actionsPerformed": "Hành Động Thực Hiện",
+      "actionsReceived": "Hành Động Đã Nhận",
+      "totalCampaigns": "Tổng Số Chiến Dịch",
+      "successRate": "Tỷ Lệ Thành Công",
+      "interactionBreakdown": "Phân Tích Tương Tác",
+      "views": "Lượt Xem",
+      "likes": "Lượt Thích",
+      "comments": "Bình Luận",
+      "follows": "Theo Dõi",
+      "creditsEach": "{count} điểm mỗi hành động"
+    },
+    "settings": {
+      "profileSettings": "Cài Đặt Hồ Sơ",
+      "email": "Email",
+      "avatarUrl": "URL Ảnh Đại Diện",
+      "saveChanges": "Lưu Thay Đổi",
+      "cancel": "Hủy",
+      "tiktokIntegration": "Liên Kết TikTok",
+      "tiktokConnected": "Tài khoản TikTok @{username} đã được liên kết.",
+      "tiktokNotConnectedDesc": "Kết nối tài khoản TikTok để bắt đầu tạo chiến dịch và kiếm điểm.",
+      "connectTiktok": "Liên Kết Tài Khoản TikTok",
+      "changeTiktokUsername": "Thay Đổi Tên Người Dùng TikTok"
+    },
+    "history": {
+      "transactionHistory": "Lịch Sử Giao Dịch",
+      "noTransactions": "Chưa có lịch sử giao dịch",
+      "startInteracting": "Bắt đầu tương tác để xem hoạt động ở đây",
+      "balance": "Số Dư"
+    },
+    "tiktokForm": {
+      "connectTitle": "Liên Kết Tài Khoản TikTok",
+      "updateTitle": "Cập Nhật Tên Người Dùng TikTok",
+      "username": "Tên Người Dùng TikTok",
+      "usernamePlaceholder": "ten_nguoi_dung_cua_ban",
+      "usernameHelp": "Nhập tên người dùng TikTok không bao gồm ký tự @",
+      "securityNote": "Chúng tôi chỉ cần tên người dùng để xác minh. Không truy cập tài khoản hoặc yêu cầu mật khẩu.",
+      "connect": "Liên Kết",
+      "update": "Cập Nhật",
+      "cancel": "Hủy"
+    },
+    "actions": {
+      "editProfile": "Chỉnh Sửa Hồ Sơ",
+      "saveProfile": "Lưu Hồ Sơ",
+      "connectTiktok": "Liên Kết TikTok",
+      "viewTiktokProfile": "Xem Hồ Sơ TikTok",
+      "copyEmail": "Sao Chép Email",
+      "copied": "Đã sao chép!"
+    },
+    "alerts": {
+      "profileUpdated": "Cập nhật hồ sơ thành công!",
+      "tiktokConnected": "Liên kết tài khoản TikTok thành công!",
+      "errorUpdating": "Cập nhật hồ sơ thất bại",
+      "errorConnecting": "Liên kết tài khoản TikTok thất bại",
+      "enterUsername": "Vui lòng nhập tên người dùng TikTok"
+    }
+  },
+  "Exchange": {
+    "title": "Trung Tâm Trao Đổi",
+    "description": "Kiếm điểm bằng cách tương tác với các chiến dịch",
+    "filters": {
+      "all": "Tất cả",
+      "views": "Lượt Xem",
+      "likes": "Lượt Thích",
+      "comments": "Bình Luận",
+      "follows": "Theo Dõi"
+    },
+    "stats": {
+      "activeCampaigns": "Chiến Dịch Đang Hoạt Động",
+      "totalCreditsAvailable": "Tổng Điểm Có Sẵn",
+      "activeUsers": "Người Dùng Đang Hoạt Động"
+    },
+    "campaign": {
+      "earnCredits": "Kiếm {credits} điểm",
+      "progress": "Tiến Độ",
+      "remaining": "Còn lại {count}",
+      "timeAgo": {
+        "justNow": "Vừa xong",
+        "hoursAgo": "Cách đây {hours} giờ",
+        "daysAgo": "Cách đây {days} ngày"
+      }
+    },
+    "actions": {
+      "like": "Thích",
+      "comment": "Bình luận",
+      "view": "Xem",
+      "follow": "Theo dõi",
+      "performAction": "Thực hiện {action} để kiếm {credits} điểm"
+    },
+    "empty": {
+      "title": "Không tìm thấy chiến dịch nào",
+      "description": "Thử các bộ lọc khác hoặc quay lại sau!"
+    }
+  },
+  "Videos": {
+    "title": "Video Của Tôi",
+    "description": "Quản lý chiến dịch và video của bạn",
+    "createNew": "Tạo Chiến Dịch Mới",
+    "noCampaigns": "Chưa có chiến dịch nào",
+    "createFirst": "Tạo chiến dịch đầu tiên của bạn",
+    "tabs": {
+      "all": "Tất cả",
+      "active": "Đang Hoạt Động",
+      "paused": "Tạm Dừng",
+      "completed": "Đã Hoàn Thành"
+    },
+    "campaign": {
+      "title": "Tiêu Đề Video",
+      "status": "Trạng Thái",
+      "progress": "Tiến Độ",
+      "credits": "Điểm",
+      "actions": "Hành Động",
+      "pause": "Tạm Dừng",
+      "resume": "Tiếp Tục",
+      "edit": "Chỉnh Sửa",
+      "delete": "Xóa",
+      "analytics": "Phân Tích"
+    },
+    "form": {
+      "videoUrl": "URL Video",
+      "videoTitle": "Tiêu Đề Video",
+      "description": "Mô Tả",
+      "category": "Danh Mục",
+      "interactionType": "Loại Tương Tác",
+      "targetCount": "Số Lượng Mục Tiêu",
+      "creditsPerAction": "Điểm mỗi hành động",
+      "totalCost": "Tổng Chi Phí",
+      "submit": "Tạo Chiến Dịch",
+      "cancel": "Hủy"
+    }
+  },
+  "Auth": {
+    "login": {
+      "title": "Đăng Nhập",
+      "description": "Chào mừng bạn trở lại TikGrow",
+      "email": "Email",
+      "password": "Mật Khẩu",
+      "submit": "Đăng Nhập",
+      "noAccount": "Chưa có tài khoản?",
+      "signUp": "Đăng ký",
+      "forgotPassword": "Quên mật khẩu?"
+    },
+    "register": {
+      "title": "Tạo Tài Khoản",
+      "description": "Tham gia TikGrow và bắt đầu phát triển",
+      "email": "Email",
+      "password": "Mật Khẩu",
+      "confirmPassword": "Xác Nhận Mật Khẩu",
+      "submit": "Tạo Tài Khoản",
+      "hasAccount": "Đã có tài khoản?",
+      "signIn": "Đăng nhập",
+      "terms": "Bằng cách tạo tài khoản, bạn đồng ý với Điều Khoản Dịch Vụ của chúng tôi"
+    },
+    "errors": {
+      "invalidEmail": "Vui lòng nhập email hợp lệ",
+      "passwordTooShort": "Mật khẩu phải ít nhất 6 ký tự",
+      "passwordMismatch": "Mật khẩu không khớp",
+      "emailRequired": "Email là bắt buộc",
+      "passwordRequired": "Mật khẩu là bắt buộc"
+    }
+  },
+  "Common": {
+    "loading": "Đang tải...",
+    "error": "Lỗi",
+    "success": "Thành công",
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "edit": "Chỉnh sửa",
+    "delete": "Xóa",
+    "confirm": "Xác nhận",
+    "close": "Đóng",
+    "back": "Quay lại",
+    "next": "Tiếp",
+    "previous": "Trước",
+    "viewAll": "Xem tất cả",
+    "showMore": "Hiển thị thêm",
+    "showLess": "Hiển thị ít hơn",
+    "search": "Tìm kiếm",
+    "filter": "Lọc",
+    "sort": "Sắp xếp",
+    "refresh": "Làm mới",
+    "retry": "Thử lại",
+    "copy": "Sao chép",
+    "copied": "Đã sao chép!",
+    "share": "Chia sẻ",
+    "download": "Tải xuống",
+    "upload": "Tải lên"
   }
 }

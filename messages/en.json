@@ -1,4 +1,13 @@
 {
+  "alerts": {
+    "profileUpdated": "Profile updated successfully!",
+    "tiktokConnected": "TikTok account connected successfully!",
+    "errorUpdating": "Failed to update profile",
+    "errorConnecting": "Failed to connect TikTok account",
+    "errorVerifying": "Failed to verify TikTok profile",
+    "errorLoading": "Failed to load profile data",
+    "enterUsername": "Please enter a TikTok username"
+  },
   "HomePage": {
     "title": "Home Page",
     "description": "Welcome to our website"
@@ -12,5 +21,297 @@
     "credits": "Credits",
     "logout": "Logout",
     "guest": "Guest"
+  },
+  "Dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome back",
+    "linkTikTok": {
+      "title": "Link Your TikTok Account",
+      "description": "Connect your TikTok username to start creating campaigns and earning credits",
+      "button": "Link TikTok Account",
+      "security": "We only need your TikTok username for verification. We never ask for your password or access your account.",
+      "benefits": {
+        "boost": {
+          "title": "Boost Engagement",
+          "description": "Get real interactions on your TikTok videos"
+        },
+        "earn": {
+          "title": "Earn Credits",
+          "description": "Interact with others to earn credits"
+        },
+        "grow": {
+          "title": "Grow Community",
+          "description": "Connect with other TikTok creators"
+        }
+      },
+      "credits": {
+        "title": "How Credits Work",
+        "view": "View +1",
+        "like": "Like +2",
+        "comment": "Comment +3",
+        "follow": "Follow +5"
+      }
+    },
+    "stats": {
+      "totalCredits": "Total Credits",
+      "activeCampaigns": "Active Campaigns",
+      "totalActions": "Total Actions",
+      "creditsSpent": "Credits Spent",
+      "earned": "earned",
+      "completed": "completed",
+      "allTime": "All time",
+      "totalInvestment": "Total investment"
+    },
+    "campaigns": {
+      "title": "Recent Campaigns",
+      "viewAll": "View All",
+      "noCampaigns": "No campaigns yet",
+      "createFirst": "Create your first campaign",
+      "status": {
+        "active": "Active",
+        "paused": "Paused",
+        "completed": "Completed"
+      }
+    },
+    "quickActions": {
+      "title": "Quick Actions",
+      "startEarning": "Start Earning Credits",
+      "createCampaign": "Create New Campaign",
+      "viewProfile": "View Profile"
+    },
+    "activity": {
+      "title": "Recent Activity",
+      "noActivity": "No recent activity",
+      "receivedAction": "Received {action}",
+      "creditsEarned": "+{credits} credits earned"
+    },
+    "createCampaign": "Create Campaign",
+    "analytics": "Analytics",
+    "greeting": {
+      "morning": "Good morning",
+      "afternoon": "Good afternoon",
+      "evening": "Good evening"
+    }
+  },
+  "Profile": {
+    "title": "Profile",
+    "description": "Manage your account and TikTok integration",
+    "backToDashboard": "Back to Dashboard",
+    "memberSince": "Member since",
+    "tiktokNotConnected": "TikTok not connected",
+    "tabs": {
+      "overview": "Overview",
+      "stats": "Stats",
+      "settings": "Settings",
+      "history": "History"
+    },
+    "overview": {
+      "campaigns": "Campaigns",
+      "earned": "Earned",
+      "actions": "Actions",
+      "received": "Received",
+      "tiktokStats": "TikTok Statistics",
+      "followers": "Followers",
+      "following": "Following",
+      "likes": "Likes",
+      "videos": "Videos",
+      "campaignProgress": "Campaign Progress",
+      "completionRate": "Completion Rate",
+      "active": "Active",
+      "completed": "Completed"
+    },
+    "stats": {
+      "creditsOverview": "Credits Overview",
+      "currentBalance": "Current Balance",
+      "totalEarned": "Total Earned",
+      "totalSpent": "Total Spent",
+      "netCredits": "Net Credits",
+      "activityOverview": "Activity Overview",
+      "actionsPerformed": "Actions Performed",
+      "actionsReceived": "Actions Received",
+      "totalCampaigns": "Total Campaigns",
+      "successRate": "Success Rate",
+      "interactionBreakdown": "Interaction Breakdown",
+      "views": "Views",
+      "likes": "Likes",
+      "comments": "Comments",
+      "follows": "Follows",
+      "creditsEach": "{count} credits each"
+    },
+    "settings": {
+      "profileSettings": "Profile Settings",
+      "email": "Email",
+      "avatarUrl": "Avatar URL",
+      "saveChanges": "Save Changes",
+      "cancel": "Cancel",
+      "tiktokIntegration": "TikTok Integration",
+      "tiktokConnected": "Your TikTok account @{username} is connected.",
+      "tiktokNotConnectedDesc": "Connect your TikTok account to start creating campaigns and earning credits.",
+      "connectTiktok": "Connect TikTok Account",
+      "changeTiktokUsername": "Change TikTok Username"
+    },
+    "history": {
+      "transactionHistory": "Transaction History",
+      "noTransactions": "No transaction history yet",
+      "startInteracting": "Start interacting to see your activity here",
+      "balance": "Balance"
+    },
+    "tiktokForm": {
+      "connectTitle": "Connect TikTok Account",
+      "updateTitle": "Update TikTok Username",
+      "username": "TikTok Username",
+      "usernamePlaceholder": "your_username",
+      "usernameHelp": "Enter your TikTok username without the @ symbol",
+      "securityNote": "We only need your username for verification. We never access your account or ask for passwords.",
+      "connect": "Connect",
+      "update": "Update",
+      "cancel": "Cancel"
+    },
+    "actions": {
+      "editProfile": "Edit Profile",
+      "saveProfile": "Save Profile",
+      "connectTiktok": "Connect TikTok",
+      "viewTiktokProfile": "View TikTok Profile",
+      "copyEmail": "Copy Email",
+      "copied": "Copied!"
+    },
+    "alerts": {
+      "profileUpdated": "Profile updated successfully!",
+      "tiktokConnected": "TikTok account connected successfully!",
+      "errorUpdating": "Failed to update profile",
+      "errorConnecting": "Failed to connect TikTok account",
+      "enterUsername": "Please enter a TikTok username"
+    }
+  },
+  "Exchange": {
+    "title": "Exchange Hub",
+    "description": "Earn credits by interacting with campaigns",
+    "filters": {
+      "all": "All",
+      "views": "Views",
+      "likes": "Likes",
+      "comments": "Comments",
+      "follows": "Follows"
+    },
+    "stats": {
+      "activeCampaigns": "Active Campaigns",
+      "totalCreditsAvailable": "Total Credits Available",
+      "activeUsers": "Active Users"
+    },
+    "campaign": {
+      "earnCredits": "Earn {credits} credits",
+      "progress": "Progress",
+      "remaining": "{count} remaining",
+      "timeAgo": {
+        "justNow": "Just now",
+        "hoursAgo": "{hours}h ago",
+        "daysAgo": "{days}d ago"
+      }
+    },
+    "actions": {
+      "like": "Like",
+      "comment": "Comment",
+      "view": "View",
+      "follow": "Follow",
+      "performAction": "{action} to earn {credits} credits"
+    },
+    "empty": {
+      "title": "No campaigns found",
+      "description": "Try different filters or check back later!"
+    }
+  },
+  "Videos": {
+    "title": "My Videos",
+    "description": "Manage your campaigns and videos",
+    "createNew": "Create New Campaign",
+    "noCampaigns": "No campaigns yet",
+    "createFirst": "Create your first campaign",
+    "tabs": {
+      "all": "All",
+      "active": "Active",
+      "paused": "Paused",
+      "completed": "Completed"
+    },
+    "campaign": {
+      "title": "Video Title",
+      "status": "Status",
+      "progress": "Progress",
+      "credits": "Credits",
+      "actions": "Actions",
+      "pause": "Pause",
+      "resume": "Resume",
+      "edit": "Edit",
+      "delete": "Delete",
+      "analytics": "Analytics"
+    },
+    "form": {
+      "videoUrl": "Video URL",
+      "videoTitle": "Video Title",
+      "description": "Description",
+      "category": "Category",
+      "interactionType": "Interaction Type",
+      "targetCount": "Target Count",
+      "creditsPerAction": "Credits per Action",
+      "totalCost": "Total Cost",
+      "submit": "Create Campaign",
+      "cancel": "Cancel"
+    }
+  },
+  "Auth": {
+    "login": {
+      "title": "Sign In",
+      "description": "Welcome back to TikGrow",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign In",
+      "noAccount": "Don't have an account?",
+      "signUp": "Sign up",
+      "forgotPassword": "Forgot password?"
+    },
+    "register": {
+      "title": "Create Account",
+      "description": "Join TikGrow and start growing",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "submit": "Create Account",
+      "hasAccount": "Already have an account?",
+      "signIn": "Sign in",
+      "terms": "By creating an account, you agree to our Terms of Service"
+    },
+    "errors": {
+      "invalidEmail": "Please enter a valid email",
+      "passwordTooShort": "Password must be at least 6 characters",
+      "passwordMismatch": "Passwords do not match",
+      "emailRequired": "Email is required",
+      "passwordRequired": "Password is required"
+    }
+  },
+  "Common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "viewAll": "View All",
+    "showMore": "Show More",
+    "showLess": "Show Less",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "refresh": "Refresh",
+    "retry": "Retry",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "share": "Share",
+    "download": "Download",
+    "upload": "Upload"
   }
 }

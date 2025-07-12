@@ -1,0 +1,254 @@
+# TikGrow - Cấu trúc thư mục:
+```
+src/
+├── app/                              # Next.js App Router
+│   ├── [locale]/                     # Internationalization routes
+│   │   ├── layout.tsx               # Root layout với i18n
+│   │   ├── page.tsx                 # Landing page
+│   │   ├── dashboard/               # Dashboard tổng quan
+│   │   │   ├── page.tsx
+│   │   │   ├── components/
+│   │   │   │   ├── StatsCards.tsx
+│   │   │   │   ├── ActivityFeed.tsx
+│   │   │   │   ├── QuickActions.tsx
+│   │   │   │   └── CreditHistory.tsx
+│   │   │   └── loading.tsx
+│   │   ├── exchange/                # Exchange Hub
+│   │   │   ├── page.tsx
+│   │   │   ├── components/
+│   │   │   │   ├── CampaignCard.tsx
+│   │   │   │   ├── FilterBar.tsx
+│   │   │   │   ├── ActionModal.tsx
+│   │   │   │   └── CampaignStats.tsx
+│   │   │   └── loading.tsx
+│   │   ├── videos/                  # My Videos management
+│   │   │   ├── page.tsx
+│   │   │   ├── new/
+│   │   │   │   └── page.tsx        # Tạo campaign mới
+│   │   │   ├── [id]/
+│   │   │   │   ├── page.tsx        # Video details
+│   │   │   │   ├── edit/
+│   │   │   │   │   └── page.tsx    # Edit campaign
+│   │   │   │   └── analytics/
+│   │   │   │       └── page.tsx    # Video analytics
+│   │   │   └── components/
+│   │   │       ├── VideoUpload.tsx
+│   │   │       ├── CampaignForm.tsx
+│   │   │       ├── VideoAnalytics.tsx
+│   │   │       └── VideoCard.tsx
+│   │   ├── profile/                 # User profile
+│   │   │   ├── page.tsx
+│   │   │   ├── settings/
+│   │   │   │   └── page.tsx
+│   │   │   └── components/
+│   │   │       ├── ProfileForm.tsx
+│   │   │       ├── TikTokConnect.tsx
+│   │   │       └── SecuritySettings.tsx
+│   │   ├── auth/                    # Authentication pages
+│   │   │   ├── login/
+│   │   │   │   └── page.tsx
+│   │   │   ├── register/
+│   │   │   │   └── page.tsx
+│   │   │   ├── forgot-password/
+│   │   │   │   └── page.tsx
+│   │   │   └── components/
+│   │   │       ├── LoginForm.tsx
+│   │   │       ├── RegisterForm.tsx
+│   │   │       └── AuthLayout.tsx
+│   │   └── admin/                   # Admin panel (future)
+│   │       ├── dashboard/
+│   │       ├── users/
+│   │       ├── campaigns/
+│   │       └── analytics/
+│   ├── api/                         # API Routes
+│   │   ├── auth/
+│   │   │   ├── login/
+│   │   │   │   └── route.ts
+│   │   │   ├── register/
+│   │   │   │   └── route.ts
+│   │   │   └── logout/
+│   │   │       └── route.ts
+│   │   ├── campaigns/
+│   │   │   ├── route.ts            # GET, POST campaigns
+│   │   │   ├── [id]/
+│   │   │   │   ├── route.ts        # GET, PUT, DELETE campaign
+│   │   │   │   └── actions/
+│   │   │   │       └── route.ts    # POST action on campaign
+│   │   │   └── active/
+│   │   │       └── route.ts        # GET active campaigns
+│   │   ├── videos/
+│   │   │   ├── route.ts            # GET, POST videos
+│   │   │   ├── [id]/
+│   │   │   │   ├── route.ts        # GET, PUT, DELETE video
+│   │   │   │   └── analytics/
+│   │   │   │       └── route.ts    # GET video analytics
+│   │   │   └── upload/
+│   │   │       └── route.ts        # POST video upload
+│   │   ├── user/
+│   │   │   ├── profile/
+│   │   │   │   └── route.ts        # GET, PUT user profile
+│   │   │   ├── credits/
+│   │   │   │   ├── route.ts        # GET credit balance
+│   │   │   │   └── history/
+│   │   │   │       └── route.ts    # GET credit history
+│   │   │   └── tiktok/
+│   │   │       └── route.ts        # POST connect TikTok
+│   │   ├── tiktok/
+│   │   │   └── route.ts            # TikTok API integration
+│   │   ├── payments/                # Payment processing (future)
+│   │   │   ├── webhook/
+│   │   │   ├── purchase/
+│   │   │   └── history/
+│   │   └── admin/                   # Admin API endpoints
+│   │       ├── users/
+│   │       ├── campaigns/
+│   │       └── analytics/
+│   ├── globals.css                  # Global styles
+│   └── middleware.ts                # Next.js middleware
+├── components/                      # Shared UI components
+│   ├── ui/                         # shadcn/ui components
+│   │   ├── button.tsx
+│   │   ├── badge.tsx
+│   │   ├── avatar.tsx
+│   │   ├── dropdown-menu.tsx
+│   │   ├── dialog.tsx
+│   │   ├── input.tsx
+│   │   ├── textarea.tsx
+│   │   ├── select.tsx
+│   │   ├── card.tsx
+│   │   ├── tabs.tsx
+│   │   ├── progress.tsx
+│   │   ├── skeleton.tsx
+│   │   ├── toast.tsx
+│   │   └── chart.tsx
+│   ├── layout/                     # Layout components
+│   │   ├── Navbar.tsx
+│   │   ├── Sidebar.tsx
+│   │   ├── Footer.tsx
+│   │   └── PageHeader.tsx
+│   ├── common/                     # Common reusable components
+│   │   ├── LoadingSpinner.tsx
+│   │   ├── ErrorBoundary.tsx
+│   │   ├── ConfirmDialog.tsx
+│   │   ├── EmptyState.tsx
+│   │   ├── Pagination.tsx
+│   │   └── SearchInput.tsx
+│   ├── forms/                      # Form components
+│   │   ├── FormField.tsx
+│   │   ├── FormError.tsx
+│   │   ├── FileUpload.tsx
+│   │   └── FormLayout.tsx
+│   └── animations/                 # Animation components
+│       ├── FadeIn.tsx
+│       ├── SlideIn.tsx
+│       ├── CountUp.tsx
+│       └── MotionWrapper.tsx
+├── contexts/                       # React contexts
+│   ├── auth-context.tsx
+│   ├── theme-context.tsx
+│   ├── credits-context.tsx
+│   └── campaign-context.tsx
+├── hooks/                          # Custom React hooks
+│   ├── useAuth.tsx
+│   ├── useCredits.tsx
+│   ├── useCampaigns.tsx
+│   ├── useVideos.tsx
+│   ├── useTikTok.tsx
+│   ├── useLocalStorage.tsx
+│   ├── useDebounce.tsx
+│   └── useInfiniteScroll.tsx
+├── lib/                            # Utility libraries
+│   ├── supabase/
+│   │   ├── supabase.ts
+│   │   ├── supabase-server.ts
+│   │   ├── auth.ts
+│   │   ├── database.ts
+│   │   └── storage.ts
+│   ├── api/                        # API client utilities
+│   │   ├── client.ts
+│   │   ├── campaigns.ts
+│   │   ├── videos.ts
+│   │   ├── users.ts
+│   │   └── tiktok.ts
+│   ├── validation/                 # Form validation schemas
+│   │   ├── auth.ts
+│   │   ├── campaign.ts
+│   │   ├── video.ts
+│   │   └── user.ts
+│   ├── utils/
+│   │   ├── utils.ts               # General utilities
+│   │   ├── date.ts                # Date formatting
+│   │   ├── format.ts              # Number/text formatting
+│   │   ├── constants.ts           # App constants
+│   │   └── credits.ts             # Credit calculations
+│   ├── analytics/                  # Analytics utilities
+│   │   ├── ga.ts                  # Google Analytics
+│   │   ├── mixpanel.ts           # Mixpanel (future)
+│   │   └── tracking.ts           # Event tracking
+│   └── integrations/              # Third-party integrations
+│       ├── tiktok-api.ts
+│       ├── payment-gateway.ts     # Future payment integration
+│       └── notification.ts       # Push notifications
+├── types/                         # TypeScript type definitions
+│   ├── auth.ts
+│   ├── campaign.ts
+│   ├── video.ts
+│   ├── user.ts
+│   ├── database.ts
+│   ├── api.ts
+│   └── global.d.ts
+├── i18n/                          # Internationalization
+│   ├── routing.ts
+│   ├── navigation.ts
+│   └── request.ts
+└── styles/                        # Additional styles
+    ├── components.css
+    ├── animations.css
+    └── themes.css
+```
+
+## 📄 Files ở root level
+
+```
+project-root/
+├── messages/                       # Translation files
+│   ├── en.json
+│   └── vi.json
+├── sql/                           # Database schema & migrations
+│   ├── full_script.sql
+│   ├── migrations/
+│   │   ├── 001_initial_schema.sql
+│   │   ├── 002_add_indexes.sql
+│   │   └── 003_add_analytics.sql
+│   └── seeds/
+│       ├── test_data.sql
+│       └── demo_campaigns.sql
+├── public/                        # Static assets
+│   ├── icons/
+│   ├── images/
+│   │   ├── logo/
+│   │   ├── placeholders/
+│   │   └── backgrounds/
+│   ├── videos/
+│   │   └── demo/
+│   └── sounds/
+│       └── notifications/
+├── docs/                          # Documentation
+│   ├── API.md
+│   ├── DATABASE.md
+│   ├── DEPLOYMENT.md
+│   ├── FEATURES.md
+│   └── CONTRIBUTING.md
+├── tests/                         # Test files
+│   ├── __mocks__/
+│   ├── components/
+│   ├── api/
+│   └── utils/
+├── .env.example                   # Environment variables template
+├── .env.local                     # Local environment variables
+├── next.config.js                 # Next.js configuration
+├── tailwind.config.js             # Tailwind CSS configuration
+├── package.json
+├── tsconfig.json
+└── README.md
+```

@@ -10,63 +10,50 @@ Hồng #EE1D52 hoặc #FF4081
 
 🔄 Cách hoạt động:
 1. Đăng ký & Kết nối
-
 Đăng ký tài khoản email
 Kết nối TikTok username
 Nhận 50 credits miễn phí
 
-2. Kiếm Credits
-
+2. Kiếm Credits:
 Xem video của người khác → +1 credit
 Like video → +2 credits
 Comment → +3 credits
 Follow → +5 credits
 
-3. Sử dụng Credits
-
+3. Sử dụng Credits:
 Đăng video của mình
 Chọn loại tương tác muốn nhận
 Trả credits để nhận tương tác
 
-4. Hệ thống matching
-
+4. Hệ thống matching:
 AI match video theo category
 Chỉ show video chất lượng cao
 Tránh spam/fake engagement
 
-
 📱 Trang web gồm:
-Landing Page
-
+Landing Page:
 Hero section giới thiệu
 Cách thức hoạt động (3 bước)
 Testimonials
 CTA đăng ký
 
-Dashboard
-
+Dashboard:
+Nếu chưa link TikTok username, yêu cầu link TikTok username -> Page Profile
+Tạo campaign mới
 Tổng quan credits
 Video đã đăng
 Hoạt động gần đây
-Quick actions
+Edit/pause campaigns
 
-Exchange Hub
-
+Exchange Hub:
 Feed video để tương tác
 Bộ lọc theo category
 Queue system
 Real-time updates
 
-My Videos
-
-Danh sách video đã đăng
-Analytics từng video
-Tạo campaign mới
-Edit/pause campaigns
-
-Profile
-
+Profile:
 Thông tin cá nhân
 TikTok stats
 Transaction history
 Settings
+Link TikTok username
