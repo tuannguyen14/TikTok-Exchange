@@ -24,7 +24,7 @@ import ProfileHistoryTab from '@/components/profile/ProfileHistoryTab';
 import type { ProfileStats, TikTokStats } from '@/types/profile';
 
 const ProfilePage: React.FC = () => {
-  const { profile, user, updateProfile, refreshProfile } = useAuth();
+  const { profile, updateProfile, refreshProfile } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const locale = useLocale();
@@ -252,7 +252,6 @@ const ProfilePage: React.FC = () => {
           {/* Profile Card */}
           <ProfileCard
             profile={profile}
-            tiktokStats={tiktokStats}
             isEditing={isEditing}
             onEditToggle={() => setIsEditing(!isEditing)}
             onTikTokConnect={() => setShowTikTokModal(true)}

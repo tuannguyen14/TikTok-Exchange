@@ -2,6 +2,8 @@
 'use client';
 
 import React from 'react';
+import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
 import { ExternalLink, Users, TrendingUp, Zap } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,10 +11,17 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
 interface TikTokLinkPromptProps {
-  onLinkTikTok: () => void;
+  locale: string;
 }
 
-const TikTokLinkPrompt: React.FC<TikTokLinkPromptProps> = ({ onLinkTikTok }) => {
+const TikTokLinkPrompt: React.FC<TikTokLinkPromptProps> = ({ locale }) => {
+  const router = useRouter();
+  const t = useTranslations('Dashboard.linkTikTok');
+
+  const handleLinkTikTok = () => {
+    router.push(`/${locale}/profile?action=link-tiktok`);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-6">
       <motion.div
@@ -33,11 +42,11 @@ const TikTokLinkPrompt: React.FC<TikTokLinkPromptProps> = ({ onLinkTikTok }) => 
             </motion.div>
             
             <CardTitle className="text-2xl font-bold bg-gradient-to-r from-[#FE2C55] to-[#25F4EE] bg-clip-text text-transparent">
-              Link Your TikTok Account
+              {t('title')}
             </CardTitle>
             
             <p className="text-gray-600 dark:text-gray-400 mt-2">
-              Connect your TikTok username to start creating campaigns and earning credits
+              {t('description')}
             </p>
           </CardHeader>
 
@@ -53,24 +62,24 @@ const TikTokLinkPrompt: React.FC<TikTokLinkPromptProps> = ({ onLinkTikTok }) => 
                 <div className="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center mx-auto mb-3">
                   <TrendingUp className="w-6 h-6 text-red-600 dark:text-red-400" />
                 </div>
-                <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Boost Engagement</h3>
-                <p className="text-xs text-gray-600 dark:text-gray-400">Get real interactions on your TikTok videos</p>
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-1">{t('benefits.boost.title')}</h3>
+                <p className="text-xs text-gray-600 dark:text-gray-400">{t('benefits.boost.description')}</p>
               </div>
 
               <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 rounded-xl border border-blue-100 dark:border-blue-800">
                 <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mx-auto mb-3">
                   <Zap className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                 </div>
-                <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Earn Credits</h3>
-                <p className="text-xs text-gray-600 dark:text-gray-400">Interact with others to earn credits</p>
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-1">{t('benefits.earn.title')}</h3>
+                <p className="text-xs text-gray-600 dark:text-gray-400">{t('benefits.earn.description')}</p>
               </div>
 
               <div className="text-center p-4 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl border border-green-100 dark:border-green-800">
                 <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center mx-auto mb-3">
                   <Users className="w-6 h-6 text-green-600 dark:text-green-400" />
                 </div>
-                <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Grow Community</h3>
-                <p className="text-xs text-gray-600 dark:text-gray-400">Connect with other TikTok creators</p>
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-1">{t('benefits.grow.title')}</h3>
+                <p className="text-xs text-gray-600 dark:text-gray-400">{t('benefits.grow.description')}</p>
               </div>
             </motion.div>
 
@@ -83,27 +92,27 @@ const TikTokLinkPrompt: React.FC<TikTokLinkPromptProps> = ({ onLinkTikTok }) => 
             >
               <h4 className="font-semibold text-gray-900 dark:text-white mb-3 flex items-center">
                 <Zap className="w-4 h-4 text-yellow-600 mr-2" />
-                How Credits Work
+                {t('credits.title')}
               </h4>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <div className="text-center">
                   <Badge variant="outline" className="bg-purple-100 text-purple-700 border-purple-200">
-                    👁️ View +1
+                    {t('credits.view')}
                   </Badge>
                 </div>
                 <div className="text-center">
                   <Badge variant="outline" className="bg-red-100 text-red-700 border-red-200">
-                    ❤️ Like +2
+                    {t('credits.like')}
                   </Badge>
                 </div>
                 <div className="text-center">
                   <Badge variant="outline" className="bg-blue-100 text-blue-700 border-blue-200">
-                    💬 Comment +3
+                    {t('credits.comment')}
                   </Badge>
                 </div>
                 <div className="text-center">
                   <Badge variant="outline" className="bg-green-100 text-green-700 border-green-200">
-                    👥 Follow +5
+                    {t('credits.follow')}
                   </Badge>
                 </div>
               </div>
@@ -117,12 +126,12 @@ const TikTokLinkPrompt: React.FC<TikTokLinkPromptProps> = ({ onLinkTikTok }) => 
               className="text-center"
             >
               <Button
-                onClick={onLinkTikTok}
+                onClick={handleLinkTikTok}
                 size="lg"
                 className="bg-gradient-to-r from-[#FE2C55] to-[#FF4081] hover:from-[#FF4081] hover:to-[#FE2C55] text-white shadow-lg hover:shadow-xl transition-all duration-200 px-8"
               >
                 <ExternalLink className="w-5 h-5 mr-2" />
-                Link TikTok Account
+                {t('button')}
               </Button>
               
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-3">
@@ -138,8 +147,7 @@ const TikTokLinkPrompt: React.FC<TikTokLinkPromptProps> = ({ onLinkTikTok }) => 
               className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-4 border border-gray-200 dark:border-gray-700"
             >
               <p className="text-xs text-gray-600 dark:text-gray-400 text-center">
-                🔒 We only need your TikTok username for verification. 
-                We never ask for your password or access your account.
+                🔒 {t('security')}
               </p>
             </motion.div>
           </CardContent>

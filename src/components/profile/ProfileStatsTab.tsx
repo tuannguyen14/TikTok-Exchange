@@ -1,5 +1,5 @@
 // src/components/profile/ProfileStatsTab.tsx
-'use client';
+'use server';
 
 import React from 'react';
 import { useTranslations } from 'next-intl';
@@ -14,7 +14,7 @@ import {
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import type { Profile } from '@/contexts/auth-context';
+import type { Profile } from '@/types/auth';
 import type { ProfileStats } from '@/types/profile';
 
 interface ProfileStatsTabProps {
@@ -199,7 +199,7 @@ const ProfileStatsTab: React.FC<ProfileStatsTabProps> = ({
                   </p>
                   <p className="text-xl font-bold mb-1">-</p>
                   <p className="text-xs text-gray-500">
-                    {t('stats.creditsEach').replace('{count}', interaction.credits.toString())}
+                    {t('stats.creditsEach', { count: interaction.credits })}
                   </p>
                 </div>
               );

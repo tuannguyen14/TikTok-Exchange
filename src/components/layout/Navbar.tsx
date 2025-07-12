@@ -1,6 +1,7 @@
+// src/components/layout/Navbar.tsx
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useTranslations, useLocale } from 'next-intl'
@@ -14,7 +15,6 @@ import {
   Video, 
   User, 
   Settings,
-  Globe,
   ChevronDown,
   Coins,
   TrendingUp,
@@ -33,9 +33,11 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useAuth } from '@/hooks/useAuth'
+import { useTikTok } from '@/hooks/useTikTok'
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [tiktokAvatar, setTikTokAvatar] = useState<string | null>(null)
   
   const t = useTranslations('Navigation')
   const locale = useLocale()
@@ -49,12 +51,21 @@ export default function Navbar() {
     signOut 
   } = useAuth()
 
-  // Handle language change
-  const handleLocaleChange = (newLocale: string) => {
-    const currentPath = window.location.pathname
-    const pathWithoutLocale = currentPath.replace(`/${locale}`, '')
-    router.push(`/${newLocale}${pathWithoutLocale}`)
-  }
+  // Use TikTok hook
+  const { fetchProfile } = useTikTok()
+
+  // Fetch TikTok avatar when profile changes
+  useEffect(() => {
+    if (profile?.tiktok_username) {
+      fetchProfile(profile.tiktok_username).then(data => {
+        if (data?.user?.avatarMedium) {
+          setTikTokAvatar(data.user.avatarMedium)
+        }
+      })
+    } else {
+      setTikTokAvatar(null)
+    }
+  }, [profile?.tiktok_username, fetchProfile])
 
   // Handle logout
   const handleLogout = async () => {
@@ -95,19 +106,19 @@ export default function Navbar() {
     }
   ]
 
-  const languages = [
-    { code: 'vi', name: 'Tiếng Việt', flag: '🇻🇳' },
-    { code: 'en', name: 'English', flag: '🇺🇸' }
-  ]
-
-  const currentLanguage = languages.find(lang => lang.code === locale)
-
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen)
 
   // Filter navigation items based on auth status
   const visibleNavItems = navigationItems.filter(item => 
     !item.authRequired || isAuthenticated
   )
+
+  const getAvatarSrc = () => {
+    if (tiktokAvatar) {
+      return tiktokAvatar
+    }
+    return undefined // Will show fallback icon
+  }
 
   return (
     <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200 dark:bg-gray-900/95 dark:border-gray-800">
@@ -144,7 +155,7 @@ export default function Navbar() {
           {/* Right Side - Credits, Language, Profile/Auth */}
           <div className="flex items-center space-x-4">
             {/* Credits Display - Only show when authenticated */}
-            {isAuthenticated && (
+            {isAuthenticated && profile && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -152,7 +163,7 @@ export default function Navbar() {
               >
                 <Coins className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />
                 <span className="text-sm font-semibold text-yellow-700 dark:text-yellow-300">
-                  {profile?.credits?.toLocaleString() || 0}
+                  {profile.credits?.toLocaleString() || 0}
                 </span>
                 <Badge variant="secondary" className="text-xs">
                   {t('credits')}
@@ -175,9 +186,9 @@ export default function Navbar() {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="flex items-center space-x-2 px-2">
                     <Avatar className="w-8 h-8">
-                      <AvatarImage src={profile?.avatar_url} alt={profile?.email || 'User'} />
+                      <AvatarImage src={getAvatarSrc()} alt={profile?.email || 'User'} />
                       <AvatarFallback className="bg-gradient-to-r from-[#FE2C55] to-[#25F4EE] text-white">
-                        {profile?.email ? profile.email.charAt(0).toUpperCase() : 'U'}
+                        <User className="w-4 h-4" />
                       </AvatarFallback>
                     </Avatar>
                     <ChevronDown className="w-3 h-3" />
@@ -199,7 +210,7 @@ export default function Navbar() {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href={`/${locale}/profile/settings`} className="flex items-center space-x-2">
+                    <Link href={`/${locale}/profile`} className="flex items-center space-x-2">
                       <Settings className="w-4 h-4" />
                       <span>{t('settings')}</span>
                     </Link>

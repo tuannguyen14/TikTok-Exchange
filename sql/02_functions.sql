@@ -237,71 +237,72 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Thống kê chiến dịch
--- CREATE OR REPLACE FUNCTION public.get_campaign_analytics(
---     p_user_id UUID,
---     p_days INTEGER DEFAULT 30
--- )
--- RETURNS JSON AS $$
--- BEGIN
---     RETURN (
---         SELECT json_build_object(
---             'total_campaigns', COUNT(*),
---             'active_campaigns', SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END),
---             'completed_campaigns', SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END),
---             'total_credits_spent', COALESCE(SUM(total_credits - remaining_credits), 0),
---             'daily_stats', (
---                 SELECT json_agg(json_build_object(
---                     'date', date_trunc('day', created_at),
---                     'actions', COUNT(*),
---                     'credits', SUM(credits_earned)
---                 )
---                 FROM public.actions
---                 WHERE created_at >= CURRENT_DATE - (p_days || ' days')::INTERVAL
---                 GROUP BY date_trunc('day', created_at)
---         )
---         FROM public.campaigns
---         WHERE user_id = p_user_id
---     );
--- END;
--- $$ LANGUAGE plpgsql SECURITY DEFINER;
+CREATE OR REPLACE FUNCTION public.get_campaign_analytics(
+    p_user_id UUID,
+    p_days INTEGER DEFAULT 30
+)
+RETURNS JSON AS $$
+BEGIN
+    RETURN (
+        SELECT json_build_object(
+            'total_campaigns', COUNT(*),
+            'active_campaigns', SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END),
+            'completed_campaigns', SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END),
+            'total_credits_spent', COALESCE(SUM(total_credits - remaining_credits), 0),
+            'daily_stats', (
+                SELECT json_agg(json_build_object(
+                    'date', date_trunc('day', created_at),
+                    'actions', COUNT(*),
+                    'credits', SUM(credits_earned)
+                ))
+                FROM public.actions
+                WHERE created_at >= CURRENT_DATE - (p_days || ' days')::INTERVAL
+                GROUP BY date_trunc('day', created_at)
+            )
+        )
+        FROM public.campaigns
+        WHERE user_id = p_user_id
+    );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Thống kê hành động
--- CREATE OR REPLACE FUNCTION public.get_user_action_stats(
---     p_user_id UUID,
---     p_days INTEGER DEFAULT 30
--- )
--- RETURNS JSON AS $$
--- BEGIN
---     RETURN (
---         SELECT json_build_object(
---             'total_actions', COUNT(*),
---             'total_credits_earned', COALESCE(SUM(credits_earned), 0),
---             'action_breakdown', (
---                 SELECT json_object_agg(
---                     action_type, json_build_object(
---                         'count', COUNT(*),
---                         'credits', SUM(credits_earned)
---                     )
---                 )
---                 FROM public.actions
---                 WHERE user_id = p_user_id
---                 GROUP BY action_type
---             ),
---             'recent_actions', (
---                 SELECT json_agg(json_build_object(
---                     'id', id,
---                     'action_type', action_type,
---                     'credits_earned', credits_earned,
---                     'created_at', created_at
---                 ))
---                 FROM public.actions
---                 WHERE user_id = p_user_id
---                 ORDER BY created_at DESC
---                 LIMIT 10
---             )
---         )
---         FROM public.actions
---         WHERE user_id = p_user_id
---     );
--- END;
--- $$ LANGUAGE plpgsql SECURITY DEFINER;
+CREATE OR REPLACE FUNCTION public.get_user_action_stats(
+    p_user_id UUID,
+    p_days INTEGER DEFAULT 30
+)
+RETURNS JSON AS $$
+BEGIN
+    RETURN (
+        SELECT json_build_object(
+            'total_actions', COUNT(*),
+            'total_credits_earned', COALESCE(SUM(credits_earned), 0),
+            'action_breakdown', (
+                SELECT json_object_agg(
+                    action_type, json_build_object(
+                        'count', COUNT(*),
+                        'credits', SUM(credits_earned)
+                    )
+                )
+                FROM public.actions
+                WHERE user_id = p_user_id
+                GROUP BY action_type
+            ),
+            'recent_actions', (
+                SELECT json_agg(json_build_object(
+                    'id', id,
+                    'action_type', action_type,
+                    'credits_earned', credits_earned,
+                    'created_at', created_at
+                ))
+                FROM public.actions
+                WHERE user_id = p_user_id
+                ORDER BY created_at DESC
+                LIMIT 10
+            )
+        )
+        FROM public.actions
+        WHERE user_id = p_user_id
+    );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;

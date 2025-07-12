@@ -35,7 +35,7 @@ class ProfileAPI {
       }
 
       const result: ApiResponse<T> = await response.json();
-      
+
       return {
         data: result.data || null,
         error: result.success ? null : (result.error || result.message || 'Unknown error'),
@@ -74,6 +74,27 @@ class ProfileAPI {
   // Fetch TikTok stats with proper typing
   async fetchTikTokStats(username: string) {
     return this.apiCall<TikTokApiResponse>(`/tiktok?action=getProfile&id=${username}`);
+  }
+
+  async fetchTikTokProfile(username: string) {
+    try {
+      const response = await fetch(`/api/tiktok?action=getProfile&id=${username}`);
+      const result = await response.json();
+
+      if (result.success && result.data) {
+        return {
+          success: true,
+          data: {
+            user: result.data.user,
+            stats: result.data.stats
+          }
+        };
+      }
+
+      return { success: false, error: 'Profile not found' };
+    } catch (error) {
+      return { success: false, error: 'Failed to fetch profile' };
+    }
   }
 }
 

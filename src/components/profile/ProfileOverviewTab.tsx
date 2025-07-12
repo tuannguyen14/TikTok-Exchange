@@ -8,15 +8,13 @@ import {
   Video,
   TrendingUp,
   Activity,
-  Heart,
-  ExternalLink,
-  CheckCircle
+  Heart
 } from 'lucide-react';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import type { ProfileStats, TikTokStats } from '@/types/profile';
-import type { Profile } from '@/contexts/auth-context';
+import type { Profile } from '@/types/auth';
 
 interface ProfileOverviewTabProps {
   profile: Profile;
@@ -101,43 +99,6 @@ const ProfileOverviewTab: React.FC<ProfileOverviewTabProps> = ({
           );
         })}
       </div>
-
-      {/* TikTok Stats */}
-      {profile.tiktok_username && tiktokStats && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-        >
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <ExternalLink className="w-5 h-5 text-[#FE2C55]" />
-                <span>{t('overview.tiktokStats')}</span>
-                {tiktokStats.verified && (
-                  <CheckCircle className="w-4 h-4 text-blue-500" />
-                )}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="text-center p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
-                  <p className="text-sm text-gray-600 dark:text-gray-400">{t('overview.followers')}</p>
-                  <p className="text-lg font-bold text-gray-900 dark:text-white">
-                    {tiktokStats.likes?.toLocaleString() || '0'}
-                  </p>
-                </div>
-                <div className="text-center p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
-                  <p className="text-sm text-gray-600 dark:text-gray-400">{t('overview.videos')}</p>
-                  <p className="text-lg font-bold text-gray-900 dark:text-white">
-                    {tiktokStats.videos?.toLocaleString() || '0'}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-      )}
 
       {/* Campaign Progress */}
       <motion.div

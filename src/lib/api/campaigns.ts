@@ -225,7 +225,6 @@ class CampaignAPI {
             id: string
             title: string
             video_url: string
-            thumbnail_url: string
             category: string
           }
         }
@@ -233,7 +232,6 @@ class CampaignAPI {
           id: string
           title: string
           video_url: string
-          thumbnail_url: string
           category: string
         }
       }>

@@ -29,7 +29,6 @@ SELECT
     p.tiktok_username as creator_tiktok,
     v.title as video_title,
     v.video_url,
-    v.thumbnail_url,
     v.category
 FROM public.campaigns c
 JOIN public.profiles p ON c.user_id = p.id

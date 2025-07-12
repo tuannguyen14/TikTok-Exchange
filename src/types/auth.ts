@@ -1,8 +1,8 @@
+// src/types/auth.ts
 // Types
 export interface Profile {
     id: string;
     email: string;
-    avatar_url?: string;
     tiktok_username?: string;
     credits: number;
     total_earned: number;

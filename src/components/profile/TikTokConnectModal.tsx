@@ -9,16 +9,32 @@ import {
   LinkIcon,
   Loader2,
   AlertCircle,
-  CheckCircle
+  CheckCircle,
+  User
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { profileAPI } from '@/lib/api/profile';
-import type { Profile } from '@/contexts/auth-context';
-import type { TikTokPreview } from '@/types/profile';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useTikTok } from '@/hooks/useTikTok';
+import type { Profile } from '@/types/auth';
+
+interface TikTokPreview {
+  username: string;
+  nickname: string;
+  avatar: string;
+  verified: boolean;
+  privateAccount: boolean;
+  signature: string;
+  stats: {
+    followers: number;
+    following: number;
+    likes: number;
+    videos: number;
+  };
+}
 
 interface TikTokConnectModalProps {
   isOpen: boolean;
@@ -38,8 +54,9 @@ const TikTokConnectModal: React.FC<TikTokConnectModalProps> = ({
   const t = useTranslations('Profile');
   const [username, setUsername] = useState(profile?.tiktok_username || '');
   const [tiktokPreview, setTikTokPreview] = useState<TikTokPreview | null>(null);
-  const [verifyingTikTok, setVerifyingTikTok] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  
+  const { fetchProfile, loading: verifyingTikTok } = useTikTok();
 
   // Reset state when modal opens/closes
   useEffect(() => {
@@ -53,7 +70,7 @@ const TikTokConnectModal: React.FC<TikTokConnectModalProps> = ({
     }
   }, [isOpen, profile]);
 
-  // Debounced TikTok verification - chỉ verify khi user nhập xong
+  // Debounced TikTok verification
   useEffect(() => {
     if (!username.trim()) {
       setTikTokPreview(null);
@@ -61,7 +78,7 @@ const TikTokConnectModal: React.FC<TikTokConnectModalProps> = ({
       return;
     }
 
-    // Chỉ verify khi username có ít nhất 3 ký tự và không có dấu cách
+    // Only verify when username has at least 3 characters and no spaces
     if (username.trim().length < 3 || username.includes(' ')) {
       setTikTokPreview(null);
       return;
@@ -69,29 +86,41 @@ const TikTokConnectModal: React.FC<TikTokConnectModalProps> = ({
 
     const timeoutId = setTimeout(async () => {
       try {
-        setVerifyingTikTok(true);
         setError(null);
 
-        const result = await profileAPI.verifyTikTokUsername(username.trim());
+        const result = await fetchProfile(username.trim());
 
-        if (result.success && result.data) {
-          setTikTokPreview(result.data);
+        if (result) {
+          const preview: TikTokPreview = {
+            username: result.user.uniqueId,
+            nickname: result.user.nickname,
+            avatar: result.user.avatarMedium,
+            verified: result.user.verified,
+            privateAccount: result.user.privateAccount,
+            signature: result.user.signature,
+            stats: {
+              followers: result.stats.followerCount,
+              following: result.stats.followingCount,
+              likes: result.stats.heartCount,
+              videos: result.stats.videoCount
+            }
+          };
+          
+          setTikTokPreview(preview);
           setError(null);
         } else {
           setTikTokPreview(null);
-          setError(result.error || t('alerts.errorVerifying'));
+          setError(t('alerts.errorVerifying'));
         }
       } catch (error) {
         console.error('TikTok verification error:', error);
         setTikTokPreview(null);
         setError(t('alerts.errorVerifying'));
-      } finally {
-        setVerifyingTikTok(false);
       }
-    }, 1000); // Tăng thời gian debounce lên 1 giây để tránh spam
+    }, 1000);
 
     return () => clearTimeout(timeoutId);
-  }, [username, t]);
+  }, [username, fetchProfile, t]);
 
   const handleConnect = async () => {
     if (!username.trim()) {
@@ -99,7 +128,7 @@ const TikTokConnectModal: React.FC<TikTokConnectModalProps> = ({
       return;
     }
 
-    // Yêu cầu user phải verify trước khi connect (trừ khi đang update)
+    // Require verification before connect (unless updating existing)
     if (!profile?.tiktok_username && !tiktokPreview) {
       setError('Please wait for username verification before connecting');
       return;
@@ -195,11 +224,12 @@ const TikTokConnectModal: React.FC<TikTokConnectModalProps> = ({
                 className="border border-green-200 bg-green-50 dark:bg-green-900/20 rounded-lg p-4"
               >
                 <div className="flex items-center space-x-3 mb-3">
-                  <img
-                    src={tiktokPreview.avatar}
-                    alt={tiktokPreview.nickname}
-                    className="w-12 h-12 rounded-full"
-                  />
+                  <Avatar className="w-12 h-12">
+                    <AvatarImage src={tiktokPreview.avatar} alt={tiktokPreview.nickname} />
+                    <AvatarFallback className="bg-gradient-to-r from-[#FE2C55] to-[#25F4EE] text-white">
+                      <User className="w-6 h-6" />
+                    </AvatarFallback>
+                  </Avatar>
                   <div className="flex-1">
                     <div className="flex items-center space-x-2">
                       <h4 className="font-semibold text-gray-900 dark:text-white">
@@ -225,25 +255,25 @@ const TikTokConnectModal: React.FC<TikTokConnectModalProps> = ({
                     <p className="font-semibold text-gray-900 dark:text-white">
                       {tiktokPreview.stats.followers.toLocaleString()}
                     </p>
-                    <p className="text-gray-500">{t('overview.followers')}</p>
+                    <p className="text-gray-500">Followers</p>
                   </div>
                   <div>
                     <p className="font-semibold text-gray-900 dark:text-white">
                       {tiktokPreview.stats.following.toLocaleString()}
                     </p>
-                    <p className="text-gray-500">{t('overview.following')}</p>
+                    <p className="text-gray-500">Following</p>
                   </div>
                   <div>
                     <p className="font-semibold text-gray-900 dark:text-white">
                       {tiktokPreview.stats.likes.toLocaleString()}
                     </p>
-                    <p className="text-gray-500">{t('overview.likes')}</p>
+                    <p className="text-gray-500">Likes</p>
                   </div>
                   <div>
                     <p className="font-semibold text-gray-900 dark:text-white">
                       {tiktokPreview.stats.videos.toLocaleString()}
                     </p>
-                    <p className="text-gray-500">{t('overview.videos')}</p>
+                    <p className="text-gray-500">Videos</p>
                   </div>
                 </div>
                 

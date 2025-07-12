@@ -44,8 +44,7 @@ export interface TikTokPreview {
 
 export interface ProfileFormData {
   email: string;
-  avatar_url: string;
-  tiktok_username: string;
+  // Removed avatar_url since we get avatar from TikTok
 }
 
 // TikTok API Response Types

@@ -25,6 +25,13 @@
   "Dashboard": {
     "title": "Dashboard",
     "welcome": "Welcome back",
+    "createCampaign": "Create Campaign",
+    "analytics": "Analytics",
+    "greeting": {
+      "morning": "Good morning",
+      "afternoon": "Good afternoon",
+      "evening": "Good evening"
+    },
     "linkTikTok": {
       "title": "Link Your TikTok Account",
       "description": "Connect your TikTok username to start creating campaigns and earning credits",
@@ -46,10 +53,10 @@
       },
       "credits": {
         "title": "How Credits Work",
-        "view": "View +1",
-        "like": "Like +2",
-        "comment": "Comment +3",
-        "follow": "Follow +5"
+        "view": "👁️ View +1",
+        "like": "❤️ Like +2",
+        "comment": "💬 Comment +3",
+        "follow": "👥 Follow +5"
       }
     },
     "stats": {
@@ -84,13 +91,6 @@
       "noActivity": "No recent activity",
       "receivedAction": "Received {action}",
       "creditsEarned": "+{credits} credits earned"
-    },
-    "createCampaign": "Create Campaign",
-    "analytics": "Analytics",
-    "greeting": {
-      "morning": "Good morning",
-      "afternoon": "Good afternoon",
-      "evening": "Good evening"
     }
   },
   "Profile": {
@@ -141,7 +141,6 @@
     "settings": {
       "profileSettings": "Profile Settings",
       "email": "Email",
-      "avatarUrl": "Avatar URL",
       "saveChanges": "Save Changes",
       "cancel": "Cancel",
       "tiktokIntegration": "TikTok Integration",
@@ -245,16 +244,66 @@
       "analytics": "Analytics"
     },
     "form": {
-      "videoUrl": "Video URL",
+      "title": "Create Campaign",
+      "createDescription": "Set up your campaign to get TikTok interactions",
+      "previewDescription": "Review your campaign details before publishing",
+      "backToDashboard": "Back to Dashboard",
+      "backToEdit": "Back to Edit",
+      "videoUrl": "TikTok Video URL",
+      "videoUrlHelp": "Paste the full TikTok video URL (e.g., https://tiktok.com/@username/video/123456789)",
       "videoTitle": "Video Title",
+      "videoTitleHelp": "A catchy title that describes your video content",
       "description": "Description",
+      "descriptionHelp": "Optional description to help others understand your content",
       "category": "Category",
       "interactionType": "Interaction Type",
       "targetCount": "Target Count",
+      "targetCountHelp": "How many interactions you want to receive (1-1000)",
       "creditsPerAction": "Credits per Action",
       "totalCost": "Total Cost",
+      "campaignCost": "Campaign Cost",
+      "currentCredits": "Current Credits",
+      "remaining": "Remaining",
+      "creditsSummary": "Credits Summary",
+      "campaignDetails": "Campaign Details",
+      "costHelp": "Total credits that will be deducted when you create this campaign",
+      "preview": "Preview Campaign",
+      "createCampaign": "Create Campaign",
       "submit": "Create Campaign",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "tips": {
+        "title": "Tips",
+        "tip1": "Use engaging titles to attract more participants",
+        "tip2": "Choose the right interaction type for your content",
+        "tip3": "Start with smaller target counts to test effectiveness",
+        "tip4": "Monitor your campaign progress in the dashboard"
+      },
+      "errors": {
+        "videoUrlRequired": "TikTok video URL is required",
+        "videoTitleRequired": "Video title is required",
+        "invalidTargetCount": "Target count must be between 1 and 1000",
+        "invalidTikTokUrl": "Please enter a valid TikTok video URL",
+        "insufficientCredits": "Insufficient credits. Need {cost}, but you have {available}",
+        "insufficientCreditsWarning": "You don't have enough credits for this campaign",
+        "createFailed": "Failed to create campaign. Please try again."
+      },
+      "success": {
+        "campaignCreated": "Campaign created successfully! Redirecting to your campaigns..."
+      }
+    },
+    "preview": {
+      "title": "Campaign Preview",
+      "description": "Review your campaign details before publishing",
+      "campaignDetails": "Campaign Details",
+      "videoDetails": "Video Details",
+      "campaignSettings": "Campaign Settings",
+      "costBreakdown": "Cost Breakdown",
+      "whatHappensNext": "What Happens Next",
+      "edit": "Edit",
+      "editCampaign": "Edit Campaign",
+      "confirmAndCreate": "Confirm & Create Campaign",
+      "creating": "Creating Campaign...",
+      "insufficientCredits": "Insufficient credits to create this campaign"
     }
   },
   "Auth": {

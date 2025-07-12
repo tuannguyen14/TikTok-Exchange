@@ -17,8 +17,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import type { Profile } from '@/contexts/auth-context';
-import type { ProfileFormData } from '@/types/profile';
+import type { Profile } from '@/types/auth';
+
+interface ProfileFormData {
+  email: string;
+}
 
 interface ProfileSettingsTabProps {
   profile: Profile;
@@ -41,17 +44,13 @@ const ProfileSettingsTab: React.FC<ProfileSettingsTabProps> = ({
 }) => {
   const t = useTranslations('Profile');
   const [formData, setFormData] = useState<ProfileFormData>({
-    email: profile.email || '',
-    avatar_url: profile.avatar_url || '',
-    tiktok_username: profile.tiktok_username || ''
+    email: profile.email || ''
   });
 
   // Update form data when profile changes
   useEffect(() => {
     setFormData({
-      email: profile.email || '',
-      avatar_url: profile.avatar_url || '',
-      tiktok_username: profile.tiktok_username || ''
+      email: profile.email || ''
     });
   }, [profile]);
 
@@ -63,12 +62,9 @@ const ProfileSettingsTab: React.FC<ProfileSettingsTabProps> = ({
   const handleSave = async () => {
     const updates: Partial<Profile> = {};
 
-    // Check what changed
+    // Check what changed (only email now since avatar_url is removed)
     if (formData.email !== profile.email) {
       updates.email = formData.email;
-    }
-    if (formData.avatar_url !== profile.avatar_url) {
-      updates.avatar_url = formData.avatar_url;
     }
 
     if (Object.keys(updates).length > 0) {
@@ -80,9 +76,7 @@ const ProfileSettingsTab: React.FC<ProfileSettingsTabProps> = ({
 
   const handleCancel = () => {
     setFormData({
-      email: profile.email || '',
-      avatar_url: profile.avatar_url || '',
-      tiktok_username: profile.tiktok_username || ''
+      email: profile.email || ''
     });
     onEditToggle();
   };
@@ -105,19 +99,6 @@ const ProfileSettingsTab: React.FC<ProfileSettingsTabProps> = ({
                 onChange={(e) => handleInputChange('email', e.target.value)}
                 disabled={!isEditing}
                 className={!isEditing ? 'bg-gray-50 dark:bg-gray-800' : ''}
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="avatar">{t('settings.avatarUrl')}</Label>
-              <Input
-                id="avatar"
-                type="url"
-                value={formData.avatar_url}
-                onChange={(e) => handleInputChange('avatar_url', e.target.value)}
-                disabled={!isEditing}
-                className={!isEditing ? 'bg-gray-50 dark:bg-gray-800' : ''}
-                placeholder="https://example.com/avatar.jpg"
               />
             </div>
 
@@ -162,7 +143,7 @@ const ProfileSettingsTab: React.FC<ProfileSettingsTabProps> = ({
               <Alert className="border-green-200 bg-green-50 text-green-800 dark:bg-green-900/20 dark:text-green-400">
                 <CheckCircle className="h-4 w-4" />
                 <AlertDescription>
-                  {t('settings.tiktokConnected').replace('{username}', profile.tiktok_username)}
+                  {t('settings.tiktokConnected', { username: profile.tiktok_username })}
                 </AlertDescription>
               </Alert>
               

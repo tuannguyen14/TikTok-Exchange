@@ -10,7 +10,6 @@ interface Campaign {
   creator_username: string;
   creator_tiktok: string;
   video_url: string;
-  thumbnail_url: string;
   interaction_type: 'like' | 'comment' | 'view' | 'follow';
   credits_per_action: number;
   target_count: number;
@@ -39,7 +38,6 @@ const ExchangeHub: React.FC = () => {
       creator_username: "dancequeen_vn",
       creator_tiktok: "@dancequeen",
       video_url: "https://example.com/video1",
-      thumbnail_url: "https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=300&h=400&fit=crop",
       interaction_type: "like",
       credits_per_action: 2,
       target_count: 100,
@@ -53,7 +51,6 @@ const ExchangeHub: React.FC = () => {
       creator_username: "beauty_tips_2024",
       creator_tiktok: "@beautytips",
       video_url: "https://example.com/video2",
-      thumbnail_url: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=300&h=400&fit=crop",
       interaction_type: "comment",
       credits_per_action: 3,
       target_count: 50,
@@ -67,7 +64,6 @@ const ExchangeHub: React.FC = () => {
       creator_username: "chef_young",
       creator_tiktok: "@chefyoung",
       video_url: "https://example.com/video3",
-      thumbnail_url: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=300&h=400&fit=crop",
       interaction_type: "view",
       credits_per_action: 1,
       target_count: 200,
@@ -81,7 +77,6 @@ const ExchangeHub: React.FC = () => {
       creator_username: "fashion_lover",
       creator_tiktok: "@fashionlover",
       video_url: "https://example.com/video4",
-      thumbnail_url: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=300&h=400&fit=crop",
       interaction_type: "follow",
       credits_per_action: 5,
       target_count: 20,
@@ -95,7 +90,6 @@ const ExchangeHub: React.FC = () => {
       creator_username: "pet_lover_123",
       creator_tiktok: "@petlover",
       video_url: "https://example.com/video5",
-      thumbnail_url: "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=300&h=400&fit=crop",
       interaction_type: "like",
       credits_per_action: 2,
       target_count: 150,
@@ -109,7 +103,6 @@ const ExchangeHub: React.FC = () => {
       creator_username: "travel_enthusiast",
       creator_tiktok: "@travelgram",
       video_url: "https://example.com/video6",
-      thumbnail_url: "https://images.unsplash.com/photo-1539650116574-75c0c6d73792?w=300&h=400&fit=crop",
       interaction_type: "comment",
       credits_per_action: 3,
       target_count: 75,
@@ -278,7 +271,7 @@ const ExchangeHub: React.FC = () => {
               {/* Video Thumbnail */}
               <div className="relative aspect-[3/4] overflow-hidden">
                 <img
-                  src={campaign.thumbnail_url}
+                  src={campaign.video_url}
                   alt={campaign.video_title}
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                 />

@@ -16,20 +16,20 @@ export async function GET(request: NextRequest) {
     }
 
     // Get campaign statistics using the database function
-    const { data: analyticsData, error: analyticsError } = await supabase
-      .rpc('get_campaign_analytics', { p_user_id: user.id })
+    // const { data: analyticsData, error: analyticsError } = await supabase
+    //   .rpc('get_campaign_analytics', { p_user_id: user.id })
 
-    if (analyticsError) {
-      console.error('Campaign analytics error:', analyticsError)
-    }
+    // if (analyticsError) {
+    //   console.error('Campaign analytics error:', analyticsError)
+    // }
 
-    // Get user action statistics
-    const { data: actionData, error: actionError } = await supabase
-      .rpc('get_user_action_stats', { p_user_id: user.id })
+    // // Get user action statistics
+    // const { data: actionData, error: actionError } = await supabase
+    //   .rpc('get_user_action_stats', { p_user_id: user.id })
 
-    if (actionError) {
-      console.error('User action stats error:', actionError)
-    }
+    // if (actionError) {
+    //   console.error('User action stats error:', actionError)
+    // }
 
     // Fallback to manual queries if functions don't exist
     let campaignStats = {
@@ -47,11 +47,11 @@ export async function GET(request: NextRequest) {
       action_breakdown: {}
     }
 
-    if (!analyticsData) {
-      // Manual campaign stats query
-      const { data: campaigns, error: campaignsError } = await supabase
-        .from('campaigns')
-        .select(`
+    // if (!analyticsData) {
+    // Manual campaign stats query
+    const { data: campaigns, error: campaignsError } = await supabase
+      .from('campaigns')
+      .select(`
           id,
           status,
           interaction_type,
@@ -60,62 +60,62 @@ export async function GET(request: NextRequest) {
           remaining_credits,
           target_count
         `)
-        .eq('user_id', user.id)
+      .eq('user_id', user.id)
 
-      if (!campaignsError && campaigns) {
-        campaignStats = {
-          total_campaigns: campaigns.length,
-          active_campaigns: campaigns.filter(c => c.status === 'active').length,
-          completed_campaigns: campaigns.filter(c => c.status === 'completed').length,
-          total_credits_spent: campaigns.reduce((sum, c) => 
-            sum + (c.total_credits - c.remaining_credits), 0),
-          total_actions_received: campaigns.reduce((sum, c) => sum + c.current_count, 0),
-          interaction_breakdown: campaigns.reduce((acc, campaign) => {
-            const type = campaign.interaction_type
-            if (!acc[type]) {
-              acc[type] = { count: 0, actions: 0, credits: 0 }
-            }
-            acc[type].count += 1
-            acc[type].actions += campaign.current_count
-            acc[type].credits += (campaign.total_credits - campaign.remaining_credits)
-            return acc
-          }, {} as Record<string, { count: number; actions: number; credits: number }>)
-        }
+    if (!campaignsError && campaigns) {
+      campaignStats = {
+        total_campaigns: campaigns.length,
+        active_campaigns: campaigns.filter(c => c.status === 'active').length,
+        completed_campaigns: campaigns.filter(c => c.status === 'completed').length,
+        total_credits_spent: campaigns.reduce((sum, c) =>
+          sum + (c.total_credits - c.remaining_credits), 0),
+        total_actions_received: campaigns.reduce((sum, c) => sum + c.current_count, 0),
+        interaction_breakdown: campaigns.reduce((acc, campaign) => {
+          const type = campaign.interaction_type
+          if (!acc[type]) {
+            acc[type] = { count: 0, actions: 0, credits: 0 }
+          }
+          acc[type].count += 1
+          acc[type].actions += campaign.current_count
+          acc[type].credits += (campaign.total_credits - campaign.remaining_credits)
+          return acc
+        }, {} as Record<string, { count: number; actions: number; credits: number }>)
       }
-    } else {
-      campaignStats = analyticsData
     }
+    // } else {
+    //   campaignStats = analyticsData
+    // }
 
-    if (!actionData) {
-      // Manual user actions query
-      const { data: actions, error: actionsError } = await supabase
-        .from('actions')
-        .select(`
+    // if (!actionData) {
+    // Manual user actions query
+    const { data: actions, error: actionsError } = await supabase
+      .from('actions')
+      .select(`
           id,
           action_type,
           credits_earned,
           created_at
         `)
-        .eq('user_id', user.id)
+      .eq('user_id', user.id)
 
-      if (!actionsError && actions) {
-        userActionStats = {
-          total_actions: actions.length,
-          total_credits_earned: actions.reduce((sum, a) => sum + a.credits_earned, 0),
-          action_breakdown: actions.reduce((acc, action) => {
-            const type = action.action_type
-            if (!acc[type]) {
-              acc[type] = { count: 0, credits: 0 }
-            }
-            acc[type].count += 1
-            acc[type].credits += action.credits_earned
-            return acc
-          }, {} as Record<string, { count: number; credits: number }>)
-        }
+    if (!actionsError && actions) {
+      userActionStats = {
+        total_actions: actions.length,
+        total_credits_earned: actions.reduce((sum, a) => sum + a.credits_earned, 0),
+        action_breakdown: actions.reduce((acc, action) => {
+          const type = action.action_type
+          if (!acc[type]) {
+            acc[type] = { count: 0, credits: 0 }
+          }
+          acc[type].count += 1
+          acc[type].credits += action.credits_earned
+          return acc
+        }, {} as Record<string, { count: number; credits: number }>)
       }
-    } else {
-      userActionStats = actionData
     }
+    // } else {
+    //   userActionStats = actionData
+    // }
 
     // Get recent actions on user's campaigns (what others did on user's campaigns)
     const { data: recentActions, error: recentActionsError } = await supabase

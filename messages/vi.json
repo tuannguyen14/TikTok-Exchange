@@ -1,4 +1,13 @@
 {
+  "alerts": {
+    "profileUpdated": "Cập nhật hồ sơ thành công!",
+    "tiktokConnected": "Liên kết tài khoản TikTok thành công!",
+    "errorUpdating": "Cập nhật hồ sơ thất bại",
+    "errorConnecting": "Liên kết tài khoản TikTok thất bại",
+    "errorVerifying": "Xác minh hồ sơ TikTok thất bại",
+    "errorLoading": "Tải dữ liệu hồ sơ thất bại",
+    "enterUsername": "Vui lòng nhập tên người dùng TikTok"
+  },
   "HomePage": {
     "title": "Trang Chủ",
     "description": "Chào mừng bạn đến với trang web của chúng tôi"
@@ -16,11 +25,18 @@
   "Dashboard": {
     "title": "Bảng Điều Khiển",
     "welcome": "Chào mừng trở lại",
+    "createCampaign": "Tạo Chiến Dịch",
+    "analytics": "Phân Tích",
+    "greeting": {
+      "morning": "Chào buổi sáng",
+      "afternoon": "Chào buổi chiều",
+      "evening": "Chào buổi tối"
+    },
     "linkTikTok": {
       "title": "Liên Kết Tài Khoản TikTok",
-      "description": "Kết nối tên người dùng TikTok của bạn để bắt đầu tạo chiến dịch và kiếm điểm",
+      "description": "Kết nối tên người dùng TikTok để bắt đầu tạo chiến dịch và kiếm điểm",
       "button": "Liên Kết Tài Khoản TikTok",
-      "security": "Chúng tôi chỉ cần tên người dùng TikTok để xác minh. Chúng tôi không bao giờ yêu cầu mật khẩu hay truy cập tài khoản của bạn.",
+      "security": "Chúng tôi chỉ cần tên người dùng TikTok để xác minh. Không bao giờ yêu cầu mật khẩu hoặc truy cập tài khoản của bạn.",
       "benefits": {
         "boost": {
           "title": "Tăng Tương Tác",
@@ -37,10 +53,10 @@
       },
       "credits": {
         "title": "Cách Điểm Hoạt Động",
-        "view": "Xem +1",
-        "like": "Thích +2",
-        "comment": "Bình luận +3",
-        "follow": "Theo dõi +5"
+        "view": "👁️ Xem +1",
+        "like": "❤️ Thích +2",
+        "comment": "💬 Bình luận +3",
+        "follow": "👥 Theo dõi +5"
       }
     },
     "stats": {
@@ -75,13 +91,6 @@
       "noActivity": "Chưa có hoạt động gần đây",
       "receivedAction": "Nhận {action}",
       "creditsEarned": "+{credits} điểm đã kiếm"
-    },
-    "createCampaign": "Tạo Chiến Dịch",
-    "analytics": "Phân Tích",
-    "greeting": {
-      "morning": "Chào buổi sáng",
-      "afternoon": "Chào buổi chiều",
-      "evening": "Chào buổi tối"
     }
   },
   "Profile": {
@@ -132,7 +141,6 @@
     "settings": {
       "profileSettings": "Cài Đặt Hồ Sơ",
       "email": "Email",
-      "avatarUrl": "URL Ảnh Đại Diện",
       "saveChanges": "Lưu Thay Đổi",
       "cancel": "Hủy",
       "tiktokIntegration": "Liên Kết TikTok",
@@ -165,13 +173,6 @@
       "viewTiktokProfile": "Xem Hồ Sơ TikTok",
       "copyEmail": "Sao Chép Email",
       "copied": "Đã sao chép!"
-    },
-    "alerts": {
-      "profileUpdated": "Cập nhật hồ sơ thành công!",
-      "tiktokConnected": "Liên kết tài khoản TikTok thành công!",
-      "errorUpdating": "Cập nhật hồ sơ thất bại",
-      "errorConnecting": "Liên kết tài khoản TikTok thất bại",
-      "enterUsername": "Vui lòng nhập tên người dùng TikTok"
     }
   },
   "Exchange": {
@@ -236,16 +237,66 @@
       "analytics": "Phân Tích"
     },
     "form": {
-      "videoUrl": "URL Video",
+      "title": "Tạo Chiến Dịch",
+      "createDescription": "Thiết lập chiến dịch để nhận tương tác TikTok",
+      "previewDescription": "Xem lại chi tiết chiến dịch trước khi xuất bản",
+      "backToDashboard": "Quay lại Bảng Điều Khiển",
+      "backToEdit": "Quay lại chỉnh sửa",
+      "videoUrl": "URL Video TikTok",
+      "videoUrlHelp": "Dán đầy đủ URL video TikTok (ví dụ: https://tiktok.com/@username/video/123456789)",
       "videoTitle": "Tiêu Đề Video",
+      "videoTitleHelp": "Tiêu đề hấp dẫn mô tả nội dung video",
       "description": "Mô Tả",
+      "descriptionHelp": "Mô tả tùy chọn giúp người khác hiểu nội dung của bạn",
       "category": "Danh Mục",
       "interactionType": "Loại Tương Tác",
       "targetCount": "Số Lượng Mục Tiêu",
+      "targetCountHelp": "Số lượng tương tác bạn muốn nhận (1-1000)",
       "creditsPerAction": "Điểm mỗi hành động",
       "totalCost": "Tổng Chi Phí",
+      "campaignCost": "Chi Phí Chiến Dịch",
+      "currentCredits": "Điểm Hiện Có",
+      "remaining": "Còn Lại",
+      "creditsSummary": "Tóm Tắt Điểm",
+      "campaignDetails": "Chi Tiết Chiến Dịch",
+      "costHelp": "Tổng điểm sẽ bị trừ khi tạo chiến dịch này",
+      "preview": "Xem Trước Chiến Dịch",
+      "createCampaign": "Tạo Chiến Dịch",
       "submit": "Tạo Chiến Dịch",
-      "cancel": "Hủy"
+      "cancel": "Hủy",
+      "tips": {
+        "title": "Mẹo",
+        "tip1": "Sử dụng tiêu đề hấp dẫn để thu hút người tham gia",
+        "tip2": "Chọn loại tương tác phù hợp với nội dung của bạn",
+        "tip3": "Bắt đầu với số lượng mục tiêu nhỏ để thử nghiệm hiệu quả",
+        "tip4": "Theo dõi tiến độ chiến dịch trong bảng điều khiển"
+      },
+      "errors": {
+        "videoUrlRequired": "Yêu cầu URL video TikTok",
+        "videoTitleRequired": "Yêu cầu tiêu đề video",
+        "invalidTargetCount": "Số lượng mục tiêu phải từ 1 đến 1000",
+        "invalidTikTokUrl": "Vui lòng nhập URL video TikTok hợp lệ",
+        "insufficientCredits": "Không đủ điểm. Cần {cost}, bạn có {available}",
+        "insufficientCreditsWarning": "Bạn không đủ điểm cho chiến dịch này",
+        "createFailed": "Tạo chiến dịch thất bại. Vui lòng thử lại."
+      },
+      "success": {
+        "campaignCreated": "Tạo chiến dịch thành công! Đang chuyển đến chiến dịch của bạn..."
+      }
+    },
+    "preview": {
+      "title": "Xem Trước Chiến Dịch",
+      "description": "Xem lại chi tiết chiến dịch trước khi xuất bản",
+      "campaignDetails": "Chi Tiết Chiến Dịch",
+      "videoDetails": "Chi Tiết Video",
+      "campaignSettings": "Cài Đặt Chiến Dịch",
+      "costBreakdown": "Chi Tiết Chi Phí",
+      "whatHappensNext": "Tiếp Theo",
+      "edit": "Chỉnh Sửa",
+      "editCampaign": "Chỉnh Sửa Chiến Dịch",
+      "confirmAndCreate": "Xác Nhận & Tạo Chiến Dịch",
+      "creating": "Đang tạo chiến dịch...",
+      "insufficientCredits": "Không đủ điểm để tạo chiến dịch này"
     }
   },
   "Auth": {

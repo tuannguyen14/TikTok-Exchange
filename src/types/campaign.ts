@@ -19,7 +19,6 @@ export interface Campaign {
   creator_tiktok?: string
   video_title?: string
   video_url?: string
-  thumbnail_url?: string
   category?: string
 }
 
@@ -28,7 +27,6 @@ export interface Video {
   user_id: string
   tiktok_video_id: string
   video_url: string
-  thumbnail_url?: string
   title?: string
   description?: string
   category?: string

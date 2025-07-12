@@ -23,7 +23,6 @@ CREATE TABLE public.videos (
     user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
     tiktok_video_id VARCHAR(100) UNIQUE NOT NULL,
     video_url TEXT NOT NULL,
-    thumbnail_url TEXT,
     title TEXT,
     description TEXT,
     category VARCHAR(50),
@@ -249,7 +248,6 @@ SELECT
     p.tiktok_username as creator_tiktok,
     v.title as video_title,
     v.video_url,
-    v.thumbnail_url,
     v.category
 FROM public.campaigns c
 JOIN public.profiles p ON c.user_id = p.id

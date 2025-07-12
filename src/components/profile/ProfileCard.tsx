@@ -1,18 +1,18 @@
 // src/components/profile/ProfileCard.tsx
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
 import {
-  Camera,
   Copy,
   Check,
   Coins,
   ExternalLink,
   Edit,
   X,
-  CheckCircle
+  CheckCircle,
+  User
 } from 'lucide-react';
 
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
@@ -20,12 +20,11 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
-import type { Profile } from '@/contexts/auth-context';
-import type { TikTokStats } from '@/types/profile';
+import { useTikTok } from '@/hooks/useTikTok';
+import type { Profile } from '@/types/auth';
 
 interface ProfileCardProps {
   profile: Profile;
-  tiktokStats: TikTokStats | null;
   isEditing: boolean;
   onEditToggle: () => void;
   onTikTokConnect: () => void;
@@ -34,7 +33,6 @@ interface ProfileCardProps {
 
 const ProfileCard: React.FC<ProfileCardProps> = ({
   profile,
-  tiktokStats,
   isEditing,
   onEditToggle,
   onTikTokConnect,
@@ -42,6 +40,17 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
 }) => {
   const t = useTranslations('Profile');
   const [copiedText, setCopiedText] = useState<string | null>(null);
+  const [tiktokData, setTikTokData] = useState<any>(null);
+  const { fetchProfile, loading: tiktokLoading } = useTikTok();
+
+  // Fetch TikTok data when profile has tiktok_username
+  useEffect(() => {
+    if (profile.tiktok_username) {
+      fetchProfile(profile.tiktok_username).then(data => {
+        setTikTokData(data);
+      });
+    }
+  }, [profile.tiktok_username, fetchProfile]);
 
   const copyToClipboard = async (text: string, label: string) => {
     try {
@@ -51,6 +60,13 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
     } catch (error) {
       console.error('Copy failed:', error);
     }
+  };
+
+  const getAvatarSrc = () => {
+    if (tiktokData?.user?.avatarMedium) {
+      return tiktokData.user.avatarMedium;
+    }
+    return null; // Will show fallback
   };
 
   return (
@@ -64,28 +80,24 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
           <div className="relative mx-auto">
             <Avatar className="w-24 h-24 mx-auto border-4 border-white shadow-lg">
               <AvatarImage 
-                src={profile.avatar_url} 
+                src={getAvatarSrc()} 
                 alt={profile.email || 'User'} 
               />
               <AvatarFallback className="text-2xl bg-gradient-to-r from-[#FE2C55] to-[#25F4EE] text-white">
-                {profile.email?.charAt(0).toUpperCase() || 'U'}
+                <User className="w-8 h-8" />
               </AvatarFallback>
             </Avatar>
             
-            {isEditing && (
-              <Button
-                size="sm"
-                variant="outline"
-                className="absolute -bottom-2 -right-2 rounded-full h-8 w-8 p-0"
-              >
-                <Camera className="w-4 h-4" />
-              </Button>
+            {tiktokLoading && (
+              <div className="absolute inset-0 bg-black/20 rounded-full flex items-center justify-center">
+                <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              </div>
             )}
           </div>
 
           <div className="space-y-2">
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-              {profile.email}
+              {tiktokData?.user?.nickname || profile.email}
             </h3>
             
             {profile.tiktok_username ? (
@@ -93,7 +105,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
                 <Badge variant="outline" className="bg-[#FE2C55]/10 text-[#FE2C55] border-[#FE2C55]/20">
                   @{profile.tiktok_username}
                 </Badge>
-                {tiktokStats?.verified && (
+                {tiktokData?.user?.verified && (
                   <CheckCircle className="w-4 h-4 text-blue-500" />
                 )}
               </div>
@@ -106,6 +118,12 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
             <p className="text-sm text-gray-500 dark:text-gray-400">
               {t('memberSince')} {formatDate(profile.created_at)}
             </p>
+
+            {tiktokData?.user?.signature && (
+              <p className="text-sm text-gray-600 dark:text-gray-400 italic">
+                "{tiktokData.user.signature}"
+              </p>
+            )}
           </div>
         </CardHeader>
 
@@ -114,7 +132,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600 dark:text-gray-400">
-                {t('settings.email')}
+                Email
               </span>
               <div className="flex items-center space-x-2">
                 <span className="text-sm font-medium">{profile.email}</span>
@@ -149,6 +167,34 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
             </div>
           </div>
 
+          {/* TikTok Stats */}
+          {tiktokData?.stats && (
+            <>
+              <Separator />
+              <div className="space-y-2">
+                <h4 className="text-sm font-medium text-gray-900 dark:text-white">TikTok Stats</h4>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="text-center p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-semibold">{tiktokData.stats.followerCount.toLocaleString()}</p>
+                    <p className="text-gray-500">Followers</p>
+                  </div>
+                  <div className="text-center p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-semibold">{tiktokData.stats.followingCount.toLocaleString()}</p>
+                    <p className="text-gray-500">Following</p>
+                  </div>
+                  <div className="text-center p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-semibold">{tiktokData.stats.heartCount.toLocaleString()}</p>
+                    <p className="text-gray-500">Likes</p>
+                  </div>
+                  <div className="text-center p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <p className="font-semibold">{tiktokData.stats.videoCount.toLocaleString()}</p>
+                    <p className="text-gray-500">Videos</p>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+
           <Separator />
 
           {/* Action Buttons */}
@@ -159,7 +205,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
                 className="w-full bg-gradient-to-r from-[#FE2C55] to-[#FF4081] hover:from-[#FF4081] hover:to-[#FE2C55] text-white"
               >
                 <ExternalLink className="w-4 h-4 mr-2" />
-                {t('actions.connectTiktok')}
+                Connect TikTok
               </Button>
             ) : (
               <Button
@@ -168,7 +214,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
                 className="w-full"
               >
                 <ExternalLink className="w-4 h-4 mr-2" />
-                {t('actions.viewTiktokProfile')}
+                View TikTok Profile
               </Button>
             )}
 
@@ -180,12 +226,12 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
               {isEditing ? (
                 <>
                   <X className="w-4 h-4 mr-2" />
-                  {t('actions.cancel')}
+                  Cancel
                 </>
               ) : (
                 <>
                   <Edit className="w-4 h-4 mr-2" />
-                  {t('actions.editProfile')}
+                  Edit Profile
                 </>
               )}
             </Button>

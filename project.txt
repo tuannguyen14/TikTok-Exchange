@@ -2,6 +2,7 @@ Concept chính:
 Nền tảng trao đổi tương tác TikTok - Người dùng tương tác với video của nhau để kiếm điểm, dùng điểm để boost video riêng.
 Sử dụng NextJS, Supabase, TailwindCSS và sử dụng nhiều animation, các thư viện UI (ShadCN/UI, Framer Motion).
 Có 2 ngôn ngữ chính: Vietnamese và English quản lý bằng next-intl.
+sử dụng react-hot-toast cho hiển thị thông báo.
 
 Màu chủ đạo lấy từ TikTok
 Đỏ tươi #FE2C55 (màu đỏ đặc trưng TikTok)

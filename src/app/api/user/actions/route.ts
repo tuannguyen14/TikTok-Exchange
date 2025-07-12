@@ -46,7 +46,6 @@ export async function GET(request: NextRequest) {
             id,
             title,
             video_url,
-            thumbnail_url,
             category
           )
         ),
@@ -54,7 +53,6 @@ export async function GET(request: NextRequest) {
           id,
           title,
           video_url,
-          thumbnail_url,
           category
         )
       `)
