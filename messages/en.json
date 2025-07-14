@@ -93,6 +93,98 @@
       "creditsEarned": "+{credits} credits earned"
     }
   },
+  "Campaigns": {
+    "title": "My Campaigns",
+    "description": "Manage your TikTok growth campaigns",
+    "newCampaign": "New Campaign",
+    "refresh": "Refresh",
+    "searchPlaceholder": "Search campaigns...",
+    "filters": {
+      "all": "All",
+      "allTypes": "All Types",
+      "allStatus": "All Status",
+      "likes": "Likes",
+      "comments": "Comments",
+      "follows": "Follows",
+      "views": "Views"
+    },
+    "stats": {
+      "totalCampaigns": "Total Campaigns",
+      "activeCampaigns": "Active Campaigns",
+      "totalActions": "Actions Received",
+      "creditsSpent": "Credits Spent",
+      "completedCampaigns": "Completed",
+      "totalInteractions": "Total interactions",
+      "totalInvestment": "Total investment",
+      "successfulCampaigns": "Successful campaigns",
+      "active": "active"
+    },
+    "tabs": {
+      "all": "All",
+      "active": "Active",
+      "paused": "Paused",
+      "completed": "Done"
+    },
+    "card": {
+      "untitled": "Untitled Campaign",
+      "creditsEach": "{count} credits each",
+      "progress": "Progress",
+      "remaining": "{count} remaining",
+      "spent": "{count} spent",
+      "viewVideo": "View Video",
+      "pauseCampaign": "Pause Campaign",
+      "resumeCampaign": "Resume Campaign",
+      "deleteCampaign": "Delete Campaign",
+      "campaignCompleted": "Campaign Completed",
+      "receivedInteractions": "Received {count} interactions",
+      "pause": "Pause",
+      "resume": "Resume"
+    },
+    "actions": {
+      "like": "Like",
+      "comment": "Comment",
+      "follow": "Follow",
+      "view": "View"
+    },
+    "status": {
+      "active": "Active",
+      "paused": "Paused",
+      "completed": "Completed"
+    },
+    "empty": {
+      "noCampaigns": "No campaigns yet",
+      "noCampaignsDesc": "Start growing your TikTok by creating your first campaign",
+      "createFirst": "Create Your First Campaign",
+      "getInteractions": "Get likes, comments, followers and views for your videos",
+      "noActive": "No active campaigns",
+      "noActiveDesc": "You don't have any running campaigns at the moment",
+      "createCampaign": "Create Campaign",
+      "noPaused": "No paused campaigns",
+      "noPausedDesc": "You don't have any paused campaigns",
+      "noCompleted": "No completed campaigns",
+      "noCompletedDesc": "You haven't completed any campaigns yet",
+      "noResults": "No campaigns found",
+      "noResultsDesc": "Try adjusting your search terms or filters",
+      "clearSearch": "Clear Search"
+    },
+    "notifications": {
+      "campaignUpdated": "Campaign {status} successfully",
+      "campaignDeleted": "Campaign deleted successfully",
+      "updateFailed": "Failed to update campaign",
+      "deleteFailed": "Failed to delete campaign",
+      "deleteConfirm": "Are you sure you want to delete this campaign? This action cannot be undone.",
+      "loadFailed": "An error occurred while loading campaigns"
+    },
+    "tiktokRequired": {
+      "title": "TikTok Account Required",
+      "description": "You need to connect your TikTok account to manage campaigns.",
+      "connect": "Connect TikTok Account"
+    },
+    "pagination": {
+      "loadMore": "Load More Campaigns",
+      "loading": "Loading..."
+    }
+  },
   "Profile": {
     "title": "Profile",
     "description": "Manage your account and TikTok integration",

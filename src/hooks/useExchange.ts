@@ -34,6 +34,19 @@ interface Filters {
   search?: string;
 }
 
+// Action states for the new flow
+export type ActionState = 'idle' | 'preparing' | 'ready_to_claim' | 'claiming' | 'completed' | 'error';
+
+interface ActionData {
+  initialData?: {
+    diggCount?: number; // For like actions
+    videoUrl?: string;
+    targetUsername?: string; // For follow actions
+    userUsername?: string;
+  };
+  error?: string;
+}
+
 interface UseExchangeReturn {
   campaigns: Campaign[];
   stats: ExchangeStats | null;
@@ -52,7 +65,11 @@ interface UseExchangeReturn {
   setSearchTerm: (term: string) => void;
   loadMore: () => void;
   refresh: () => void;
-  performAction: (campaignId: string, actionType: string) => Promise<void>;
+  
+  // New action flow methods
+  prepareAction: (campaignId: string, actionType: string, campaign: Campaign) => Promise<{ success: boolean; actionData?: ActionData; error?: string }>;
+  claimCredits: (campaignId: string, actionType: string, actionData: ActionData) => Promise<{ success: boolean; creditsEarned?: number; error?: string }>;
+  
   clearMessages: () => void;
 }
 
@@ -122,6 +139,177 @@ export function useExchange(
     }
   }, [filters, searchTerm]);
 
+  // Prepare action - fetch initial data before user goes to TikTok
+  const prepareAction = useCallback(async (
+    campaignId: string, 
+    actionType: string, 
+    campaign: Campaign
+  ): Promise<{ success: boolean; actionData?: ActionData; error?: string }> => {
+    try {
+      if (actionType === 'like') {
+        // Fetch initial like count for video
+        const video = campaign.videos[0];
+        if (!video?.video_url) {
+          return { success: false, error: 'Video URL not found' };
+        }
+
+        const response = await fetch(`/api/tiktok?action=getVideoInfo&videoLink=${encodeURIComponent(video.video_url)}`);
+        const result = await response.json();
+
+        if (result.success && result.data) {
+          const actionData: ActionData = {
+            initialData: {
+              diggCount: result.data.diggCount,
+              videoUrl: video.video_url
+            }
+          };
+          return { success: true, actionData };
+        } else {
+          return { success: false, error: 'Failed to fetch video information' };
+        }
+      } else if (actionType === 'follow') {
+        // For follow, just prepare with target username
+        if (!campaign.creator_tiktok) {
+          return { success: false, error: 'Creator TikTok username not available' };
+        }
+
+        const actionData: ActionData = {
+          initialData: {
+            targetUsername: campaign.creator_tiktok
+          }
+        };
+        return { success: true, actionData };
+      } else {
+        return { success: false, error: `Action type "${actionType}" is not supported yet` };
+      }
+    } catch (error) {
+      console.error('Prepare action error:', error);
+      return { success: false, error: 'Failed to prepare action' };
+    }
+  }, []);
+
+  // Claim credits after user performed action on TikTok
+  const claimCredits = useCallback(async (
+    campaignId: string, 
+    actionType: string, 
+    actionData: ActionData
+  ): Promise<{ success: boolean; creditsEarned?: number; error?: string }> => {
+    try {
+      if (actionType === 'like') {
+        // Fetch new like count and compare
+        const { videoUrl, diggCount: initialDiggCount } = actionData.initialData || {};
+        
+        if (!videoUrl || initialDiggCount === undefined) {
+          return { success: false, error: 'Missing initial video data' };
+        }
+
+        const response = await fetch(`/api/tiktok?action=getVideoInfo&videoLink=${encodeURIComponent(videoUrl)}`);
+        const result = await response.json();
+
+        if (result.success && result.data) {
+          const newDiggCount = result.data.diggCount;
+
+          if (newDiggCount > initialDiggCount) {
+            // Like count increased, call API to award credits
+            const claimResult = await campaignAPI.performExchangeAction(campaignId, 'like', {
+              verified: true,
+              initialCount: initialDiggCount,
+              newCount: newDiggCount
+            });
+
+            if (claimResult.success && claimResult.data) {
+              // Update local campaign data
+              setCampaigns(prev => prev.map(campaign => {
+                if (campaign.id === campaignId) {
+                  return {
+                    ...campaign,
+                    current_count: campaign.current_count + 1,
+                    remaining_credits: campaign.remaining_credits - campaign.credits_per_action
+                  };
+                }
+                return campaign;
+              }));
+
+              return { 
+                success: true, 
+                creditsEarned: claimResult.data.credits_earned 
+              };
+            } else {
+              return { success: false, error: claimResult.error || 'Failed to award credits' };
+            }
+          } else {
+            return { success: false, error: 'No increase in like count detected. Please make sure you liked the video.' };
+          }
+        } else {
+          return { success: false, error: 'Failed to verify like action' };
+        }
+      } else if (actionType === 'follow') {
+        // Check if user is now in followers list
+        const { targetUsername } = actionData.initialData || {};
+        
+        if (!targetUsername) {
+          return { success: false, error: 'Target username not found' };
+        }
+
+        // Get current user profile to get their TikTok username
+        const profileResult = await campaignAPI.getCurrentUserProfile();
+        if (!profileResult.success || !profileResult.data?.tiktok_username) {
+          return { success: false, error: 'User TikTok username not found' };
+        }
+
+        const userTikTokUsername = profileResult.data.tiktok_username;
+
+        const response = await fetch(`/api/tiktok?action=getFollowers&id=${targetUsername}`);
+        const result = await response.json();
+
+        if (result.success && result.data?.responseData?.userList) {
+          const followers = result.data.responseData.userList;
+          const userFollowed = followers.some((follower: any) => 
+            follower.user?.uniqueId === userTikTokUsername
+          );
+
+          if (userFollowed) {
+            // User is in followers list, call API to award credits
+            const claimResult = await campaignAPI.performExchangeAction(campaignId, 'follow', {
+              verified: true,
+              userFound: true
+            });
+
+            if (claimResult.success && claimResult.data) {
+              // Update local campaign data
+              setCampaigns(prev => prev.map(campaign => {
+                if (campaign.id === campaignId) {
+                  return {
+                    ...campaign,
+                    current_count: campaign.current_count + 1,
+                    remaining_credits: campaign.remaining_credits - campaign.credits_per_action
+                  };
+                }
+                return campaign;
+              }));
+
+              return { 
+                success: true, 
+                creditsEarned: claimResult.data.credits_earned 
+              };
+            } else {
+              return { success: false, error: claimResult.error || 'Failed to award credits' };
+            }
+          } else {
+            return { success: false, error: 'Follow action not detected. Please make sure you followed the account.' };
+          }
+        } else {
+          return { success: false, error: 'Failed to verify follow action' };
+        }
+      } else {
+        return { success: false, error: `Action type "${actionType}" is not supported yet` };
+      }
+    } catch (error) {
+      console.error('Claim credits error:', error);
+      return { success: false, error: 'An error occurred while claiming credits' };
+    }
+  }, []);
+
   // Load more campaigns
   const loadMore = useCallback(() => {
     if (!loading && hasMore) {
@@ -133,43 +321,6 @@ export function useExchange(
   const refresh = useCallback(() => {
     fetchCampaigns(true, 1);
   }, [fetchCampaigns]);
-
-  // Perform action on campaign
-  const performAction = useCallback(async (campaignId: string, actionType: string) => {
-    try {
-      setError(null);
-      setSuccess(null);
-
-      const result = await campaignAPI.performExchangeAction(
-        campaignId, 
-        actionType as 'like' | 'comment' | 'follow' | 'view'
-      );
-
-      if (result.success && result.data) {
-        setSuccess(`Action completed! +${result.data.credits_earned} credits earned`);
-        
-        // Update local campaign data
-        setCampaigns(prev => prev.map(campaign => {
-          if (campaign.id === campaignId) {
-            return {
-              ...campaign,
-              current_count: campaign.current_count + 1,
-              remaining_credits: campaign.remaining_credits - campaign.credits_per_action
-            };
-          }
-          return campaign;
-        }));
-
-        // Auto-clear success message after 3 seconds
-        setTimeout(() => setSuccess(null), 3000);
-      } else {
-        setError(result.error || 'Failed to perform action');
-      }
-    } catch (error) {
-      console.error('Perform action error:', error);
-      setError('An error occurred while performing the action');
-    }
-  }, []);
 
   // Clear messages
   const clearMessages = useCallback(() => {
@@ -216,7 +367,8 @@ export function useExchange(
     setSearchTerm: handleSearchChange,
     loadMore,
     refresh,
-    performAction,
+    prepareAction,
+    claimCredits,
     clearMessages,
   };
 }

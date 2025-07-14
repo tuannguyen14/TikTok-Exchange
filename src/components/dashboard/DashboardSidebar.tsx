@@ -17,6 +17,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { campaignAPI } from '@/lib/api/campaigns';
 import type { Profile } from '@/types/auth';
+import { useTranslations } from 'next-intl';
 
 interface RecentActivity {
   id: string;
@@ -31,13 +32,14 @@ interface RecentActivity {
 interface DashboardSidebarProps {
   profile: Profile;
   locale: string;
-  t: (key: string) => string;
+  // t: (key: string) => string;
 }
 
-export default function DashboardSidebar({ profile, locale, t }: DashboardSidebarProps) {
+export default function DashboardSidebar({ profile, locale }: DashboardSidebarProps) {
   const router = useRouter();
   const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([]);
   const [loadingActivity, setLoadingActivity] = useState(false);
+  const t = useTranslations('Dashboard');
 
   // Fetch recent activity
   useEffect(() => {
@@ -49,8 +51,8 @@ export default function DashboardSidebar({ profile, locale, t }: DashboardSideba
           const activities: RecentActivity[] = result.data.recentActions.map(action => ({
             id: action.id,
             type: 'action_received',
-            title: t('activity.receivedAction').replace('{action}', action.action_type),
-            description: t('activity.creditsEarned').replace('{credits}', action.credits_earned.toString()),
+            title: t('activity.receivedAction', { action: action.action_type }),
+            description: t('activity.creditsEarned', { credits: action.credits_earned.toString() }),
             credits: action.credits_earned,
             timestamp: action.created_at,
             icon: <Activity className="w-4 h-4 text-green-500" />

@@ -1,7 +1,7 @@
 // src/app/[locale]/exchange/ExchangeClient.tsx
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -9,21 +9,22 @@ import {
   Filter, 
   Search,
   TrendingUp,
-  Users,
   Target,
-  Coins
+  AlertCircle
 } from 'lucide-react';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import ExchangeFilters from '@/components/exchange/ExchangeFilters';
-import CampaignCard from '@/components/exchange/CampaignCard';
 import ExchangeStats from '@/components/exchange/ExchangeStats';
-import { campaignAPI } from '@/lib/api/campaigns';
+import { useExchange } from '@/hooks/useExchange';
 import type { Profile } from '@/types/auth';
+
+// Import the updated CampaignCard
+const CampaignCard = React.lazy(() => import('@/components/exchange/CampaignCard'));
 
 interface Campaign {
   id: string;
@@ -56,14 +57,6 @@ interface ExchangeClientProps {
   stats: ExchangeStats;
 }
 
-interface Filters {
-  interaction_type?: 'like' | 'comment' | 'follow' | 'view';
-  category?: string;
-  min_credits?: number;
-  max_credits?: number;
-  search?: string;
-}
-
 export default function ExchangeClient({
   locale,
   profile,
@@ -72,141 +65,28 @@ export default function ExchangeClient({
 }: ExchangeClientProps) {
   const t = useTranslations('Exchange');
   
-  const [campaigns, setCampaigns] = useState<Campaign[]>(initialCampaigns);
-  const [stats, setStats] = useState<ExchangeStats>(initialStats);
-  const [loading, setLoading] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
-  
-  const [filters, setFilters] = useState<Filters>({});
-  const [searchTerm, setSearchTerm] = useState('');
-  const [showFilters, setShowFilters] = useState(false);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
+  const {
+    campaigns,
+    stats,
+    loading,
+    refreshing,
+    error,
+    success,
+    hasMore,
+    filters,
+    searchTerm,
+    setFilters,
+    setSearchTerm,
+    loadMore,
+    refresh,
+    clearMessages
+  } = useExchange(initialCampaigns, initialStats);
 
-  // Fetch campaigns with filters
-  const fetchCampaigns = async (isRefresh = false, newPage = 1) => {
-    try {
-      if (isRefresh) {
-        setRefreshing(true);
-      } else {
-        setLoading(true);
-      }
-      setError(null);
+  const [showFilters, setShowFilters] = React.useState(false);
 
-      const searchFilters = {
-        ...filters,
-        page: newPage,
-        limit: 12
-      };
-
-      if (searchTerm.trim()) {
-        // Simple search implementation - in real app might search by title/description
-        searchFilters.search = searchTerm.trim();
-      }
-
-      const result = await campaignAPI.getExchangeCampaigns(searchFilters);
-
-      if (result.success && result.data) {
-        if (newPage === 1) {
-          setCampaigns(result.data.campaigns);
-        } else {
-          setCampaigns(prev => [...prev, ...result.data.campaigns]);
-        }
-        
-        setHasMore(result.data.pagination.hasMore);
-        setPage(newPage);
-
-        // Update stats if refreshing
-        if (isRefresh) {
-          const statsResult = await campaignAPI.getExchangeStats();
-          if (statsResult.success && statsResult.data) {
-            setStats(statsResult.data);
-          }
-        }
-      } else {
-        setError(result.error || 'Failed to fetch campaigns');
-      }
-    } catch (error) {
-      console.error('Fetch campaigns error:', error);
-      setError('An error occurred while loading campaigns');
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
   };
-
-  // Apply filters
-  const handleFilterChange = (newFilters: Filters) => {
-    setFilters(newFilters);
-    setPage(1);
-  };
-
-  // Search
-  const handleSearch = (term: string) => {
-    setSearchTerm(term);
-    setPage(1);
-  };
-
-  // Load more campaigns
-  const loadMore = () => {
-    if (!loading && hasMore) {
-      fetchCampaigns(false, page + 1);
-    }
-  };
-
-  // Refresh all data
-  const handleRefresh = () => {
-    fetchCampaigns(true, 1);
-  };
-
-  // Perform action on campaign
-  const handlePerformAction = async (campaignId: string, actionType: string) => {
-    try {
-      setError(null);
-      setSuccess(null);
-
-      const result = await campaignAPI.performExchangeAction(
-        campaignId, 
-        actionType as 'like' | 'comment' | 'follow' | 'view'
-      );
-
-      if (result.success && result.data) {
-        setSuccess(`Action completed! +${result.data.credits_earned} credits earned`);
-        
-        // Update local campaign data
-        setCampaigns(prev => prev.map(campaign => {
-          if (campaign.id === campaignId) {
-            return {
-              ...campaign,
-              current_count: campaign.current_count + 1,
-              remaining_credits: campaign.remaining_credits - campaign.credits_per_action
-            };
-          }
-          return campaign;
-        }));
-
-        // Update user's credits in profile (would need to refresh from parent)
-        // For now, just show success message
-        setTimeout(() => setSuccess(null), 3000);
-      } else {
-        setError(result.error || 'Failed to perform action');
-      }
-    } catch (error) {
-      console.error('Perform action error:', error);
-      setError('An error occurred while performing the action');
-    }
-  };
-
-  // Effect to fetch campaigns when filters change
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      fetchCampaigns(false, 1);
-    }, 500); // Debounce
-
-    return () => clearTimeout(timeoutId);
-  }, [filters, searchTerm]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
@@ -239,7 +119,7 @@ export default function ExchangeClient({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          <ExchangeStats stats={stats} />
+          <ExchangeStats stats={stats || initialStats} />
         </motion.div>
 
         {/* Search and Filters */}
@@ -255,7 +135,7 @@ export default function ExchangeClient({
               <Input
                 placeholder="Search campaigns..."
                 value={searchTerm}
-                onChange={(e) => handleSearch(e.target.value)}
+                onChange={handleSearch}
                 className="pl-10"
               />
             </div>
@@ -267,18 +147,23 @@ export default function ExchangeClient({
             >
               <Filter className="w-4 h-4" />
               <span>Filters</span>
+              {Object.keys(filters).length > 0 && (
+                <Badge variant="secondary" className="ml-1">
+                  {Object.keys(filters).length}
+                </Badge>
+              )}
             </Button>
           </div>
 
           <div className="flex items-center space-x-2">
-            <Badge variant="outline" className="bg-green-100 text-green-700">
+            <Badge variant="outline" className="bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400">
               {profile.credits} credits
             </Badge>
             
             <Button
               variant="outline"
               size="sm"
-              onClick={handleRefresh}
+              onClick={refresh}
               disabled={refreshing}
             >
               <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
@@ -298,7 +183,7 @@ export default function ExchangeClient({
             >
               <ExchangeFilters
                 filters={filters}
-                onFiltersChange={handleFilterChange}
+                onFiltersChange={setFilters}
                 onClose={() => setShowFilters(false)}
               />
             </motion.div>
@@ -314,6 +199,7 @@ export default function ExchangeClient({
               exit={{ opacity: 0, scale: 0.95 }}
             >
               <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             </motion.div>
@@ -332,6 +218,28 @@ export default function ExchangeClient({
           )}
         </AnimatePresence>
 
+        {/* TikTok Connection Warning */}
+        {!profile.tiktok_username && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+          >
+            <Alert className="border-orange-200 bg-orange-50 text-orange-800 dark:bg-orange-900/20 dark:text-orange-400">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                You need to connect your TikTok account to participate in campaigns. 
+                <Button 
+                  variant="link" 
+                  className="p-0 ml-1 h-auto text-orange-600 hover:text-orange-700"
+                  onClick={() => window.location.href = `/${locale}/profile?action=link-tiktok`}
+                >
+                  Connect now
+                </Button>
+              </AlertDescription>
+            </Alert>
+          </motion.div>
+        )}
+
         {/* Campaigns Grid */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -345,11 +253,29 @@ export default function ExchangeClient({
                   <Card>
                     <CardContent className="p-6">
                       <div className="space-y-4">
-                        <div className="w-full h-32 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
-                        <div className="space-y-2">
-                          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
-                          <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-2">
+                            <div className="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                            <div className="space-y-1">
+                              <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-20"></div>
+                              <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded w-16"></div>
+                            </div>
+                          </div>
+                          <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-16"></div>
                         </div>
+                        <div className="space-y-2">
+                          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+                          <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+                        </div>
+                        <div className="space-y-2">
+                          <div className="flex justify-between">
+                            <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-16"></div>
+                            <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-12"></div>
+                          </div>
+                          <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+                        </div>
+                        <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+                        <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
                       </div>
                     </CardContent>
                   </Card>
@@ -359,20 +285,22 @@ export default function ExchangeClient({
           ) : campaigns.length > 0 ? (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {campaigns.map((campaign, index) => (
-                  <motion.div
-                    key={campaign.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                  >
-                    <CampaignCard
-                      campaign={campaign}
-                      onPerformAction={handlePerformAction}
-                      userCredits={profile.credits}
-                    />
-                  </motion.div>
-                ))}
+                <React.Suspense fallback={<div>Loading campaigns...</div>}>
+                  {campaigns.map((campaign, index) => (
+                    <motion.div
+                      key={campaign.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                    >
+                      <CampaignCard
+                        campaign={campaign}
+                        userCredits={profile.credits}
+                        userTikTokUsername={profile.tiktok_username}
+                      />
+                    </motion.div>
+                  ))}
+                </React.Suspense>
               </div>
 
               {/* Load More Button */}
@@ -401,11 +329,25 @@ export default function ExchangeClient({
               <CardContent className="p-12 text-center">
                 <Target className="w-16 h-16 mx-auto text-gray-400 mb-4" />
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                  {t('empty.title')}
+                  No campaigns found
                 </h3>
-                <p className="text-gray-500 dark:text-gray-400">
-                  {t('empty.description')}
+                <p className="text-gray-500 dark:text-gray-400 mb-4">
+                  {Object.keys(filters).length > 0 || searchTerm
+                    ? "Try adjusting your filters or search terms"
+                    : "There are no active campaigns at the moment"}
                 </p>
+                {(Object.keys(filters).length > 0 || searchTerm) && (
+                  <Button
+                    onClick={() => {
+                      setFilters({});
+                      setSearchTerm('');
+                      clearMessages();
+                    }}
+                    variant="outline"
+                  >
+                    Clear all filters
+                  </Button>
+                )}
               </CardContent>
             </Card>
           )}

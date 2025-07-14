@@ -15,7 +15,8 @@ import {
   Loader2,
   CheckCircle,
   AlertCircle,
-  ArrowRight
+  ArrowRight,
+  Play
 } from 'lucide-react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -23,6 +24,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { useExchange, type ActionState } from '@/hooks/useExchange';
 
 interface Campaign {
   id: string;
@@ -44,28 +46,31 @@ interface Campaign {
 
 interface CampaignCardProps {
   campaign: Campaign;
-  onPerformAction: (campaignId: string, actionType: string, verificationData?: any) => Promise<void>;
   userCredits: number;
   userTikTokUsername?: string;
 }
 
-// Action states
-type ActionState = 'idle' | 'preparing' | 'ready_to_claim' | 'claiming' | 'completed' | 'error';
-
 interface ActionData {
-  initialData?: any; // For storing initial video stats or follower data
+  initialData?: {
+    diggCount?: number;
+    videoUrl?: string;
+    targetUsername?: string;
+    userUsername?: string;
+  };
   error?: string;
 }
 
 export default function CampaignCard({ 
   campaign, 
-  onPerformAction, 
   userCredits,
   userTikTokUsername
 }: CampaignCardProps) {
   const t = useTranslations('Exchange');
+  const { prepareAction, claimCredits } = useExchange();
+  
   const [actionState, setActionState] = useState<ActionState>('idle');
   const [actionData, setActionData] = useState<ActionData>({});
+  const [loading, setLoading] = useState(false);
 
   const getActionIcon = (type: string) => {
     switch (type) {
@@ -110,128 +115,67 @@ export default function CampaignCard({
   // Check if this action type is supported
   const isSupported = ['like', 'follow'].includes(campaign.interaction_type);
 
-  // Prepare action (fetch initial data)
-  const prepareAction = async () => {
+  // Step 1: Prepare action (fetch initial data)
+  const handlePrepareAction = async () => {
+    setLoading(true);
     setActionState('preparing');
     setActionData({});
 
     try {
-      if (campaign.interaction_type === 'like') {
-        // Fetch initial like count for video
-        const response = await fetch(`/api/tiktok?action=getVideoInfo&videoLink=${encodeURIComponent(video.video_url)}`);
-        const result = await response.json();
-
-        if (result.success && result.data) {
-          setActionData({ 
-            initialData: { 
-              diggCount: result.data.diggCount,
-              videoUrl: video.video_url 
-            } 
-          });
-          setActionState('ready_to_claim');
-        } else {
-          setActionData({ error: 'Failed to fetch video information' });
-          setActionState('error');
-        }
-      } else if (campaign.interaction_type === 'follow') {
-        // For follow, we need to prepare by getting current followers
-        // But we'll verify later, so just mark as ready
-        setActionData({ 
-          initialData: { 
-            targetUsername: campaign.creator_tiktok,
-            userUsername: userTikTokUsername 
-          } 
-        });
+      const result = await prepareAction(campaign.id, campaign.interaction_type, campaign);
+      
+      if (result.success && result.actionData) {
+        setActionData(result.actionData);
         setActionState('ready_to_claim');
+      } else {
+        setActionData({ error: result.error || 'Failed to prepare action' });
+        setActionState('error');
       }
     } catch (error) {
       console.error('Prepare action error:', error);
-      setActionData({ error: 'Failed to prepare action' });
+      setActionData({ error: 'An error occurred while preparing the action' });
       setActionState('error');
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Claim credits after user performed action on TikTok
-  const claimCredits = async () => {
+  // Step 2: Open TikTok for user action
+  const handleOpenTikTok = () => {
+    if (campaign.interaction_type === 'follow' && campaign.creator_tiktok) {
+      window.open(`https://tiktok.com/@${campaign.creator_tiktok}`, '_blank');
+    } else if (campaign.interaction_type === 'like' && video?.video_url) {
+      window.open(video.video_url, '_blank');
+    }
+  };
+
+  // Step 3: Claim credits after user performed action
+  const handleClaimCredits = async () => {
+    setLoading(true);
     setActionState('claiming');
 
     try {
-      if (campaign.interaction_type === 'like') {
-        // Fetch new like count and compare
-        const response = await fetch(`/api/tiktok?action=getVideoInfo&videoLink=${encodeURIComponent(video.video_url)}`);
-        const result = await response.json();
-
-        if (result.success && result.data) {
-          const newDiggCount = result.data.diggCount;
-          const initialDiggCount = actionData.initialData?.diggCount || 0;
-
-          if (newDiggCount > initialDiggCount) {
-            // Like count increased, award credits
-            await onPerformAction(campaign.id, campaign.interaction_type, {
-              verified: true,
-              initialCount: initialDiggCount,
-              newCount: newDiggCount
-            });
-            setActionState('completed');
-          } else {
-            setActionData({ error: 'No increase in like count detected. Please make sure you liked the video.' });
-            setActionState('error');
-          }
-        } else {
-          setActionData({ error: 'Failed to verify like action' });
-          setActionState('error');
-        }
-      } else if (campaign.interaction_type === 'follow') {
-        // Check if user is now in followers list
-        if (!campaign.creator_tiktok) {
-          setActionData({ error: 'Creator TikTok username not available' });
-          setActionState('error');
-          return;
-        }
-
-        const response = await fetch(`/api/tiktok?action=getFollowers&id=${campaign.creator_tiktok}`);
-        const result = await response.json();
-
-        if (result.success && result.data?.responseData?.userList) {
-          const followers = result.data.responseData.userList;
-          const userFollowed = followers.some((follower: any) => 
-            follower.user?.uniqueId === userTikTokUsername
-          );
-
-          if (userFollowed) {
-            // User is in followers list, award credits
-            await onPerformAction(campaign.id, campaign.interaction_type, {
-              verified: true,
-              userFound: true
-            });
-            setActionState('completed');
-          } else {
-            setActionData({ error: 'Follow action not detected. Please make sure you followed the account.' });
-            setActionState('error');
-          }
-        } else {
-          setActionData({ error: 'Failed to verify follow action' });
-          setActionState('error');
-        }
+      const result = await claimCredits(campaign.id, campaign.interaction_type, actionData);
+      
+      if (result.success) {
+        setActionState('completed');
+        // Show success message or update UI
+      } else {
+        setActionData({ ...actionData, error: result.error || 'Failed to claim credits' });
+        setActionState('error');
       }
     } catch (error) {
       console.error('Claim credits error:', error);
-      setActionData({ error: 'An error occurred while claiming credits' });
+      setActionData({ ...actionData, error: 'An error occurred while claiming credits' });
       setActionState('error');
+    } finally {
+      setLoading(false);
     }
   };
 
   const resetAction = () => {
     setActionState('idle');
     setActionData({});
-  };
-
-  const openTikTok = () => {
-    if (campaign.interaction_type === 'follow' && campaign.creator_tiktok) {
-      window.open(`https://tiktok.com/@${campaign.creator_tiktok}`, '_blank');
-    } else if (campaign.interaction_type === 'like' && video?.video_url) {
-      window.open(video.video_url, '_blank');
-    }
   };
 
   const renderActionButtons = () => {
@@ -260,11 +204,22 @@ export default function CampaignCard({
       );
     }
 
+    // Check if user has TikTok connected
+    if (!userTikTokUsername) {
+      return (
+        <Button disabled className="w-full">
+          <AlertCircle className="w-4 h-4 mr-2" />
+          Connect TikTok to participate
+        </Button>
+      );
+    }
+
     switch (actionState) {
       case 'idle':
         return (
           <Button
-            onClick={prepareAction}
+            onClick={handlePrepareAction}
+            disabled={loading}
             className="w-full bg-gradient-to-r from-[#FE2C55] to-[#FF4081] hover:from-[#FF4081] hover:to-[#FE2C55] text-white"
           >
             {getActionIcon(campaign.interaction_type)}
@@ -286,7 +241,7 @@ export default function CampaignCard({
         return (
           <div className="space-y-2">
             <Button
-              onClick={openTikTok}
+              onClick={handleOpenTikTok}
               variant="outline"
               className="w-full"
             >
@@ -294,11 +249,16 @@ export default function CampaignCard({
               Go to TikTok & {campaign.interaction_type.charAt(0).toUpperCase() + campaign.interaction_type.slice(1)}
             </Button>
             <Button
-              onClick={claimCredits}
+              onClick={handleClaimCredits}
+              disabled={loading}
               className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white"
             >
-              <CheckCircle className="w-4 h-4 mr-2" />
-              Claim {campaign.credits_per_action} Credits
+              {loading ? (
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              ) : (
+                <CheckCircle className="w-4 h-4 mr-2" />
+              )}
+              {loading ? 'Verifying...' : `Claim ${campaign.credits_per_action} Credits`}
             </Button>
           </div>
         );
@@ -336,6 +296,15 @@ export default function CampaignCard({
       default:
         return null;
     }
+  };
+
+  const getInstructionText = () => {
+    if (campaign.interaction_type === 'follow') {
+      return `1. Click "Go to TikTok" and follow @${campaign.creator_tiktok}\n2. Come back and click "Claim Credits"`;
+    } else if (campaign.interaction_type === 'like') {
+      return `1. Click "Go to TikTok" and like the video\n2. Come back and click "Claim Credits"`;
+    }
+    return '';
   };
 
   return (
@@ -405,7 +374,7 @@ export default function CampaignCard({
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span className="text-gray-600 dark:text-gray-400">
-                {t('campaign.progress')}
+                Progress
               </span>
               <span className="font-medium">
                 {campaign.current_count}/{campaign.target_count}
@@ -413,7 +382,7 @@ export default function CampaignCard({
             </div>
             <Progress value={completionPercentage} className="h-2" />
             <p className="text-xs text-gray-500">
-              {t('campaign.remaining', { count: campaign.target_count - campaign.current_count })}
+              {campaign.target_count - campaign.current_count} actions remaining
             </p>
           </div>
 
@@ -421,7 +390,7 @@ export default function CampaignCard({
           <div className="bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-lg p-3">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-gray-900 dark:text-white">
-                {t('campaign.earnCredits', { credits: campaign.credits_per_action })}
+                Earn {campaign.credits_per_action} credits
               </span>
               <div className="flex items-center space-x-1 text-yellow-600 dark:text-yellow-400">
                 <Clock className="w-3 h-3" />
@@ -444,11 +413,8 @@ export default function CampaignCard({
           {actionState === 'ready_to_claim' && (
             <Alert className="border-blue-200 bg-blue-50 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400">
               <AlertCircle className="h-4 w-4" />
-              <AlertDescription className="text-xs">
-                {campaign.interaction_type === 'follow' 
-                  ? `1. Click "Go to TikTok" and follow @${campaign.creator_tiktok}\n2. Come back and click "Claim Credits"`
-                  : `1. Click "Go to TikTok" and like the video\n2. Come back and click "Claim Credits"`
-                }
+              <AlertDescription className="text-xs whitespace-pre-line">
+                {getInstructionText()}
               </AlertDescription>
             </Alert>
           )}
@@ -465,6 +431,12 @@ export default function CampaignCard({
           {!isSupported && (
             <p className="text-xs text-gray-500 text-center">
               {campaign.interaction_type.charAt(0).toUpperCase() + campaign.interaction_type.slice(1)} verification is coming soon
+            </p>
+          )}
+
+          {!userTikTokUsername && (
+            <p className="text-xs text-orange-600 text-center">
+              Please connect your TikTok account in your profile to participate
             </p>
           )}
         </CardContent>

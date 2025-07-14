@@ -18,6 +18,7 @@ interface CampaignFilters extends PaginationParams {
   category?: string
   min_credits?: number
   max_credits?: number
+  search?: string
 }
 
 interface UserCampaignFilters extends PaginationParams {
@@ -94,6 +95,37 @@ class CampaignAPI {
     }>(`/campaigns?${searchParams.toString()}`)
   }
 
+  // Get exchange campaigns (with proper endpoint)
+  async getExchangeCampaigns(filters: CampaignFilters = {}) {
+    const searchParams = new URLSearchParams()
+    
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        searchParams.append(key, value.toString())
+      }
+    })
+
+    return this.apiCall<{
+      campaigns: Campaign[]
+      pagination: {
+        page: number
+        limit: number
+        total: number
+        totalPages: number
+        hasMore: boolean
+      }
+    }>(`/exchange?${searchParams.toString()}`)
+  }
+
+  // Get exchange stats
+  async getExchangeStats() {
+    return this.apiCall<{
+      activeCampaigns: number
+      totalCreditsAvailable: number
+      activeUsers: number
+    }>('/exchange/stats')
+  }
+
   // Get specific campaign by ID
   async getCampaign(campaignId: string) {
     return this.apiCall<Campaign>(`/campaigns/${campaignId}`)
@@ -122,7 +154,7 @@ class CampaignAPI {
     })
   }
 
-  // Perform action on campaign
+  // Perform action on campaign (old method, kept for backward compatibility)
   async performAction(campaignId: string, actionData: PerformActionRequest) {
     return this.apiCall<{ credits_earned: number; message: string }>(
       `/campaigns/${campaignId}/actions`,
@@ -131,6 +163,35 @@ class CampaignAPI {
         body: JSON.stringify(actionData),
       }
     )
+  }
+
+  // New method for exchange actions with verification data
+  async performExchangeAction(
+    campaignId: string, 
+    actionType: 'like' | 'comment' | 'follow' | 'view',
+    verificationData?: any
+  ) {
+    return this.apiCall<{ credits_earned: number; message: string }>(
+      '/exchange/action',
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          campaign_id: campaignId,
+          action_type: actionType,
+          proof_data: verificationData
+        }),
+      }
+    )
+  }
+
+  // Get current user profile (for TikTok username)
+  async getCurrentUserProfile() {
+    return this.apiCall<{
+      id: string
+      email: string
+      tiktok_username?: string
+      credits: number
+    }>('/user/profile')
   }
 
   // Get campaign action history (for campaign owners)
@@ -252,6 +313,27 @@ class CampaignAPI {
       }
     }>(`/user/actions?${searchParams.toString()}`)
   }
+
+  // TikTok API helpers for action verification
+  async fetchTikTokVideoInfo(videoUrl: string) {
+    try {
+      const response = await fetch(`/api/tiktok?action=getVideoInfo&videoLink=${encodeURIComponent(videoUrl)}`)
+      return await response.json()
+    } catch (error) {
+      console.error('TikTok video info fetch error:', error)
+      return { success: false, error: 'Failed to fetch video info' }
+    }
+  }
+
+  async fetchTikTokFollowers(username: string) {
+    try {
+      const response = await fetch(`/api/tiktok?action=getFollowers&id=${encodeURIComponent(username)}`)
+      return await response.json()
+    } catch (error) {
+      console.error('TikTok followers fetch error:', error)
+      return { success: false, error: 'Failed to fetch followers' }
+    }
+  }
 }
 
 // Create singleton instance
@@ -335,6 +417,27 @@ export const CampaignHelpers = {
       completed: { label: 'Completed', color: 'blue' }
     }
     return statusMap[status as keyof typeof statusMap] || { label: status, color: 'gray' }
+  },
+
+  // Check if action type is supported for verification
+  isActionTypeSupported: (actionType: string): boolean => {
+    return ['like', 'follow'].includes(actionType)
+  },
+
+  // Get action verification instructions
+  getActionInstructions: (actionType: string, targetUsername?: string): string => {
+    switch (actionType) {
+      case 'like':
+        return '1. Click "Go to TikTok" and like the video\n2. Come back and click "Claim Credits"'
+      case 'follow':
+        return `1. Click "Go to TikTok" and follow @${targetUsername}\n2. Come back and click "Claim Credits"`
+      case 'comment':
+        return 'Comment verification is coming soon'
+      case 'view':
+        return 'View verification is coming soon'
+      default:
+        return 'Action verification not available'
+    }
   }
 }
 

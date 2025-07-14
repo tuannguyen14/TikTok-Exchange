@@ -5,10 +5,15 @@ import { createServerSupabaseClient } from '@/lib/supabase/supabase-server';
 interface PerformActionRequest {
   campaign_id: string;
   action_type: 'like' | 'comment' | 'follow' | 'view';
-  proof_data?: any;
+  proof_data?: {
+    verified: boolean;
+    initialCount?: number;
+    newCount?: number;
+    userFound?: boolean;
+  };
 }
 
-// POST /api/exchange/action - Perform action on a campaign
+// POST /api/exchange/action - Perform action on a campaign with verification
 export async function POST(request: NextRequest) {
   try {
     const { campaign_id, action_type, proof_data }: PerformActionRequest = await request.json();
@@ -28,6 +33,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validate verification data
+    if (!proof_data?.verified) {
+      return NextResponse.json(
+        { success: false, error: 'Action verification required' },
+        { status: 400 }
+      );
+    }
+
     const supabase = await createServerSupabaseClient();
 
     // Get authenticated user
@@ -39,12 +52,113 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Check if user has TikTok username
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('tiktok_username, credits')
+      .eq('id', user.id)
+      .single();
+
+    if (profileError || !profile?.tiktok_username) {
+      return NextResponse.json(
+        { success: false, error: 'TikTok account must be connected to participate' },
+        { status: 400 }
+      );
+    }
+
+    // Validate action-specific verification data
+    if (action_type === 'like') {
+      const { initialCount, newCount } = proof_data;
+      if (typeof initialCount !== 'number' || typeof newCount !== 'number') {
+        return NextResponse.json(
+          { success: false, error: 'Invalid like verification data' },
+          { status: 400 }
+        );
+      }
+      if (newCount <= initialCount) {
+        return NextResponse.json(
+          { success: false, error: 'Like count did not increase' },
+          { status: 400 }
+        );
+      }
+    } else if (action_type === 'follow') {
+      if (!proof_data.userFound) {
+        return NextResponse.json(
+          { success: false, error: 'Follow verification failed' },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Get campaign details
+    const { data: campaign, error: campaignError } = await supabase
+      .from('campaigns')
+      .select('*')
+      .eq('id', campaign_id)
+      .eq('status', 'active')
+      .single();
+
+    if (campaignError || !campaign) {
+      return NextResponse.json(
+        { success: false, error: 'Campaign not found or not active' },
+        { status: 404 }
+      );
+    }
+
+    // Check if campaign has enough credits
+    if (campaign.remaining_credits < campaign.credits_per_action) {
+      return NextResponse.json(
+        { success: false, error: 'Campaign has insufficient credits' },
+        { status: 400 }
+      );
+    }
+
+    // Check if user already performed this action on this campaign
+    const { data: existingAction, error: actionCheckError } = await supabase
+      .from('actions')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('campaign_id', campaign_id)
+      .eq('action_type', action_type)
+      .single();
+
+    if (existingAction) {
+      return NextResponse.json(
+        { success: false, error: 'You have already performed this action on this campaign' },
+        { status: 400 }
+      );
+    }
+
+    // Check if user is trying to interact with their own campaign
+    if (campaign.user_id === user.id) {
+      return NextResponse.json(
+        { success: false, error: 'You cannot interact with your own campaigns' },
+        { status: 400 }
+      );
+    }
+
+    // Check rate limiting (optional: prevent spam)
+    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+    const { data: recentActions, error: rateLimitError } = await supabase
+      .from('actions')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('action_type', action_type)
+      .gte('created_at', oneHourAgo);
+
+    if (recentActions && recentActions.length >= 20) {
+      return NextResponse.json(
+        { success: false, error: 'Too many actions. Please wait before trying again.' },
+        { status: 429 }
+      );
+    }
+
     // Use the database function to process the action
     const { data: result, error } = await supabase.rpc('process_action', {
       p_user_id: user.id,
       p_campaign_id: campaign_id,
       p_action_type: action_type,
-      p_proof_data: proof_data || {}
+      p_proof_data: proof_data
     });
 
     if (error) {

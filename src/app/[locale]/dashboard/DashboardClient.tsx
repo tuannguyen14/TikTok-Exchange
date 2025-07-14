@@ -137,7 +137,6 @@ export default function DashboardClient({
             <DashboardSidebar
               profile={profile}
               locale={locale}
-              t={t}
             />
           </motion.div>
         </div>

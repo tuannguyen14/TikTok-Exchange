@@ -33,9 +33,9 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Build query for available campaigns
+    // Build basic query for campaigns
     let query = supabase
-      .from('active_campaigns')
+      .from('campaigns')
       .select(`
         id,
         user_id,
@@ -45,20 +45,21 @@ export async function GET(request: NextRequest) {
         current_count,
         remaining_credits,
         created_at,
-        creator_tiktok,
         videos!inner(
           title,
           description,
           category,
           video_url
+        ),
+        profiles!inner(
+          tiktok_username
         )
       `)
       .eq('status', 'active')
-      .neq('user_id', user.id) // Don't show user's own campaigns
-      .gt('remaining_credits', 0)
-      .lt('current_count', supabase.raw('target_count')); // Not completed
+      .neq('user_id', user.id)
+      .gt('remaining_credits', 0);
 
-    // Apply filters
+    // Apply basic filters at DB level
     if (interaction_type && ['like', 'comment', 'follow', 'view'].includes(interaction_type)) {
       query = query.eq('interaction_type', interaction_type);
     }
@@ -86,14 +87,10 @@ export async function GET(request: NextRequest) {
       query = query.ilike('videos.title', `%${search.trim()}%`);
     }
 
-    // Add pagination
-    const offset = (page - 1) * limit;
-    query = query.range(offset, offset + limit - 1);
-
     // Order by creation date (newest first)
     query = query.order('created_at', { ascending: false });
 
-    const { data: campaigns, error, count } = await query;
+    const { data: allCampaigns, error } = await query;
 
     if (error) {
       console.error('Exchange campaigns fetch error:', error);
@@ -103,48 +100,36 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Get total count for pagination
-    let countQuery = supabase
-      .from('active_campaigns')
-      .select('*', { count: 'exact', head: true })
-      .eq('status', 'active')
-      .neq('user_id', user.id)
-      .gt('remaining_credits', 0)
-      .lt('current_count', supabase.raw('target_count'));
+    // Filter out completed campaigns at application level
+    const availableCampaigns = allCampaigns?.filter(campaign => 
+      campaign.current_count < campaign.target_count
+    ) || [];
 
-    // Apply same filters for count
-    if (interaction_type && ['like', 'comment', 'follow', 'view'].includes(interaction_type)) {
-      countQuery = countQuery.eq('interaction_type', interaction_type);
-    }
-    if (category) {
-      countQuery = countQuery.eq('videos.category', category);
-    }
-    if (min_credits) {
-      const minVal = parseInt(min_credits);
-      if (!isNaN(minVal) && minVal > 0) {
-        countQuery = countQuery.gte('credits_per_action', minVal);
-      }
-    }
-    if (max_credits) {
-      const maxVal = parseInt(max_credits);
-      if (!isNaN(maxVal) && maxVal > 0) {
-        countQuery = countQuery.lte('credits_per_action', maxVal);
-      }
-    }
+    // Apply pagination
+    const offset = (page - 1) * limit;
+    const paginatedCampaigns = availableCampaigns.slice(offset, offset + limit);
 
-    const { count: totalCount, error: countError } = await countQuery;
+    const totalCount = availableCampaigns.length;
+    const totalPages = Math.ceil(totalCount / limit);
 
-    if (countError) {
-      console.error('Count query error:', countError);
-    }
-
-    const totalPages = Math.ceil((totalCount || 0) / limit);
-
-    // Format campaigns data
-    const formattedCampaigns = campaigns?.map(campaign => ({
-      ...campaign,
-      videos: campaign.videos ? [campaign.videos] : []
-    })) || [];
+    // Format campaigns data to match expected structure
+    const formattedCampaigns = paginatedCampaigns.map(campaign => ({
+      id: campaign.id,
+      user_id: campaign.user_id,
+      interaction_type: campaign.interaction_type,
+      credits_per_action: campaign.credits_per_action,
+      target_count: campaign.target_count,
+      current_count: campaign.current_count,
+      remaining_credits: campaign.remaining_credits,
+      created_at: campaign.created_at,
+      creator_tiktok: campaign.profiles?.tiktok_username,
+      videos: [{
+        title: campaign.videos?.title,
+        description: campaign.videos?.description,
+        category: campaign.videos?.category,
+        video_url: campaign.videos?.video_url
+      }]
+    }));
 
     return NextResponse.json({
       success: true,
@@ -153,7 +138,7 @@ export async function GET(request: NextRequest) {
         pagination: {
           page,
           limit,
-          total: totalCount || 0,
+          total: totalCount,
           totalPages,
           hasMore: page < totalPages
         }
@@ -168,5 +153,3 @@ export async function GET(request: NextRequest) {
     );
   }
 }
-
-
