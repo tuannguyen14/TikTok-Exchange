@@ -7,6 +7,7 @@ import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import Navbar from '@/components/layout/Navbar';
 import { AuthProvider } from '@/contexts/auth-context';
+import { Analytics } from '@vercel/analytics/react';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -55,6 +56,7 @@ export default async function RootLayout({
               <Navbar />
               <main>
                 {children}
+                <Analytics />
               </main>
             </div>
           </AuthProvider>

@@ -12,6 +12,7 @@ import DashboardCampaigns from '@/components/dashboard/DashboardCampaigns';
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
 import { Button } from '@/components/ui/button';
 import type { Profile } from '@/types/auth';
+import OverlayLoading from "@/components/loading/OverlayLoading";
 
 interface DashboardStats {
   totalCredits: number;
@@ -43,9 +44,9 @@ interface DashboardClientProps {
   onCampaignStatusUpdate?: (campaignId: string, status: 'active' | 'paused') => Promise<boolean>;
 }
 
-export default function DashboardClient({ 
-  locale, 
-  profile, 
+export default function DashboardClient({
+  locale,
+  profile,
   campaigns,
   stats,
   refreshing = false,
@@ -63,6 +64,10 @@ export default function DashboardClient({
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       <div className="max-w-7xl mx-auto p-6 space-y-8">
+        <OverlayLoading
+          isVisible={refreshing}
+        />
+
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -71,13 +76,13 @@ export default function DashboardClient({
           className="flex flex-col md:flex-row md:items-center justify-between space-y-4 md:space-y-0"
         >
           <div className="flex-1">
-            <DashboardHeader 
+            <DashboardHeader
               profile={profile}
               locale={locale}
               t={t}
             />
           </div>
-          
+
           {/* Refresh Button */}
           {onRefresh && (
             <Button
@@ -99,7 +104,7 @@ export default function DashboardClient({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          <DashboardStats 
+          <DashboardStats
             stats={stats}
             t={t}
           />
@@ -114,7 +119,7 @@ export default function DashboardClient({
             transition={{ duration: 0.5, delay: 0.2 }}
             className="lg:col-span-2"
           >
-            <DashboardCampaigns 
+            <DashboardCampaigns
               campaigns={campaigns}
               locale={locale}
               t={t}
@@ -129,7 +134,7 @@ export default function DashboardClient({
             transition={{ duration: 0.5, delay: 0.3 }}
             className="space-y-6"
           >
-            <DashboardSidebar 
+            <DashboardSidebar
               profile={profile}
               locale={locale}
               t={t}

@@ -3,7 +3,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
 import { Loader2, AlertCircle } from 'lucide-react';
 
@@ -14,6 +13,7 @@ import DashboardSkeleton from '@/components/dashboard/DashboardSkeleton';
 import TikTokLinkPrompt from '@/components/dashboard/TikTokLinkPrompt';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
+import OverlayLoading from "@/components/loading/OverlayLoading";
 
 export default function DashboardPage({
   params
@@ -22,15 +22,14 @@ export default function DashboardPage({
 }) {
   const [locale, setLocale] = useState<string>('');
   const router = useRouter();
-  const t = useTranslations('Dashboard');
-  
+
   // Use auth context
-  const { 
-    isAuthenticated, 
-    loading: authLoading, 
-    profile, 
+  const {
+    isAuthenticated,
+    loading: authLoading,
+    profile,
     user,
-    error: authError 
+    error: authError
   } = useAuth();
 
   // Use dashboard hook
@@ -64,7 +63,11 @@ export default function DashboardPage({
 
   // Show loading while auth is loading or locale is not resolved
   if (authLoading || !locale) {
-    return <DashboardSkeleton />;
+    return <>
+      <OverlayLoading
+        isVisible={authLoading} />
+      <DashboardSkeleton />
+    </>;
   }
 
   // Show auth error if any
@@ -78,7 +81,7 @@ export default function DashboardPage({
               Authentication error: {authError}
             </AlertDescription>
           </Alert>
-          <Button 
+          <Button
             onClick={() => router.push(`/${locale}/auth/login`)}
             className="w-full mt-4"
           >
@@ -105,7 +108,7 @@ export default function DashboardPage({
               Failed to load user profile. Please try refreshing the page.
             </AlertDescription>
           </Alert>
-          <Button 
+          <Button
             onClick={() => window.location.reload()}
             className="w-full mt-4"
           >
@@ -140,7 +143,7 @@ export default function DashboardPage({
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>{dashboardError}</AlertDescription>
             </Alert>
-            <Button 
+            <Button
               onClick={handleRetry}
               className="w-full mt-4"
               disabled={refreshing}

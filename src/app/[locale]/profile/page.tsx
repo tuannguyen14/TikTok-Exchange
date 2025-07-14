@@ -23,8 +23,10 @@ import ProfileHistoryTab from '@/components/profile/ProfileHistoryTab';
 
 import type { ProfileStats, TikTokStats } from '@/types/profile';
 
+import OverlayLoading from "@/components/loading/OverlayLoading";
+
 const ProfilePage: React.FC = () => {
-  const { profile, updateProfile, refreshProfile } = useAuth();
+  const { profile, loading: authLoading, updateProfile, refreshProfile } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const locale = useLocale();
@@ -95,10 +97,10 @@ const ProfilePage: React.FC = () => {
     fetchProfileData();
   }, [profile, t]);
 
- const fetchTikTokStats = async (username: string) => {
+  const fetchTikTokStats = async (username: string) => {
     try {
       const result = await profileAPI.fetchTikTokStats(username);
-      
+
       if (result.success && result.data) {
         setTikTokStats({
           followers: result.data.stats?.followerCount || 0,
@@ -184,9 +186,9 @@ const ProfilePage: React.FC = () => {
   if (!profile) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-gray-500">Loading profile...</p>
-        </div>
+        <OverlayLoading
+          isVisible={authLoading || dataLoading}
+        />
       </div>
     );
   }

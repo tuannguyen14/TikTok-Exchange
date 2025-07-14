@@ -1,5 +1,5 @@
 // src/components/profile/ProfileStatsTab.tsx
-'use server';
+'use client';
 
 import React from 'react';
 import { useTranslations } from 'next-intl';

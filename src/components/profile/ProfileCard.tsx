@@ -205,7 +205,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
                 className="w-full bg-gradient-to-r from-[#FE2C55] to-[#FF4081] hover:from-[#FF4081] hover:to-[#FE2C55] text-white"
               >
                 <ExternalLink className="w-4 h-4 mr-2" />
-                Connect TikTok
+                {t('actions.connectTiktok')}
               </Button>
             ) : (
               <Button
@@ -214,7 +214,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
                 className="w-full"
               >
                 <ExternalLink className="w-4 h-4 mr-2" />
-                View TikTok Profile
+                {t('actions.viewTiktokProfile')}
               </Button>
             )}
 
@@ -226,12 +226,12 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
               {isEditing ? (
                 <>
                   <X className="w-4 h-4 mr-2" />
-                  Cancel
+                  {t('tiktokForm.cancel')}
                 </>
               ) : (
                 <>
                   <Edit className="w-4 h-4 mr-2" />
-                  Edit Profile
+                  {t('actions.editProfile')}
                 </>
               )}
             </Button>
