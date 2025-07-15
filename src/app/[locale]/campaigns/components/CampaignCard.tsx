@@ -30,7 +30,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-import { Campaign } from '../types';
+import { Campaign } from '@/types/campaign';
 
 interface CampaignCardProps {
   campaign: Campaign;

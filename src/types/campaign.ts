@@ -19,7 +19,8 @@ export interface Campaign {
   creator_tiktok?: string
   video_title?: string
   video_url?: string
-  category?: string
+  category?: string,
+  videos?: Video[]
 }
 
 export interface Video {
@@ -69,6 +70,7 @@ export interface CampaignStats {
   completed_campaigns: number
   total_credits_spent: number
   total_actions_received: number
+  paused_campaigns: number
 }
 
 export interface UserCampaignAnalytics {

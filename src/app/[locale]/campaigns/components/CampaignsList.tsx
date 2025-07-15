@@ -7,7 +7,7 @@ import { motion } from 'framer-motion';
 import { RefreshCw } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { Campaign } from '../types';
+import { Campaign } from '@/types/campaign';
 import { CampaignCard } from './CampaignCard';
 import { CampaignsEmptyState } from './CampaignsEmptyState';
 

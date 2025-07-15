@@ -121,7 +121,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
 
             {tiktokData?.user?.signature && (
               <p className="text-sm text-gray-600 dark:text-gray-400 italic">
-                "{tiktokData.user.signature}"
+                &quot;{tiktokData.user.signature}&quot;
               </p>
             )}
           </div>

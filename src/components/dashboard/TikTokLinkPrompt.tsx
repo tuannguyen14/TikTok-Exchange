@@ -135,7 +135,7 @@ const TikTokLinkPrompt: React.FC<TikTokLinkPromptProps> = ({ locale }) => {
               </Button>
               
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-3">
-                You'll be redirected to your profile page to add your TikTok username
+                You&apos;ll be redirected to your profile page to add your TikTok username
               </p>
             </motion.div>
 

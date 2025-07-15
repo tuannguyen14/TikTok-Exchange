@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
 import { Target, TrendingUp, Coins, Clock } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
-import { CampaignStats } from '../types';
+import { CampaignStats } from '@/types/campaign';
 
 interface CampaignsStatsProps {
   stats: CampaignStats;
@@ -18,8 +18,8 @@ export function CampaignsStats({ stats }: CampaignsStatsProps) {
   const statsCards = [
     {
       title: t('stats.totalCampaigns'),
-      value: stats.totalCampaigns,
-      subtitle: t('stats.active', { count: stats.activeCampaigns }),
+      value: stats.total_campaigns,
+      subtitle: t('stats.active', { count: stats.active_campaigns }),
       icon: Target,
       gradient: 'from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20',
       iconBg: 'bg-blue-100 dark:bg-blue-900/30',
@@ -27,7 +27,7 @@ export function CampaignsStats({ stats }: CampaignsStatsProps) {
     },
     {
       title: t('stats.totalActions'),
-      value: stats.totalActionsReceived,
+      value: stats.total_actions_received,
       subtitle: t('stats.totalInteractions'),
       icon: TrendingUp,
       gradient: 'from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20',
@@ -36,7 +36,7 @@ export function CampaignsStats({ stats }: CampaignsStatsProps) {
     },
     {
       title: t('stats.creditsSpent'),
-      value: stats.totalCreditsSpent,
+      value: stats.total_credits_spent,
       subtitle: t('stats.totalInvestment'),
       icon: Coins,
       gradient: 'from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20',
@@ -45,7 +45,7 @@ export function CampaignsStats({ stats }: CampaignsStatsProps) {
     },
     {
       title: t('stats.completedCampaigns'),
-      value: stats.completedCampaigns,
+      value: stats.completed_campaigns,
       subtitle: t('stats.successfulCampaigns'),
       icon: Clock,
       gradient: 'from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20',
