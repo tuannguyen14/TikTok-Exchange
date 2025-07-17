@@ -12,6 +12,177 @@
     "title": "Home Page",
     "description": "Welcome to our website"
   },
+  "LandingPage": {
+    "hero": {
+      "title": "Grow Your TikTok",
+      "subtitle": "Organically",
+      "description": "Exchange real interactions with other creators. Earn credits by engaging with others, then use them to boost your own videos.",
+      "cta": "Start Growing Now",
+      "ctaSecondary": "Learn More",
+      "stats": {
+        "users": "10,000+",
+        "usersLabel": "Active Users",
+        "interactions": "1M+",
+        "interactionsLabel": "Real Interactions",
+        "growth": "300%",
+        "growthLabel": "Average Growth"
+      }
+    },
+    "statsSection": {
+      "title": "Trusted by Thousands of Creators",
+      "subtitle": "Join our growing community of TikTok creators who are achieving real, organic growth",
+      "items": {
+        "noBots": "No bots or fake accounts",
+        "organic": "100% organic interactions",
+        "safe": "Safe & secure platform"
+      }
+    },
+    "howItWorksSection": {
+      "title": "Ready to Get Started?",
+      "subtitle": "Join thousands of creators who are already growing their TikTok presence organically",
+      "cta": "Start Growing Now",
+      "features": {
+        "freeToStart": "Free to start",
+        "noCreditCard": "No credit card needed",
+        "freeCredits": "Free credits"
+      }
+    },
+    "features": {
+      "title": "Why Choose TikGrow?",
+      "subtitle": "The smartest way to grow your TikTok presence",
+      "items": {
+        "organic": {
+          "title": "100% Organic Growth",
+          "description": "Real users, real interactions. No bots, no fake accounts. Just genuine engagement from the TikTok community."
+        },
+        "credits": {
+          "title": "Fair Credit System",
+          "description": "Earn credits by engaging with others. Use credits to get engagement on your videos. Simple, fair, and transparent."
+        },
+        "safe": {
+          "title": "Safe & Secure",
+          "description": "We never ask for your password. Just your TikTok username for verification. Your account stays completely safe."
+        },
+        "community": {
+          "title": "Active Community",
+          "description": "Join thousands of creators helping each other grow. Discover new content and connect with like-minded creators."
+        }
+      }
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "subtitle": "Start growing in 3 simple steps",
+      "steps": {
+        "step1": {
+          "title": "Sign Up & Connect",
+          "description": "Create your account and connect your TikTok username. Get 50 free credits to start!"
+        },
+        "step2": {
+          "title": "Earn Credits",
+          "description": "Watch, like, comment, and follow other creators' content to earn credits. Help others grow while earning!"
+        },
+        "step3": {
+          "title": "Boost Your Videos",
+          "description": "Use your credits to get real engagement on your videos. Choose from views, likes, comments, or follows."
+        }
+      }
+    },
+    "pricing": {
+      "title": "Simple Credit System",
+      "subtitle": "Transparent pricing with no hidden fees",
+      "earnSection": {
+        "title": "Earn Credits",
+        "subtitle": "Get rewards for engaging with others",
+        "actions": {
+          "view": {
+            "action": "View Video",
+            "credits": "+1 Credit",
+            "icon": "👁️"
+          },
+          "like": {
+            "action": "Like Video",
+            "credits": "+2 Credits",
+            "icon": "❤️"
+          },
+          "comment": {
+            "action": "Comment",
+            "credits": "+3 Credits",
+            "icon": "💬"
+          },
+          "follow": {
+            "action": "Follow Creator",
+            "credits": "+5 Credits",
+            "icon": "👥"
+          }
+        }
+      },
+      "spendSection": {
+        "title": "Spend Credits",
+        "subtitle": "Use credits to boost your content",
+        "note": "Credits are used based on the interactions you want to receive"
+      }
+    },
+    "testimonials": {
+      "title": "What Creators Are Saying",
+      "subtitle": "Join thousands of satisfied creators",
+      "items": {
+        "testimonial1": {
+          "name": "Sarah Johnson",
+          "username": "@sarahcreates",
+          "content": "TikGrow helped me grow from 1K to 50K followers in just 3 months! The engagement is completely organic and real.",
+          "rating": 5
+        },
+        "testimonial2": {
+          "name": "Mike Chen",
+          "username": "@mikeviral",
+          "content": "Finally, a platform that actually works! No bots, no fake accounts. Just real people engaging with real content.",
+          "rating": 5
+        },
+        "testimonial3": {
+          "name": "Emma Rodriguez",
+          "username": "@emmatrends",
+          "content": "The credit system is brilliant! I love discovering new creators while earning credits to boost my own videos.",
+          "rating": 5
+        }
+      }
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "subtitle": "Everything you need to know about TikGrow",
+      "items": {
+        "safe": {
+          "question": "Is TikGrow safe to use?",
+          "answer": "Yes! We never ask for your password or access your account. We only need your TikTok username for verification. All interactions are from real users."
+        },
+        "howCredits": {
+          "question": "How do credits work?",
+          "answer": "You earn credits by engaging with other creators' content. Then use those credits to get engagement on your own videos. It's a fair exchange system."
+        },
+        "realUsers": {
+          "question": "Are the interactions from real users?",
+          "answer": "Absolutely! All interactions come from real TikTok users who are part of our community. No bots, no fake accounts."
+        },
+        "results": {
+          "question": "How quickly will I see results?",
+          "answer": "Most campaigns start receiving interactions within minutes. You'll see real engagement from our active community right away."
+        },
+        "pricing": {
+          "question": "How much does it cost?",
+          "answer": "TikGrow is free to use! You earn credits by engaging with others and spend them on your own campaigns. No hidden fees or subscriptions."
+        }
+      }
+    },
+    "cta": {
+      "title": "Ready to Grow Your TikTok?",
+      "subtitle": "Join thousands of creators who are already growing with TikGrow",
+      "button": "Start Growing Today",
+      "features": {
+        "free": "Free to start",
+        "noPassword": "No password needed",
+        "organic": "100% organic growth"
+      }
+    }
+  },
   "Navigation": {
     "dashboard": "Dashboard",
     "exchange": "Exchange",
@@ -20,7 +191,13 @@
     "settings": "Settings",
     "credits": "Credits",
     "logout": "Logout",
-    "guest": "Guest"
+    "guest": "Guest",
+    "home": "Home",
+    "features": "Features",
+    "howItWorks": "How It Works",
+    "pricing": "Pricing",
+    "login": "Login",
+    "signUp": "Sign Up"
   },
   "Dashboard": {
     "title": "Dashboard",
@@ -94,95 +271,112 @@
     }
   },
   "Campaigns": {
-    "title": "My Campaigns",
-    "description": "Manage your TikTok growth campaigns",
-    "newCampaign": "New Campaign",
-    "refresh": "Refresh",
-    "searchPlaceholder": "Search campaigns...",
-    "filters": {
-      "all": "All",
-      "allTypes": "All Types",
-      "allStatus": "All Status",
-      "likes": "Likes",
-      "comments": "Comments",
-      "follows": "Follows",
-      "views": "Views"
+    "meta": {
+      "title": "My Campaigns - TikGrow",
+      "description": "Manage your TikTok engagement campaigns and track performance"
     },
+    "title": "My Campaigns",
+    "description": "Create and manage your TikTok engagement campaigns to boost your content",
     "stats": {
-      "totalCampaigns": "Total Campaigns",
-      "activeCampaigns": "Active Campaigns",
-      "totalActions": "Actions Received",
+      "total": "Total Campaigns",
+      "active": "Active Campaigns",
+      "completed": "Completed",
+      "paused": "Paused",
       "creditsSpent": "Credits Spent",
-      "completedCampaigns": "Completed",
-      "totalInteractions": "Total interactions",
-      "totalInvestment": "Total investment",
-      "successfulCampaigns": "Successful campaigns",
-      "active": "active"
+      "actionsReceived": "Actions Received"
     },
     "tabs": {
-      "all": "All",
-      "active": "Active",
-      "paused": "Paused",
-      "completed": "Done"
+      "all": "All Campaigns",
+      "video": "Video Campaigns",
+      "follow": "Follow Campaigns"
     },
-    "card": {
-      "untitled": "Untitled Campaign",
-      "creditsEach": "{count} credits each",
+    "table": {
+      "type": "Type",
+      "target": "Target",
+      "interaction": "Interaction",
       "progress": "Progress",
-      "remaining": "{count} remaining",
-      "spent": "{count} spent",
-      "viewVideo": "View Video",
-      "pauseCampaign": "Pause Campaign",
-      "resumeCampaign": "Resume Campaign",
-      "deleteCampaign": "Delete Campaign",
-      "campaignCompleted": "Campaign Completed",
-      "receivedInteractions": "Received {count} interactions",
-      "pause": "Pause",
-      "resume": "Resume"
-    },
-    "actions": {
-      "like": "Like",
-      "comment": "Comment",
-      "follow": "Follow",
-      "view": "View"
+      "creditsPerAction": "Credits/Action",
+      "status": "Status",
+      "created": "Created",
+      "actions": "Actions"
     },
     "status": {
       "active": "Active",
       "paused": "Paused",
-      "completed": "Completed"
+      "completed": "Completed",
+      "expired": "Expired"
+    },
+    "actions": {
+      "pause": "Pause",
+      "resume": "Resume",
+      "edit": "Edit",
+      "delete": "Delete",
+      "view": "View Details"
+    },
+    "buttons": {
+      "createCampaign": "Create Campaign",
+      "filter": "Filter",
+      "refresh": "Refresh"
     },
     "empty": {
-      "noCampaigns": "No campaigns yet",
-      "noCampaignsDesc": "Start growing your TikTok by creating your first campaign",
-      "createFirst": "Create Your First Campaign",
-      "getInteractions": "Get likes, comments, followers and views for your videos",
-      "noActive": "No active campaigns",
-      "noActiveDesc": "You don't have any running campaigns at the moment",
-      "createCampaign": "Create Campaign",
-      "noPaused": "No paused campaigns",
-      "noPausedDesc": "You don't have any paused campaigns",
-      "noCompleted": "No completed campaigns",
-      "noCompletedDesc": "You haven't completed any campaigns yet",
-      "noResults": "No campaigns found",
-      "noResultsDesc": "Try adjusting your search terms or filters",
-      "clearSearch": "Clear Search"
+      "title": "No campaigns yet",
+      "description": "Get started by creating your first campaign to boost your TikTok engagement",
+      "action": "Create Campaign"
     },
-    "notifications": {
-      "campaignUpdated": "Campaign {status} successfully",
-      "campaignDeleted": "Campaign deleted successfully",
-      "updateFailed": "Failed to update campaign",
-      "deleteFailed": "Failed to delete campaign",
-      "deleteConfirm": "Are you sure you want to delete this campaign? This action cannot be undone.",
-      "loadFailed": "An error occurred while loading campaigns"
+    "deleteConfirm": {
+      "title": "Delete Campaign",
+      "description": "Are you sure you want to delete this campaign? This action cannot be undone and remaining credits will be refunded.",
+      "confirm": "Delete Campaign",
+      "cancel": "Cancel"
+    }
+  },
+  "CreateCampaign": {
+    "title": "Create New Campaign",
+    "subtitle": "Boost your TikTok presence with our community",
+    "steps": {
+      "selectType": "Select Type",
+      "configure": "Configure",
+      "review": "Review"
     },
-    "tiktokRequired": {
-      "title": "TikTok Account Required",
-      "description": "You need to connect your TikTok account to manage campaigns.",
-      "connect": "Connect TikTok Account"
+    "campaignTypes": {
+      "video": {
+        "title": "Video Campaign",
+        "description": "Get likes, views, or comments on your TikTok video",
+        "interactions": {
+          "view": "Views",
+          "like": "Likes",
+          "comment": "Comments"
+        }
+      },
+      "follow": {
+        "title": "Follow Campaign",
+        "description": "Get followers for your TikTok account"
+      }
     },
-    "pagination": {
-      "loadMore": "Load More Campaigns",
-      "loading": "Loading..."
+    "form": {
+      "videoUrl": "TikTok Video URL",
+      "videoUrlPlaceholder": "https://vt.tiktok.com/... or https://www.tiktok.com/@username/video/...",
+      "interactionType": "Select Interaction Type",
+      "creditsPerAction": "Credits per Action",
+      "targetCount": "Target Count",
+      "duration": "Campaign Duration",
+      "totalCost": "Cost Summary",
+      "verifyVideo": "Verify Video",
+      "videoVerification": "Video Verification",
+      "confirm": "Confirm Details"
+    },
+    "buttons": {
+      "next": "Next",
+      "back": "Back",
+      "verify": "Verify",
+      "create": "Create Campaign",
+      "cancel": "Cancel"
+    },
+    "messages": {
+      "invalidUrl": "Please enter a valid TikTok URL",
+      "verificationFailed": "Failed to verify video. Please check the URL and try again.",
+      "insufficientCredits": "Insufficient credits. Please top up your account.",
+      "success": "Campaign created successfully!"
     }
   },
   "Profile": {
@@ -359,10 +553,24 @@
       "creditsSummary": "Credits Summary",
       "campaignDetails": "Campaign Details",
       "costHelp": "Total credits that will be deducted when you create this campaign",
+      "like": "Users will like your video",
+      "follow": "Users will follow your account",
       "preview": "Preview Campaign",
       "createCampaign": "Create Campaign",
       "submit": "Create Campaign",
       "cancel": "Cancel",
+      "videoValidation": {
+        "supportsAllUrls": "Supports all TikTok URL formats.",
+        "validating": "Validating video...",
+        "validDetected": "Valid TikTok video detected",
+        "preview": "Preview",
+        "confirmed": "Video confirmed and ready for campaign"
+      },
+      "VideoPreviewPopup": {
+        "confirmText": "Is this the correct video you want to create a campaign for?",
+        "cancel": "Cancel",
+        "yesContinue": "Yes, Continue"
+      },
       "tips": {
         "title": "Tips",
         "tip1": "Use engaging titles to attract more participants",
@@ -418,7 +626,13 @@
       "submit": "Create Account",
       "hasAccount": "Already have an account?",
       "signIn": "Sign in",
-      "terms": "By creating an account, you agree to our Terms of Service"
+      "terms": "By creating an account, you agree to our Terms of Service",
+      "benefits": {
+        "0": "Join now and get:",
+        "1": "10 free credits to start",
+        "2": "Unlimited video interactions",
+        "3": "Real TikTok growth results"
+      }
     },
     "errors": {
       "invalidEmail": "Please enter a valid email",

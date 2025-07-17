@@ -23,7 +23,7 @@ import ProfileHistoryTab from '@/components/profile/ProfileHistoryTab';
 
 import type { ProfileStats, TikTokStats } from '@/types/profile';
 
-import OverlayLoading from "@/components/loading/OverlayLoading";
+import OverlayLoading from "@/components/ui/loading/loading-overlay";
 
 const ProfilePage: React.FC = () => {
   const { profile, loading: authLoading, updateProfile, refreshProfile } = useAuth();

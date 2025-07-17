@@ -1,64 +1,131 @@
-Concept chính:
-Nền tảng trao đổi tương tác TikTok - Người dùng tương tác với video của nhau để kiếm điểm, dùng điểm để boost video riêng.
-Sử dụng NextJS, Supabase, TailwindCSS và sử dụng nhiều animation, các thư viện UI (ShadCN/UI, Framer Motion).
-Có 2 ngôn ngữ chính: Vietnamese và English quản lý bằng next-intl.
-sử dụng react-hot-toast cho hiển thị thông báo.
-hiển thị loading bằng Lottie animation (mỗi lần chuyển page, load data, submit form,...)
+    Concept chính:
+    Sử dụng NextJS, Supabase, TailwindCSS và sử dụng nhiều animation, các thư viện UI và animation hiện đại.
+    Có 2 ngôn ngữ chính: Vietnamese và English quản lý bằng next-intl.
+    sử dụng các thư viện hiển thị Toast cho hiển thị thông báo.
+    hiển thị loading bằng Lottie animation (mỗi lần chuyển page, load data, submit form,...)
+    lưu ý quan trọng: * tối ưu performance chia server và client hiệu quả nhất có thể.
 
-Màu chủ đạo lấy từ TikTok
-Đỏ tươi #FE2C55 (màu đỏ đặc trưng TikTok)
-Xanh dương đậm #25F4EE (màu xanh neon)
-Hồng #EE1D52 hoặc #FF4081
+    Màu chủ đạo lấy từ TikTok
+    Đỏ tươi #FE2C55 (màu đỏ đặc trưng TikTok)
+    Xanh dương đậm #25F4EE (màu xanh neon)
+    Hồng #EE1D52 hoặc #FF4081
 
-🔄 Cách hoạt động:
-1. Đăng ký & Kết nối
-Đăng ký tài khoản email
-Kết nối TikTok username
-Nhận 50 credits miễn phí
 
-2. Kiếm Credits:
-Xem video của người khác → +1 credit
-Like video → +2 credits
-Comment → +3 credits
-Follow → +5 credits
 
-3. Sử dụng Credits:
-Đăng video của mình
-Chọn loại tương tác muốn nhận
-Trả credits để nhận tương tác
+## Thông tin dự án (Project Overview)
 
-4. Hệ thống matching:
-AI match video theo category
-Chỉ show video chất lượng cao
-Tránh spam/fake engagement
+Nền tảng trao đổi tương tác TikTok: Người dùng thực hiện các hành động (view, like, comment, follow) lên video hoặc tài khoản TikTok của người khác để nhận credits. Credits này dùng để tạo chiến dịch boost tương tác hoặc tăng follow cho chính mình. Tất cả dữ liệu video/profile TikTok fetch real-time từ API TikTok (không lưu data video nội bộ).
+Sử dụng NextJS, Supabase (PostgreSQL), TailwindCSS, nhiều animation UI hiện đại.
 
-📱 Trang web gồm:
-Landing Page:
-Hero section giới thiệu
-Cách thức hoạt động (3 bước)
-Testimonials
-CTA đăng ký
+---
 
-Dashboard:
-Nếu chưa link TikTok username, yêu cầu link TikTok username -> Page Profile
-Tạo campaign mới
-Tổng quan credits
-Video đã đăng
-Hoạt động gần đây
-Edit/pause campaigns
+## Cơ chế hoạt động:
 
-Exchange Hub:
-Feed video để tương tác
-Bộ lọc theo category
-Queue system
-Real-time updates
+* Đăng ký tài khoản và kết nối TikTok username
+* Thực hiện các action (view, like, comment, follow) để nhận credits
+* Dùng credits tạo campaign boost video hoặc tăng follow
+* Campaign sẽ phân phối video/tài khoản cho cộng đồng thực hiện
+* Mọi tương tác đều có tracking lịch sử rõ ràng
 
-Profile:
-Thông tin cá nhân
-TikTok stats
-Transaction history
-Settings
-Link TikTok username
+---
 
-Campagins:
-Quản lý toàn bộ campagins
+## Cấu trúc bảng dữ liệu chính (Database Table Structure)
+
+### 1. profiles
+
+**Công dụng:** Lưu trữ thông tin người dùng, số dư credits, kết nối TikTok, trạng thái, cài đặt thông báo, và thời gian hoạt động. Có thể lưu snapshot TikTok stats để tối ưu hiển thị (không phải nguồn duy nhất).
+
+* id: UUID, khóa chính, liên kết với hệ thống auth
+* email: Email đăng ký, unique
+* tiktok\_username: Username TikTok, unique
+* credits: Số dư credits hiện tại
+* total\_earned: Tổng credits đã nhận được
+* total\_spent: Tổng credits đã sử dụng
+* status: Trạng thái tài khoản (active, banned...)
+* tiktok\_stats: (JSONB) snapshot stats TikTok của user, update định kỳ để tránh spam API
+* notification\_settings: Cài đặt nhận thông báo
+* last\_active\_at: Lần hoạt động gần nhất
+* created\_at, updated\_at: Thời gian tạo/cập nhật
+
+---
+
+### 2. campaigns
+
+**Công dụng:** Lưu thông tin chiến dịch nhận tương tác (view, like, comment cho video) hoặc follow cho tài khoản TikTok. Quản lý loại chiến dịch, mục tiêu, số credits, trạng thái và liên kết tới video/TikTok user mục tiêu.
+
+* id: UUID, khóa chính
+* user\_id: UUID, người tạo campaign
+* campaign\_type: 'video' | 'follow' (phân biệt 2 loại chiến dịch)
+* tiktok\_video\_id: (nếu là campaign video) ID video TikTok mục tiêu
+* target\_tiktok\_username: (nếu là campaign follow) Username TikTok cần tăng follow
+* interaction\_type: (nếu campaign\_type='video') Loại action: view, like, comment
+* credits\_per\_action: Số credits trả cho mỗi action
+* target\_count: Mục tiêu số lượng action/follow
+* current\_count: Đã đạt được bao nhiêu
+* total\_credits, remaining\_credits: Tổng credits nạp/còn lại
+* status: Trạng thái campaign (active, paused, completed...)
+* created\_at, updated\_at: Thời gian tạo/cập nhật
+
+---
+
+### 3. actions
+
+**Công dụng:** Lưu lịch sử mọi action (like, view, comment, follow) mà user đã thực hiện trên các campaign. Dùng để tính thưởng credits, chống spam/trùng lặp action, và xác minh khi cần. Có thể chứa proof xác minh action.
+
+* id: UUID, khóa chính
+* user\_id: UUID, ai thực hiện action này
+* campaign\_id: UUID, thuộc campaign nào
+* action\_type: view, like, comment, follow
+* credits\_earned: Credits user nhận được khi hoàn thành action
+* status: Trạng thái (completed, pending, rejected...)
+* proof\_data: JSONB, dữ liệu xác minh action nếu có
+* created\_at: Thời điểm tạo action
+* UNIQUE(user\_id, campaign\_id, action\_type): Đảm bảo mỗi user chỉ thực hiện 1 action/campaign/action\_type
+
+---
+
+### 4. transactions
+
+**Công dụng:** Quản lý lịch sử cộng/trừ credits cho user. Ghi nhận số dư credits sau mỗi giao dịch, lý do thay đổi, và reference tới campaign/action liên quan nếu cần.
+
+* id: UUID, khóa chính
+* user\_id: UUID, ai nhận/thực hiện giao dịch
+* type: Loại giao dịch: earn, spend, bonus, refund...
+* amount: Số credits cộng/trừ
+* balance\_after: Số dư sau giao dịch
+* description: Diễn giải thêm
+* reference\_id: Tham chiếu đến campaign/action nếu có
+* reference\_type: campaign, action...
+* created\_at: Thời điểm tạo giao dịch
+
+---
+
+### 5. notifications
+
+**Công dụng:** Lưu lịch sử gửi thông báo cho từng user, gồm loại thông báo, nội dung, trạng thái đã đọc và thông tin phụ nếu có.
+
+* id: UUID, khóa chính
+* user\_id: UUID, nhận thông báo
+* type: Loại thông báo
+* title: Tiêu đề
+* message: Nội dung
+* data: JSONB, dữ liệu phụ nếu cần
+* is\_read: Trạng thái đã đọc
+* created\_at: Thời điểm gửi
+
+
+lưu ý: 
+* Trong page Exchange sẽ fetch thông tin video hoặc profile từ tiktok API và hiển thị thumbnail, tiktokID. user sẽ không hiển thị video hoặc profile của mình ở page Exchange.
+* Mọi thông tin video/user TikTok fetch real-time từ API, database chỉ lưu ID/TikTok username liên quan để tracking và mapping.
+
+    ví dụ về tương tác với TikTok API:
+    video:
+    url = http://localhost:3000/api/tiktok?action=getVideoInfo&videoLink=https://vt.tiktok.com/ZSBCAWFSf/
+    response = {"success":true,"data":{"diggCount":341100,"shareCount":20800,"commentCount":2406,"playCount":9700000,"collectCount":"27084","tiktokID":"cakhongmap","videoID":"7504935009216777490","url":"https://p9-sign-sg.tiktokcdn.com/tos-alisg-p-0037/o4fRIECLa3yVspKmiKBYQpy4gDFqBoAuJADUeE~tplv-photomode-zoomcover:720:720.webp?dr=14555&x-expires=1752804000&x-signature=pR4iVR0SM2z2Pf47PM%2B0Ae8qhL0%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=my&ftpl=1"}}
+
+    profile:
+    url = http://localhost:3000/api/tiktok?action=getProfile&id=test
+    response = {"success":true,"data":{"user":{"id":"153143","shortId":"","uniqueId":"test","nickname":"test","avatarLarger":"https://p16-sign-va.tiktokcdn.com/musically-maliva-obj/1594805258216454~tplv-tiktokx-cropcenter:1080:1080.jpeg?dr=14579&refresh_token=ebd910dd&x-expires=1752804000&x-signature=kGUaFgU2L5drDcN%2FPuWkoyriMGQ%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=81f88b70&idc=my","avatarMedium":"https://p16-sign-va.tiktokcdn.com/musically-maliva-obj/1594805258216454~tplv-tiktokx-cropcenter:720:720.jpeg?dr=14579&refresh_token=975efecb&x-expires=1752804000&x-signature=KOZr2auViyiX0xbQ8LlHdYz1l9w%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=81f88b70&idc=my","avatarThumb":"https://p16-sign-va.tiktokcdn.com/musically-maliva-obj/1594805258216454~tplv-tiktokx-cropcenter:100:100.jpeg?dr=14579&refresh_token=79d041ee&x-expires=1752804000&x-signature=SYCZtwIWMOx50C%2BIBWq%2FyZ0AFeg%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=81f88b70&idc=my","signature":"","createTime":1429016409,"verified":false,"secUid":"MS4wLjABAAAAhgAWRIclgUtNmwAj_3ZKXOh37UtyFdnzz8QZ_iGzOJQ","ftc":false,"relation":0,"openFavorite":false,"commentSetting":0,"commerceUserInfo":{"commerceUser":false},"duetSetting":0,"stitchSetting":0,"privateAccount":false,"secret":false,"isADVirtual":false,"roomId":"","uniqueIdModifyTime":0,"ttSeller":false,"region":"","downloadSetting":0,"profileTab":{"showMusicTab":false,"showQuestionTab":false,"showPlayListTab":false},"followingVisibility":1,"recommendReason":"","nowInvitationCardUrl":"","nickNameModifyTime":0,"isEmbedBanned":false,"canExpPlaylist":true,"profileEmbedPermission":3,"language":"","eventList":[],"suggestAccountBind":false,"isOrganization":0,"UserStoryStatus":0},"stats":{"followerCount":91200,"followingCount":34,"heart":0,"heartCount":0,"videoCount":0,"diggCount":0,"friendCount":0},"statsV2":{"followerCount":"91211","followingCount":"34","heart":"0","heartCount":"0","videoCount":"0","diggCount":"0","friendCount":"0"},"itemList":[]}}
+
+    get followers:
+    url = http://localhost:3000/api/tiktok?action=getFollowers&id=tuan_nguyen_3009

@@ -10,7 +10,6 @@ export interface Campaign {
   total_credits: number
   remaining_credits: number
   status: 'active' | 'paused' | 'completed'
-  expires_at?: string
   created_at: string
   updated_at: string
 
@@ -57,6 +56,7 @@ export interface CreateCampaignRequest {
   interaction_type: 'like' | 'comment' | 'follow' | 'view'
   target_count: number
   credits_per_action: number
+  tiktok_video_id?: string
 }
 
 export interface PerformActionRequest {

@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
           title,
           description,
           video_url,
-          thumbnail_url,
+          video_id,
           category,
           tiktok_video_id
         )

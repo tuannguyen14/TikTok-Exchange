@@ -58,7 +58,7 @@ export function isProtectedRoute(pathname: string): boolean {
 export function isAuthRoute(pathname: string): boolean {
   const authRoutes = [
     '/auth/login',
-    '/auth/register',
+    '/auth/login',
     '/auth/reset-password',
   ]
   

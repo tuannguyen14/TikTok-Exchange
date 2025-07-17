@@ -1,85 +1,68 @@
-// src/app/[locale]/videos/new/page.tsx (Server Component)
-import { Suspense } from 'react';
-import { redirect } from 'next/navigation';
-import { createServerSupabaseClient } from '@/lib/supabase/supabase-server';
-import CreateCampaignClient from './CreateCampaignClient';
-import CreateCampaignSkeleton from '@/components/campaigns/CreateCampaignSkeleton';
+// 1. Main Create Campaign Page: src/app/[locale]/campaigns/create/page.tsx
+'use server';
 
-async function getCreateCampaignData() {
-  const supabase = await createServerSupabaseClient();
-  
-  // Get authenticated user
-  const { data: { user }, error: userError } = await supabase.auth.getUser();
-  
-  if (userError || !user) {
-    redirect('/auth/login');
-  }
+import { getTranslations } from 'next-intl/server';
+import CreateCampaignContainer from './components/CreateCampaignContainer';
 
-  // Get user profile
-  const { data: profile, error: profileError } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', user.id)
-    .single();
+export default async function CreateCampaignPage({ params }: { params: Promise<{ locale: string }> }) {
+    const { locale } = await params;
 
-  if (profileError || !profile) {
-    throw new Error('Profile not found');
-  }
+    const t = await getTranslations({ locale, namespace: 'CreateCampaign' });
 
-  // Check if TikTok is connected
-  if (!profile.tiktok_username) {
-    redirect('/profile?action=link-tiktok');
-  }
-
-  // Get credit values reference
-  const { data: creditValues, error: creditError } = await supabase
-    .from('action_credit_values')
-    .select('*');
-
-  const formattedCreditValues = creditValues?.reduce((acc, item) => {
-    acc[item.action_type] = item.credit_value;
-    return acc;
-  }, {} as Record<string, number>) || {
-    view: 1,
-    like: 2,
-    comment: 3,
-    follow: 5
-  };
-
-  return {
-    profile,
-    user,
-    creditValues: formattedCreditValues
-  };
-}
-
-export default async function CreateCampaignPage({ 
-  params 
-}: { 
-  params: Promise<{ locale: string }> 
-}) {
-  const { locale } = await params;
-
-  return (
-    <Suspense fallback={<CreateCampaignSkeleton />}>
-      <CreateCampaignContent locale={locale} />
-    </Suspense>
-  );
-}
-
-async function CreateCampaignContent({ locale }: { locale: string }) {
-  try {
-    const data = await getCreateCampaignData();
+    const serverTranslations = {
+        title: t('title'),
+        subtitle: t('subtitle'),
+        steps: {
+            selectType: t('steps.selectType'),
+            configure: t('steps.configure'),
+            review: t('steps.review'),
+        },
+        campaignTypes: {
+            video: {
+                title: t('campaignTypes.video.title'),
+                description: t('campaignTypes.video.description'),
+                interactions: {
+                    view: t('campaignTypes.video.interactions.view'),
+                    like: t('campaignTypes.video.interactions.like'),
+                    comment: t('campaignTypes.video.interactions.comment'),
+                }
+            },
+            follow: {
+                title: t('campaignTypes.follow.title'),
+                description: t('campaignTypes.follow.description'),
+            }
+        },
+        form: {
+            videoUrl: t('form.videoUrl'),
+            videoUrlPlaceholder: t('form.videoUrlPlaceholder'),
+            interactionType: t('form.interactionType'),
+            creditsPerAction: t('form.creditsPerAction'),
+            targetCount: t('form.targetCount'),
+            duration: t('form.duration'),
+            totalCost: t('form.totalCost'),
+            verifyVideo: t('form.verifyVideo'),
+            videoVerification: t('form.videoVerification'),
+            confirm: t('form.confirm'),
+        },
+        buttons: {
+            next: t('buttons.next'),
+            back: t('buttons.back'),
+            verify: t('buttons.verify'),
+            create: t('buttons.create'),
+            cancel: t('buttons.cancel'),
+        },
+        messages: {
+            invalidUrl: t('messages.invalidUrl'),
+            verificationFailed: t('messages.verificationFailed'),
+            insufficientCredits: t('messages.insufficientCredits'),
+            success: t('messages.success'),
+        }
+    };
 
     return (
-      <CreateCampaignClient 
-        locale={locale}
-        profile={data.profile}
-        creditValues={data.creditValues}
-      />
+        <CreateCampaignContainer
+            locale={locale}
+            serverTranslations={serverTranslations}
+        />
     );
-  } catch (error) {
-    console.error('Create campaign error:', error);
-    redirect('/auth/login');
-  }
 }

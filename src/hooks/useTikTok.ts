@@ -1,95 +1,280 @@
-// src/hooks/useTikTok.ts
-import { useState, useCallback } from 'react';
+// hooks/use-tiktok.ts
 
-interface TikTokUser {
-  uniqueId: string;
-  nickname: string;
-  avatarLarger: string;
-  avatarMedium: string;
-  avatarThumb: string;
-  signature: string;
-  verified: boolean;
-  privateAccount: boolean;
+import { useState, useEffect, useCallback } from 'react';
+import {
+  tiktokApi,
+  TikTokUserInfo,
+  TikTokVideoInfo,
+  FollowsListResponse
+} from '@/lib/api/tiktok';
+
+// Generic hook state interface
+interface ApiState<T> {
+  data: T | null;
+  loading: boolean;
+  error: string | null;
 }
 
-interface TikTokStats {
-  followerCount: number;
-  followingCount: number;
-  heartCount: number;
-  videoCount: number;
-}
+// Hook for getting user profile
+export function useTikTokProfile(username: string | null) {
+  const [state, setState] = useState<ApiState<TikTokUserInfo>>({
+    data: null,
+    loading: false,
+    error: null
+  });
 
-interface TikTokProfile {
-  user: TikTokUser;
-  stats: TikTokStats;
-}
+  const fetchProfile = useCallback(async () => {
+    if (!username) return;
 
-// Cache để tránh fetch liên tục
-const tiktokCache = new Map<string, { data: TikTokProfile; timestamp: number }>();
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+    setState(prev => ({ ...prev, loading: true, error: null }));
 
-export const useTikTok = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchProfile = useCallback(async (username: string): Promise<TikTokProfile | null> => {
     try {
-      // Check cache first
-      const cached = tiktokCache.get(username);
-      if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
-        return cached.data;
-      }
+      const response = await tiktokApi.getProfile(username);
 
-      setLoading(true);
-      setError(null);
-
-      const response = await fetch(`/api/tiktok?action=getProfile&id=${username}`);
-      const result = await response.json();
-
-      if (result.success && result.data) {
-        const profileData = result.data as TikTokProfile;
-        
-        // Cache the result
-        tiktokCache.set(username, {
-          data: profileData,
-          timestamp: Date.now()
+      if (response.success && response.data) {
+        setState({
+          data: response.data,
+          loading: false,
+          error: null
         });
-
-        return profileData;
       } else {
-        setError('Profile not found or private');
-        return null;
+        setState({
+          data: null,
+          loading: false,
+          error: response.error || 'Failed to fetch profile'
+        });
       }
-    } catch (err) {
-      console.error('TikTok fetch error:', err);
-      setError('Failed to fetch TikTok profile');
-      return null;
+    } catch (error) {
+      setState({
+        data: null,
+        loading: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  }, [username]);
+
+  useEffect(() => {
+    fetchProfile();
+  }, [fetchProfile]);
+
+  return {
+    ...state,
+    refetch: fetchProfile
+  };
+}
+
+// Hook for getting user followers
+export function useTikTokFollowers(username: string | null) {
+  const [state, setState] = useState<ApiState<{
+    followers: Array<any>;
+    total: number;
+    responseData: FollowsListResponse | null;
+  }>>({
+    data: null,
+    loading: false,
+    error: null
+  });
+
+  const fetchFollowers = useCallback(async () => {
+    if (!username) return;
+
+    setState(prev => ({ ...prev, loading: true, error: null }));
+
+    try {
+      const response = await tiktokApi.getFollowers(username);
+
+      if (response.success && response.data) {
+        setState({
+          data: response.data,
+          loading: false,
+          error: null
+        });
+      } else {
+        setState({
+          data: null,
+          loading: false,
+          error: response.error || 'Failed to fetch followers'
+        });
+      }
+    } catch (error) {
+      setState({
+        data: null,
+        loading: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  }, [username]);
+
+  useEffect(() => {
+    fetchFollowers();
+  }, [fetchFollowers]);
+
+  return {
+    ...state,
+    refetch: fetchFollowers
+  };
+}
+
+// Hook for getting video information
+export function useTikTokVideo(videoLink: string | null) {
+  const [state, setState] = useState<ApiState<TikTokVideoInfo>>({
+    data: null,
+    loading: false,
+    error: null
+  });
+
+  const fetchVideoInfo = useCallback(async () => {
+    if (!videoLink) return;
+
+    setState(prev => ({ ...prev, loading: true, error: null }));
+
+    try {
+      const response = await tiktokApi.getVideoInfo(videoLink);
+
+      if (response.success && response.data) {
+        setState({
+          data: response.data,
+          loading: false,
+          error: null
+        });
+      } else {
+        setState({
+          data: null,
+          loading: false,
+          error: response.error || 'Failed to fetch video info'
+        });
+      }
+    } catch (error) {
+      setState({
+        data: null,
+        loading: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  }, [videoLink]);
+
+  useEffect(() => {
+    fetchVideoInfo();
+  }, [fetchVideoInfo]);
+
+  return {
+    ...state,
+    refetch: fetchVideoInfo
+  };
+}
+
+// Hook for batch profile fetching
+export function useTikTokMultipleProfiles(usernames: string[]) {
+  const [state, setState] = useState<ApiState<Array<{ username: string; data: any }>>>({
+    data: null,
+    loading: false,
+    error: null
+  });
+
+  const fetchMultipleProfiles = useCallback(async () => {
+    if (usernames.length === 0) return;
+
+    setState(prev => ({ ...prev, loading: true, error: null }));
+
+    try {
+      const response = await tiktokApi.getMultipleProfiles(usernames);
+
+      if (response.success) {
+        setState({
+          data: response.results,
+          loading: false,
+          error: null
+        });
+      } else {
+        setState({
+          data: null,
+          loading: false,
+          error: 'Failed to fetch multiple profiles'
+        });
+      }
+    } catch (error) {
+      setState({
+        data: null,
+        loading: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  }, [usernames]);
+
+  useEffect(() => {
+    fetchMultipleProfiles();
+  }, [fetchMultipleProfiles]);
+
+  return {
+    ...state,
+    refetch: fetchMultipleProfiles
+  };
+}
+
+// Hook for manual API calls (imperative)
+export function useTikTokApi() {
+  const [loading, setLoading] = useState(false);
+
+  const getProfile = useCallback(async (username: string) => {
+    setLoading(true);
+    try {
+      const response = await tiktokApi.getProfile(username);
+      return response;
     } finally {
       setLoading(false);
     }
   }, []);
 
-  const getCachedProfile = useCallback((username: string): TikTokProfile | null => {
-    const cached = tiktokCache.get(username);
-    if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
-      return cached.data;
-    }
-    return null;
-  }, []);
-
-  const clearCache = useCallback((username?: string) => {
-    if (username) {
-      tiktokCache.delete(username);
-    } else {
-      tiktokCache.clear();
+  const getFollowers = useCallback(async (username: string) => {
+    setLoading(true);
+    try {
+      const response = await tiktokApi.getFollowers(username);
+      return response;
+    } finally {
+      setLoading(false);
     }
   }, []);
 
-  return { 
-    fetchProfile, 
-    getCachedProfile, 
-    clearCache, 
-    loading, 
-    error 
+  const getVideoInfo = useCallback(async (videoLink: string) => {
+    setLoading(true);
+    try {
+      const response = await tiktokApi.getVideoInfo(videoLink);
+      return response;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const checkUserExists = useCallback(async (username: string) => {
+    setLoading(true);
+    try {
+      const exists = await tiktokApi.userExists(username);
+      return exists;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const getFormattedStats = useCallback(async (username: string) => {
+    setLoading(true);
+    try {
+      const stats = await tiktokApi.getFormattedStats(username);
+      return stats;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  return {
+    loading,
+    getProfile,
+    getFollowers,
+    getVideoInfo,
+    checkUserExists,
+    getFormattedStats,
+    // Utility methods
+    extractUsername: tiktokApi.extractUsername,
+    extractVideoId: tiktokApi.extractVideoId,
+    formatCount: tiktokApi.formatCount
   };
-};
+}

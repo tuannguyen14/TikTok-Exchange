@@ -18,16 +18,6 @@ const AUTH_ROUTES = [
   '/auth/register',
 ]
 
-// Public routes that don't need any protection
-const PUBLIC_ROUTES = [
-  '/',
-  '/about',
-  '/contact',
-  '/pricing',
-  '/terms',
-  '/privacy',
-]
-
 // API routes that should be excluded from middleware
 const API_ROUTES = [
   '/api',
@@ -41,12 +31,11 @@ const API_ROUTES = [
 const intlMiddleware = createIntlMiddleware({
   locales: routing.locales,
   defaultLocale: routing.defaultLocale,
-  localePrefix: 'always', // Always show locale in URL
+  localePrefix: 'always',
 })
 
 // Helper function to check if path is protected
 function isProtectedRoute(pathname: string): boolean {
-  // Remove locale prefix to check the actual route
   const pathWithoutLocale = pathname.replace(/^\/[a-z]{2}/, '') || '/'
   return PROTECTED_ROUTES.some(route => 
     pathWithoutLocale === route || pathWithoutLocale.startsWith(route + '/')
@@ -80,34 +69,29 @@ function getLocaleFromPathname(pathname: string): string | null {
 
 // Helper function to detect locale from request
 function detectLocale(request: NextRequest): string {
-  // 1. Check if locale is in URL
   const localeFromPath = getLocaleFromPathname(request.nextUrl.pathname)
   if (localeFromPath) {
     return localeFromPath
   }
 
-  // 2. Check locale from cookie
   const localeFromCookie = request.cookies.get('NEXT_LOCALE')?.value
   if (localeFromCookie && routing.locales.includes(localeFromCookie as any)) {
     return localeFromCookie
   }
 
-  // 3. Check Accept-Language header
   const acceptLanguage = request.headers.get('Accept-Language')
   if (acceptLanguage) {
-    // Parse Accept-Language header
     const languages = acceptLanguage
       .split(',')
       .map(lang => {
         const [code, q] = lang.trim().split(';q=')
         return { 
-          code: code.split('-')[0], // Get main language code (en from en-US)
+          code: code.split('-')[0],
           quality: q ? parseFloat(q) : 1.0 
         }
       })
       .sort((a, b) => b.quality - a.quality)
 
-    // Find first matching locale
     for (const { code } of languages) {
       if (routing.locales.includes(code as any)) {
         return code
@@ -115,7 +99,6 @@ function detectLocale(request: NextRequest): string {
     }
   }
 
-  // 4. Default locale
   return routing.defaultLocale
 }
 
@@ -132,7 +115,6 @@ export async function middleware(request: NextRequest) {
     const locale = detectLocale(request)
     const url = new URL(`/${locale}`, request.url)
     
-    // Preserve search params
     if (searchParams.toString()) {
       url.search = searchParams.toString()
     }
@@ -146,7 +128,6 @@ export async function middleware(request: NextRequest) {
     const locale = detectLocale(request)
     const url = new URL(`/${locale}${pathname}`, request.url)
     
-    // Preserve search params
     if (searchParams.toString()) {
       url.search = searchParams.toString()
     }
@@ -158,12 +139,21 @@ export async function middleware(request: NextRequest) {
   const { supabase, response } = createMiddlewareClient(request)
 
   try {
-    // Get authenticated user (more secure than getSession)
+    // Get authenticated user
     const { data: { user }, error } = await supabase.auth.getUser()
     
-    const isAuthenticated = !error && !!user
+    const isAuthenticated = !!user && !error
     const isProtected = isProtectedRoute(pathname)
     const isAuth = isAuthRoute(pathname)
+
+    console.log('Auth check:', { 
+      pathname, 
+      isAuthenticated, 
+      isProtected, 
+      isAuth, 
+      user: user?.email || 'none',
+      error: error?.message || 'none'
+    })
 
     // If user is authenticated and trying to access auth pages, redirect to dashboard
     if (isAuthenticated && isAuth) {
@@ -172,22 +162,23 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(url)
     }
 
-    // If user is not authenticated and trying to access protected routes, redirect to login
-    if (!isAuthenticated && isProtected) {
-      const locale = getLocaleFromPathname(pathname) || routing.defaultLocale
-      const url = new URL(`/${locale}/auth/login`, request.url)
-      
-      // Add redirect param to return to original page after login
-      const returnTo = encodeURIComponent(pathname + (searchParams.toString() ? `?${searchParams.toString()}` : ''))
-      url.searchParams.set('returnTo', returnTo)
-      
-      return NextResponse.redirect(url)
+    // FIX: Kiểm tra chặt chẽ hơn cho protected routes
+    if (isProtected) {
+      if (!isAuthenticated) {
+        const locale = getLocaleFromPathname(pathname) || routing.defaultLocale
+        const url = new URL(`/${locale}/auth/login`, request.url)
+        
+        const returnTo = encodeURIComponent(pathname + (searchParams.toString() ? `?${searchParams.toString()}` : ''))
+        url.searchParams.set('returnTo', returnTo)
+        
+        console.log('Redirecting to login:', url.toString())
+        return NextResponse.redirect(url)
+      }
     }
 
     // Apply next-intl middleware for locale handling
     const intlResponse = intlMiddleware(request)
     
-    // If intl middleware wants to redirect, return that response
     if (intlResponse instanceof Response && intlResponse.status >= 300 && intlResponse.status < 400) {
       return intlResponse
     }
@@ -196,20 +187,34 @@ export async function middleware(request: NextRequest) {
     const currentLocale = getLocaleFromPathname(pathname)
     if (currentLocale) {
       response.cookies.set('NEXT_LOCALE', currentLocale, {
-        maxAge: 60 * 60 * 24 * 365, // 1 year
+        maxAge: 60 * 60 * 24 * 365,
         httpOnly: false,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
       })
     }
 
-    // Return the response with potentially updated cookies
     return response
 
   } catch (error) {
     console.error('Middleware error:', error)
     
-    // If there's an error with auth, continue with intl middleware
+    // FIX: Nếu có lỗi với auth, vẫn cần kiểm tra protected routes
+    const isProtected = isProtectedRoute(pathname)
+    
+    if (isProtected) {
+      // Nếu không thể xác thực và đang truy cập protected route
+      // -> redirect về login
+      const locale = getLocaleFromPathname(pathname) || routing.defaultLocale
+      const url = new URL(`/${locale}/auth/login`, request.url)
+      
+      const returnTo = encodeURIComponent(pathname + (searchParams.toString() ? `?${searchParams.toString()}` : ''))
+      url.searchParams.set('returnTo', returnTo)
+      
+      return NextResponse.redirect(url)
+    }
+    
+    // Nếu không phải protected route, tiếp tục với intl middleware
     return intlMiddleware(request)
   }
 }

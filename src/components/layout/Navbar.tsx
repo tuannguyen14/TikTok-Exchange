@@ -33,7 +33,7 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useAuth } from '@/hooks/useAuth'
-import { useTikTok } from '@/hooks/useTikTok'
+// import { useTikTok } from '@/hooks/useTikTok'
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -52,20 +52,20 @@ export default function Navbar() {
   } = useAuth()
 
   // Use TikTok hook
-  const { fetchProfile } = useTikTok()
+  // const { fetchProfile } = useTikTok()
 
   // Fetch TikTok avatar when profile changes
-  useEffect(() => {
-    if (profile?.tiktok_username) {
-      fetchProfile(profile.tiktok_username).then(data => {
-        if (data?.user?.avatarMedium) {
-          setTikTokAvatar(data.user.avatarMedium)
-        }
-      })
-    } else {
-      setTikTokAvatar(null)
-    }
-  }, [profile?.tiktok_username, fetchProfile])
+  // useEffect(() => {
+  //   if (profile?.tiktok_username) {
+  //     fetchProfile(profile.tiktok_username).then(data => {
+  //       if (data?.user?.avatarMedium) {
+  //         setTikTokAvatar(data.user.avatarMedium)
+  //       }
+  //     })
+  //   } else {
+  //     setTikTokAvatar(null)
+  //   }
+  // }, [profile?.tiktok_username, fetchProfile])
 
   // Handle logout
   const handleLogout = async () => {
@@ -316,7 +316,7 @@ export default function Navbar() {
                       asChild
                       className="w-full justify-start bg-gradient-to-r from-[#FE2C55] to-[#FF4081]"
                     >
-                      <Link href={`/${locale}/auth/register`}>
+                      <Link href={`/${locale}/auth/login`}>
                         <UserPlus className="w-4 h-4 mr-2" />
                         Đăng ký
                       </Link>

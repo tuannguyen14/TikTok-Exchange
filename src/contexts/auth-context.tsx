@@ -121,7 +121,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       setState(prev => ({ ...prev, loading: true, error: null }));
 
-      const { data, error, success } = await apiCall('/api/auth/register', {
+      const { data, error, success } = await apiCall('/api/auth/login', {
         method: 'POST',
         body: JSON.stringify({
           email,

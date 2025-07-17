@@ -35,8 +35,8 @@ export const routing = defineRouting({
       vi: '/auth/login'
     },
     '/auth/register': {
-      en: '/auth/register',
-      vi: '/auth/register'
+      en: '/auth/login',
+      vi: '/auth/login'
     }
   }
 });

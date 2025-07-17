@@ -1,227 +1,324 @@
 // src/app/api/campaigns/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient } from "@/lib/supabase/supabase-server";
-import { CreateCampaignRequest } from '@/types/campaign';
+import { createServerSupabaseClient } from '@/lib/supabase/supabase-server';
 
-// GET /api/campaigns - Fetch available campaigns for interaction
 export async function GET(request: NextRequest) {
-    try {
-        const { searchParams } = new URL(request.url)
-        const page = parseInt(searchParams.get('page') || '1')
-        const limit = parseInt(searchParams.get('limit') || '10')
-        const interaction_type = searchParams.get('interaction_type')
-        const category = searchParams.get('category')
-        const min_credits = searchParams.get('min_credits')
-        const max_credits = searchParams.get('max_credits')
+  try {
+    const supabase = await createServerSupabaseClient();
 
-        const supabase = await createServerSupabaseClient()
+    // Verify authentication
+    const { data: { session }, error: authError } = await supabase.auth.getSession();
+    if (authError || !session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
-        // Get authenticated user
-        const { data: { user }, error: userError } = await supabase.auth.getUser()
-        if (userError || !user) {
-            return NextResponse.json(
-                { success: false, error: 'Authentication required' },
-                { status: 401 }
-            )
-        }
+    const { searchParams } = new URL(request.url);
+    const action = searchParams.get('action');
+    const userId = session.user.id;
+
+    switch (action) {
+      case 'list':
+        const status = searchParams.get('status');
+        const campaignType = searchParams.get('type');
+        const page = parseInt(searchParams.get('page') || '1');
+        const limit = parseInt(searchParams.get('limit') || '10');
+        const offset = (page - 1) * limit;
 
         let query = supabase
-            .from('active_campaigns')
-            .select(`
-        *,
-        videos!inner(title, description, category)
-      `)
-            .eq('status', 'active')
-            .neq('user_id', user.id) // Don't show user's own campaigns
-            .gt('remaining_credits', 0)
+          .from('campaigns')
+          .select('*')
+          .eq('user_id', userId)
+          .order('created_at', { ascending: false })
+          .range(offset, offset + limit - 1);
 
-        // Apply filters
-        if (interaction_type) {
-            query = query.eq('interaction_type', interaction_type)
+        if (status) {
+          query = query.eq('status', status);
         }
-        if (category) {
-            query = query.eq('videos.category', category)
-        }
-        if (min_credits) {
-            query = query.gte('credits_per_action', parseInt(min_credits))
-        }
-        if (max_credits) {
-            query = query.lte('credits_per_action', parseInt(max_credits))
+        if (campaignType) {
+          query = query.eq('campaign_type', campaignType);
         }
 
-        // Add pagination
-        const offset = (page - 1) * limit
-        query = query.range(offset, offset + limit - 1)
+        const { data: campaigns, error: campaignError } = await query;
 
-        // Order by creation date (newest first)
-        query = query.order('created_at', { ascending: false })
-
-        const { data: campaigns, error, count } = await query
-
-        if (error) {
-            console.error('Campaigns fetch error:', error)
-            return NextResponse.json(
-                { success: false, error: 'Failed to fetch campaigns' },
-                { status: 500 }
-            )
+        if (campaignError) {
+          return NextResponse.json({ error: campaignError.message }, { status: 500 });
         }
 
         // Get total count for pagination
-        const { count: totalCount, error: countError } = await supabase
-            .from('active_campaigns')
-            .select('*', { count: 'exact', head: true })
-            .eq('status', 'active')
-            .neq('user_id', user.id)
-            .gt('remaining_credits', 0)
+        let countQuery = supabase
+          .from('campaigns')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', userId);
 
-        const totalPages = Math.ceil((totalCount || 0) / limit)
+        if (status) {
+          countQuery = countQuery.eq('status', status);
+        }
+        if (campaignType) {
+          countQuery = countQuery.eq('campaign_type', campaignType);
+        }
+
+        const { count, error: countError } = await countQuery;
+
+        if (countError) {
+          return NextResponse.json({ error: countError.message }, { status: 500 });
+        }
 
         return NextResponse.json({
-            success: true,
-            data: {
-                campaigns: campaigns || [],
-                pagination: {
-                    page,
-                    limit,
-                    total: totalCount || 0,
-                    totalPages,
-                    hasMore: page < totalPages
-                }
+          success: true,
+          data: {
+            campaigns,
+            pagination: {
+              page,
+              limit,
+              total: count || 0,
+              totalPages: Math.ceil((count || 0) / limit)
             }
-        })
-    } catch (error) {
-        console.error('Campaigns API error:', error)
-        return NextResponse.json(
-            { success: false, error: 'Internal server error' },
-            { status: 500 }
-        )
+          }
+        });
+
+      case 'stats':
+        const { data: stats, error: statsError } = await supabase
+          .from('campaigns')
+          .select('status, campaign_type, total_credits, current_count, target_count')
+          .eq('user_id', userId);
+
+        if (statsError) {
+          return NextResponse.json({ error: statsError.message }, { status: 500 });
+        }
+
+        const campaignStats = {
+          total: stats.length,
+          active: stats.filter(c => c.status === 'active').length,
+          completed: stats.filter(c => c.status === 'completed').length,
+          paused: stats.filter(c => c.status === 'paused').length,
+          totalCreditsSpent: stats.reduce((sum, c) => sum + (c.total_credits || 0), 0),
+          totalActionsReceived: stats.reduce((sum, c) => sum + (c.current_count || 0), 0),
+          byType: {
+            video: stats.filter(c => c.campaign_type === 'video').length,
+            follow: stats.filter(c => c.campaign_type === 'follow').length
+          }
+        };
+
+        return NextResponse.json({
+          success: true,
+          data: campaignStats
+        });
+
+      default:
+        return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
     }
+  } catch (error) {
+    console.error('Campaigns API Error:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
 }
 
-// POST /api/campaigns - Create new campaign
 export async function POST(request: NextRequest) {
-    try {
-        const body: CreateCampaignRequest = await request.json()
+  try {
+    const supabase = await createServerSupabaseClient();
+
+    // Verify authentication
+    const { data: { session }, error: authError } = await supabase.auth.getSession();
+    if (authError || !session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const userId = session.user.id;
+    const body = await request.json();
+    const { action } = body;
+
+    switch (action) {
+      case 'create':
         const {
-            video_url,
-            video_title,
-            description,
-            category,
-            interaction_type,
-            target_count,
-            credits_per_action
-        } = body
+          campaign_type,
+          tiktok_video_id,
+          target_tiktok_username,
+          interaction_type,
+          credits_per_action,
+          target_count
+        } = body;
 
-        // Validation
-        if (!video_url || !interaction_type || !target_count || !credits_per_action) {
-            return NextResponse.json(
-                { success: false, error: 'Missing required fields' },
-                { status: 400 }
-            )
-        }
+        const total_credits = credits_per_action * target_count;
 
-        // Validate credit values (1/2/3/5 credits rule)
-        const validCredits = { view: 1, like: 2, comment: 3, follow: 5 }
-        if (credits_per_action !== validCredits[interaction_type]) {
-            return NextResponse.json(
-                {
-                    success: false,
-                    error: `Invalid credits for ${interaction_type}. Must be ${validCredits[interaction_type]}`
-                },
-                { status: 400 }
-            )
-        }
-
-        const supabase = await createServerSupabaseClient()
-
-        // Get authenticated user
-        const { data: { user }, error: userError } = await supabase.auth.getUser()
-        if (userError || !user) {
-            return NextResponse.json(
-                { success: false, error: 'Authentication required' },
-                { status: 401 }
-            )
-        }
-
-        // Get user profile to check credits
+        // Check user's credits balance
         const { data: profile, error: profileError } = await supabase
-            .from('profiles')
-            .select('credits')
-            .eq('id', user.id)
-            .single()
+          .from('profiles')
+          .select('credits')
+          .eq('id', userId)
+          .single();
 
         if (profileError || !profile) {
-            return NextResponse.json(
-                { success: false, error: 'User profile not found' },
-                { status: 404 }
-            )
+          return NextResponse.json({ error: 'Profile not found' }, { status: 404 });
         }
 
-        const totalCampaignCost = target_count * credits_per_action
-        if (profile.credits < totalCampaignCost) {
-            return NextResponse.json(
-                {
-                    success: false,
-                    error: `Insufficient credits. Need ${totalCampaignCost}, have ${profile.credits}`
-                },
-                { status: 400 }
-            )
-        }
-
-        // Extract TikTok video ID from URL
-        const tiktokVideoId = extractTikTokVideoId(video_url)
-        if (!tiktokVideoId) {
-            return NextResponse.json(
-                { success: false, error: 'Invalid TikTok URL' },
-                { status: 400 }
-            )
+        if (profile.credits < total_credits) {
+          return NextResponse.json({ error: 'Insufficient credits' }, { status: 400 });
         }
 
         // Start transaction
-        const { data, error } = await supabase.rpc('create_campaign_transaction', {
-            p_user_id: user.id,
-            p_video_url: video_url,
-            p_tiktok_video_id: tiktokVideoId,
-            p_video_title: video_title || '',
-            p_description: description || '',
-            p_category: category || 'general',
-            p_interaction_type: interaction_type,
-            p_target_count: target_count,
-            p_credits_per_action: credits_per_action,
-            p_total_credits: totalCampaignCost
-        })
+        const { data: campaign, error: campaignError } = await supabase
+          .from('campaigns')
+          .insert({
+            user_id: userId,
+            campaign_type,
+            tiktok_video_id,
+            target_tiktok_username,
+            interaction_type,
+            credits_per_action,
+            target_count,
+            current_count: 0,
+            total_credits,
+            remaining_credits: total_credits,
+            status: 'active'
+          })
+          .select()
+          .single();
 
-        if (error) {
-            console.error('Campaign creation error:', error)
-            return NextResponse.json(
-                { success: false, error: 'Failed to create campaign' },
-                { status: 500 }
-            )
+        if (campaignError) {
+          return NextResponse.json({ error: campaignError.message }, { status: 500 });
+        }
+
+        // Deduct credits from user
+        const { error: updateError } = await supabase
+          .from('profiles')
+          .update({ credits: profile.credits - total_credits })
+          .eq('id', userId);
+
+        if (updateError) {
+          // Rollback campaign creation
+          await supabase.from('campaigns').delete().eq('id', campaign.id);
+          return NextResponse.json({ error: 'Failed to deduct credits' }, { status: 500 });
+        }
+
+        // Create transaction record
+        const { error: transactionError } = await supabase
+          .from('transactions')
+          .insert({
+            user_id: userId,
+            type: 'spend',
+            amount: -total_credits,
+            balance_after: profile.credits - total_credits,
+            description: `Campaign created: ${campaign_type}`,
+            reference_id: campaign.id,
+            reference_type: 'campaign'
+          });
+
+        if (transactionError) {
+          console.error('Transaction record error:', transactionError);
         }
 
         return NextResponse.json({
-            success: true,
-            data: {
-                campaign_id: data,
-                message: 'Campaign created successfully'
-            }
-        })
-    } catch (error) {
-        console.error('Create campaign error:', error)
-        return NextResponse.json(
-            { success: false, error: 'Internal server error' },
-            { status: 500 }
-        )
-    }
-}
+          success: true,
+          data: campaign
+        });
 
-// Helper function to extract TikTok video ID from URL
-function extractTikTokVideoId(url: string): string | null {
-    try {
-        const regex = /(?:https?:\/\/)?(?:www\.)?tiktok\.com\/@[^\/]+\/video\/(\d+)/
-        const match = url.match(regex)
-        return match ? match[1] : null
-    } catch {
-        return null
+      case 'update':
+        const { id, status, credits_per_action: newCreditsPerAction } = body;
+
+        // Get current campaign
+        const { data: currentCampaign, error: getCampaignError } = await supabase
+          .from('campaigns')
+          .select('*')
+          .eq('id', id)
+          .eq('user_id', userId)
+          .single();
+
+        if (getCampaignError || !currentCampaign) {
+          return NextResponse.json({ error: 'Campaign not found' }, { status: 404 });
+        }
+
+        const updateData: any = {};
+        if (status) updateData.status = status;
+        if (newCreditsPerAction) updateData.credits_per_action = newCreditsPerAction;
+
+        const { data: updatedCampaign, error: updateCampaignError } = await supabase
+          .from('campaigns')
+          .update(updateData)
+          .eq('id', id)
+          .eq('user_id', userId)
+          .select()
+          .single();
+
+        if (updateCampaignError) {
+          return NextResponse.json({ error: updateCampaignError.message }, { status: 500 });
+        }
+
+        return NextResponse.json({
+          success: true,
+          data: updatedCampaign
+        });
+
+      case 'delete':
+        const { id: campaignId } = body;
+
+        // Get campaign details for refund
+        const { data: campaignToDelete, error: getCampaignToDeleteError } = await supabase
+          .from('campaigns')
+          .select('*')
+          .eq('id', campaignId)
+          .eq('user_id', userId)
+          .single();
+
+        if (getCampaignToDeleteError || !campaignToDelete) {
+          return NextResponse.json({ error: 'Campaign not found' }, { status: 404 });
+        }
+
+        // Check if campaign can be deleted (not completed)
+        if (campaignToDelete.status === 'completed') {
+          return NextResponse.json({ error: 'Cannot delete completed campaign' }, { status: 400 });
+        }
+
+        // Delete campaign
+        const { error: deleteCampaignError } = await supabase
+          .from('campaigns')
+          .delete()
+          .eq('id', campaignId)
+          .eq('user_id', userId);
+
+        if (deleteCampaignError) {
+          return NextResponse.json({ error: deleteCampaignError.message }, { status: 500 });
+        }
+
+        // Refund remaining credits
+        const refundAmount = campaignToDelete.remaining_credits;
+        if (refundAmount > 0) {
+          const { data: currentProfile, error: getProfileError } = await supabase
+            .from('profiles')
+            .select('credits')
+            .eq('id', userId)
+            .single();
+
+          if (!getProfileError && currentProfile) {
+            await supabase
+              .from('profiles')
+              .update({ credits: currentProfile.credits + refundAmount })
+              .eq('id', userId);
+
+            // Create refund transaction
+            await supabase
+              .from('transactions')
+              .insert({
+                user_id: userId,
+                type: 'refund',
+                amount: refundAmount,
+                balance_after: currentProfile.credits + refundAmount,
+                description: `Campaign deleted - refund`,
+                reference_id: campaignId,
+                reference_type: 'campaign'
+              });
+          }
+        }
+
+        return NextResponse.json({
+          success: true,
+          data: { refunded: refundAmount }
+        });
+
+      default:
+        return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
     }
+  } catch (error) {
+    console.error('Campaigns POST API Error:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
 }
