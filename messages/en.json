@@ -359,251 +359,294 @@
       "interactionType": "Select Interaction Type",
       "creditsPerAction": "Credits per Action",
       "targetCount": "Target Count",
-      "duration": "Campaign Duration",
       "totalCost": "Cost Summary",
       "verifyVideo": "Verify Video",
       "videoVerification": "Video Verification",
-      "confirm": "Confirm Details"
+      "confirm": "Confirm Details",
+      "verifying": "Verifying",
+      "success": "Video verified successfully!",
+      "creator": "Creator",
+      "ready": "Perfect! This video is ready for your campaign. Continue to configure your settings.",
+      "durationDays": "Campaign Duration",
+      "selectDuration": "Select Duration",
+      "quickBoost": "Quick boost",
+      "shortCampaign": "Short campaign",
+      "standard": "Standard",
+      "extended": "Extended",
+      "maximumReach": "Maximum reach",
+      "currentBalance": "Your current balance",
+      "balanceAfterCampaign": "Balance after campaign",
+      "insufficientCredits": "Insufficient Credits",
+      "insufficientCreditsDesc": "You need {amount} more credits to create this campaign.",
+      "topUpCredits": "Top Up Credits",
+      "targetInfo": "Target {type}s you want to receive for your video",
+      "followersTargetInfo": "Target number of new followers for your TikTok account",
+      "targetCountPlaceholder": "Enter target count (e.g., 1000)",
+      "creditsPerFollow": "credits per follow",
+      "loadingCampaign": "Loading campaign creator..."
     },
     "buttons": {
       "next": "Next",
       "back": "Back",
       "verify": "Verify",
       "create": "Create Campaign",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "creating": "Creating Campaign..."
     },
     "messages": {
       "invalidUrl": "Please enter a valid TikTok URL",
       "verificationFailed": "Failed to verify video. Please check the URL and try again.",
       "insufficientCredits": "Insufficient credits. Please top up your account.",
       "success": "Campaign created successfully!"
+    },
+    "review": {
+      "title": "Campaign Review",
+      "subtitle": "Please review all campaign details before launching. Your campaign will start immediately after creation.",
+      "campaignOverview": "Campaign Overview",
+      "videoEngagementCampaign": "Video Engagement Campaign",
+      "followerGrowthCampaign": "Follower Growth Campaign",
+      "boostVideoWith": "Boost your video with {type}s from real TikTok users",
+      "growFollowing": "Grow your TikTok following with authentic followers",
+      "targetVideo": "Target Video",
+      "targetAccount": "Target Account",
+      "videoId": "Video ID",
+      "currentStats": "Current Stats",
+      "followers": "Followers",
+      "following": "Following",
+      "likes": "Likes",
+      "comments": "Comments",
+      "shares": "Shares",
+      "views": "Views",
+      "targetInteraction": "Target Interaction",
+      "creditsPerAction": "Credits per {action}",
+      "accountDescription": "Your TikTok account will receive new followers",
+      "creditsPerFollow": "Credits per follow",
+      "costBreakdown": "Cost Breakdown",
+      "calculationDetails": "Calculation Details",
+      "targetGoal": "Target Goal",
+      "duration": "Duration",
+      "daysToComplete": "Days to complete campaign",
+      "creditsToReceive": "{type}s to receive",
+      "followersToReceive": "followers to receive",
+      "currentBalance": "Current Balance",
+      "balanceAfter": "Balance After",
+      "remainingCredits": "Remaining credits after campaign",
+      "sufficientBalance": "✓ Sufficient balance",
+      "insufficientCreditsWarning": "⚠️ Insufficient credits",
+      "needMoreCredits": "You need {amount} more credits to launch this campaign.",
+      "campaignTerms": "Campaign Terms & Launch",
+      "importantTerms": "Important Terms:",
+      "readyToLaunch": "Ready to Launch!",
+      "campaignStartsImmediately": "Your campaign will start immediately and begin attracting {type} from our community.",
+      "terms": {
+        "distributedToCommunity": "Campaign will be distributed to our verified user community",
+        "creditsOnlyOnCompletion": "Credits are only deducted when actions are successfully completed",
+        "pauseAnytime": "You can pause or cancel your campaign at any time",
+        "unusedCreditsRefunded": "Unused credits will be automatically refunded to your account",
+        "realUsers": "All interactions are performed by real, active TikTok users",
+        "resultsVary": "Results may vary based on content quality and user engagement"
+      }
+    }
+  },
+  "Exchange": {
+    "title": "Exchange",
+    "subtitle": "Earn credits by interacting with others",
+    "tabs": {
+      "videos": "Videos",
+      "follows": "Follows"
+    },
+    "campaignTypes": {
+      "video": "Video",
+      "follow": "Follow"
+    },
+    "actions": {
+      "like": "Like",
+      "view": "View",
+      "comment": "Comment",
+      "follow": "Follow",
+      "claimCredits": "Claim Credits",
+      "openTikTok": "Open TikTok",
+      "processing": "Processing...",
+      "claimed": "Claimed",
+      "completed": "Completed"
+    },
+    "stats": {
+      "likes": "Likes",
+      "views": "Views",
+      "comments": "Comments",
+      "followers": "Followers",
+      "following": "Following"
+    },
+    "campaign": {
+      "creditsPerAction": "Credits per action",
+      "remaining": "Remaining",
+      "progress": "Progress",
+      "target": "Target",
+      "current": "Current",
+      "status": "Status"
+    },
+    "alerts": {
+      "connectTikTok": {
+        "title": "Connect TikTok Account",
+        "message": "Please connect your TikTok account to participate in campaigns"
+      },
+      "error": {
+        "title": "Error Loading Campaigns",
+        "message": "Failed to load campaigns. Please try again."
+      }
+    },
+    "credits": {
+      "earn": "Earn Credits",
+      "remaining": "Remaining"
+    },
+    "progress": {
+      "label": "Progress"
+    },
+    "buttons": {
+      "skip": "Skip",
+      "claim": "Claim",
+      "processing": "Processing",
+      "completed": "Completed",
+      "campaignCompleted": "Campaign Completed",
+      "insufficientCredits": "Insufficient Credits",
+      "refresh": "Refresh"
+    },
+    "notifications": {
+      "connectTikTok": {
+        "title": "Connect TikTok Required",
+        "message": "You need to connect your TikTok account first"
+      },
+      "success": {
+        "title": "Action Completed!",
+        "creditsEarned": "Credits earned"
+      },
+      "error": {
+        "title": "Error Occurred",
+        "actionNotDetected": "Action Not Detected",
+        "tryAgain": "Please complete the action and try again",
+        "somethingWrong": "Something went wrong"
+      }
+    },
+    "filters": {
+      "all": "All",
+      "like": "Like",
+      "follow": "Follow",
+      "active": "Active",
+      "completed": "Completed",
+      "sortBy": "Sort by",
+      "newest": "Newest",
+      "oldest": "Oldest",
+      "highestCredits": "Highest Credits",
+      "lowestCredits": "Lowest Credits"
+    },
+    "empty": {
+      "title": "No Campaigns Available",
+      "description": "There are no active campaigns matching your filter at the moment. New campaigns are added regularly!",
+      "actionButton": "Refresh",
+      "features": {
+        "earnCredits": "Earn Credits",
+        "easyTasks": "Easy Tasks",
+        "growTogether": "Grow Together",
+        "community": "Community"
+      },
+      "checkBackSoon": "New campaigns are added regularly. Check back soon!"
     }
   },
   "Profile": {
     "title": "Profile",
-    "description": "Manage your account and TikTok integration",
-    "backToDashboard": "Back to Dashboard",
-    "memberSince": "Member since",
-    "tiktokNotConnected": "TikTok not connected",
-    "tabs": {
-      "overview": "Overview",
-      "stats": "Stats",
-      "settings": "Settings",
-      "history": "History"
+    "subtitle": "Manage your account and TikTok connection",
+    "sections": {
+      "account": "Account Information",
+      "tiktok": "TikTok Connection",
+      "stats": "Statistics",
+      "settings": "Settings"
     },
-    "overview": {
-      "campaigns": "Campaigns",
-      "earned": "Earned",
-      "actions": "Actions",
-      "received": "Received",
-      "tiktokStats": "TikTok Statistics",
+    "fields": {
+      "email": "Email",
+      "credits": "Credits",
+      "totalEarned": "Total Earned",
+      "totalSpent": "Total Spent",
+      "status": "Status",
+      "lastActive": "Last Active",
+      "memberSince": "Member Since",
+      "tiktokUsername": "TikTok Username",
       "followers": "Followers",
       "following": "Following",
       "likes": "Likes",
-      "videos": "Videos",
-      "campaignProgress": "Campaign Progress",
-      "completionRate": "Completion Rate",
-      "active": "Active",
-      "completed": "Completed"
-    },
-    "stats": {
-      "creditsOverview": "Credits Overview",
-      "currentBalance": "Current Balance",
-      "totalEarned": "Total Earned",
-      "totalSpent": "Total Spent",
-      "netCredits": "Net Credits",
-      "activityOverview": "Activity Overview",
-      "actionsPerformed": "Actions Performed",
-      "actionsReceived": "Actions Received",
-      "totalCampaigns": "Total Campaigns",
-      "successRate": "Success Rate",
-      "interactionBreakdown": "Interaction Breakdown",
-      "views": "Views",
-      "likes": "Likes",
-      "comments": "Comments",
-      "follows": "Follows",
-      "creditsEach": "{count} credits each"
-    },
-    "settings": {
-      "profileSettings": "Profile Settings",
-      "email": "Email",
-      "saveChanges": "Save Changes",
-      "cancel": "Cancel",
-      "tiktokIntegration": "TikTok Integration",
-      "tiktokConnected": "Your TikTok account @{username} is connected.",
-      "tiktokNotConnectedDesc": "Connect your TikTok account to start creating campaigns and earning credits.",
-      "connectTiktok": "Connect TikTok Account",
-      "changeTiktokUsername": "Change TikTok Username"
-    },
-    "history": {
-      "transactionHistory": "Transaction History",
-      "noTransactions": "No transaction history yet",
-      "startInteracting": "Start interacting to see your activity here",
-      "balance": "Balance"
-    },
-    "tiktokForm": {
-      "connectTitle": "Connect TikTok Account",
-      "updateTitle": "Update TikTok Username",
-      "username": "TikTok Username",
-      "usernamePlaceholder": "your_username",
-      "usernameHelp": "Enter your TikTok username without the @ symbol",
-      "securityNote": "We only need your username for verification. We never access your account or ask for passwords.",
-      "connect": "Connect",
-      "update": "Update",
-      "cancel": "Cancel"
+      "videos": "Videos"
     },
     "actions": {
-      "editProfile": "Edit Profile",
-      "saveProfile": "Save Profile",
       "connectTiktok": "Connect TikTok",
-      "viewTiktokProfile": "View TikTok Profile",
-      "copyEmail": "Copy Email",
-      "copied": "Copied!"
+      "updateTiktok": "Update TikTok",
+      "disconnectTiktok": "Disconnect TikTok",
+      "save": "Save Changes",
+      "cancel": "Cancel",
+      "refresh": "Refresh",
+      "preview": "Preview TikTok Account",
+      "confirm": "Confirm Connection"
     },
-    "alerts": {
-      "profileUpdated": "Profile updated successfully!",
-      "tiktokConnected": "TikTok account connected successfully!",
-      "errorUpdating": "Failed to update profile",
-      "errorConnecting": "Failed to connect TikTok account",
-      "enterUsername": "Please enter a TikTok username"
-    }
-  },
-  "Exchange": {
-    "title": "Exchange Hub",
-    "description": "Earn credits by interacting with campaigns",
-    "filters": {
-      "all": "All",
-      "views": "Views",
-      "likes": "Likes",
-      "comments": "Comments",
-      "follows": "Follows"
-    },
-    "stats": {
-      "activeCampaigns": "Active Campaigns",
-      "totalCreditsAvailable": "Total Credits Available",
-      "activeUsers": "Active Users"
-    },
-    "campaign": {
-      "earnCredits": "Earn {credits} credits",
-      "progress": "Progress",
-      "remaining": "{count} remaining",
-      "timeAgo": {
-        "justNow": "Just now",
-        "hoursAgo": "{hours}h ago",
-        "daysAgo": "{days}d ago"
+    "forms": {
+      "connectTiktok": {
+        "title": "Connect TikTok Account",
+        "description": "Enter your TikTok username to connect your account",
+        "placeholder": "Enter TikTok username (without @)",
+        "helperText": "Example: username (not @username)"
+      },
+      "preview": {
+        "title": "Preview TikTok Account",
+        "description": "Please confirm this is the correct TikTok account you want to connect",
+        "confirmMessage": "Is this the correct account you want to connect?",
+        "verified": "Verified",
+        "followers": "Followers",
+        "following": "Following",
+        "likes": "Likes",
+        "videos": "Videos"
       }
     },
-    "actions": {
-      "like": "Like",
-      "comment": "Comment",
-      "view": "View",
-      "follow": "Follow",
-      "performAction": "{action} to earn {credits} credits"
+    "notifications": {
+      "email": "Email Notifications",
+      "push": "Push Notifications",
+      "campaigns": "Campaign Updates",
+      "rewards": "Reward Notifications",
+      "emailDescription": "Receive email notifications for important updates",
+      "pushDescription": "Receive push notifications in your browser",
+      "campaignsDescription": "Get notified about your campaign status and updates",
+      "rewardsDescription": "Get notified when you earn credits from actions"
+    },
+    "messages": {
+      "loading": "Loading profile...",
+      "loadingTiktok": "Verifying TikTok account...",
+      "previewLoading": "Loading TikTok profile...",
+      "connectSuccess": "TikTok account connected successfully!",
+      "connectError": "Failed to connect TikTok account. Please check the username and try again.",
+      "updateSuccess": "Profile updated successfully!",
+      "updateError": "Failed to update profile. Please try again.",
+      "disconnectSuccess": "TikTok account disconnected successfully!",
+      "disconnectError": "Failed to disconnect TikTok account.",
+      "invalidUsername": "Invalid TikTok username. Please enter a valid username.",
+      "usernameExists": "This TikTok username is already connected to another account.",
+      "profileNotFound": "TikTok profile not found. Please check the username and try again."
+    },
+    "status": {
+      "active": "Active",
+      "banned": "Banned",
+      "pending": "Pending",
+      "inactive": "Inactive",
+      "connected": "Connected"
     },
     "empty": {
-      "title": "No campaigns found",
-      "description": "Try different filters or check back later!"
-    }
-  },
-  "Videos": {
-    "title": "My Videos",
-    "description": "Manage your campaigns and videos",
-    "createNew": "Create New Campaign",
-    "noCampaigns": "No campaigns yet",
-    "createFirst": "Create your first campaign",
-    "tabs": {
-      "all": "All",
-      "active": "Active",
-      "paused": "Paused",
-      "completed": "Completed"
+      "noTiktok": "No TikTok account connected",
+      "noTiktokDescription": "Connect your TikTok account to start earning credits and creating campaigns."
     },
-    "campaign": {
-      "title": "Video Title",
-      "status": "Status",
-      "progress": "Progress",
-      "credits": "Credits",
-      "actions": "Actions",
-      "pause": "Pause",
-      "resume": "Resume",
-      "edit": "Edit",
-      "delete": "Delete",
-      "analytics": "Analytics"
-    },
-    "form": {
-      "title": "Create Campaign",
-      "createDescription": "Set up your campaign to get TikTok interactions",
-      "previewDescription": "Review your campaign details before publishing",
-      "backToDashboard": "Back to Dashboard",
-      "backToEdit": "Back to Edit",
-      "videoUrl": "TikTok Video URL",
-      "videoUrlHelp": "Paste the full TikTok video URL (e.g., https://tiktok.com/@username/video/123456789)",
-      "videoTitle": "Video Title",
-      "videoTitleHelp": "A catchy title that describes your video content",
-      "description": "Description",
-      "descriptionHelp": "Optional description to help others understand your content",
-      "category": "Category",
-      "interactionType": "Interaction Type",
-      "targetCount": "Target Count",
-      "targetCountHelp": "How many interactions you want to receive (1-1000)",
-      "creditsPerAction": "Credits per Action",
-      "totalCost": "Total Cost",
-      "campaignCost": "Campaign Cost",
-      "currentCredits": "Current Credits",
-      "remaining": "Remaining",
-      "creditsSummary": "Credits Summary",
-      "campaignDetails": "Campaign Details",
-      "costHelp": "Total credits that will be deducted when you create this campaign",
-      "like": "Users will like your video",
-      "follow": "Users will follow your account",
-      "preview": "Preview Campaign",
-      "createCampaign": "Create Campaign",
-      "submit": "Create Campaign",
-      "cancel": "Cancel",
-      "videoValidation": {
-        "supportsAllUrls": "Supports all TikTok URL formats.",
-        "validating": "Validating video...",
-        "validDetected": "Valid TikTok video detected",
-        "preview": "Preview",
-        "confirmed": "Video confirmed and ready for campaign"
-      },
-      "VideoPreviewPopup": {
-        "confirmText": "Is this the correct video you want to create a campaign for?",
-        "cancel": "Cancel",
-        "yesContinue": "Yes, Continue"
-      },
-      "tips": {
-        "title": "Tips",
-        "tip1": "Use engaging titles to attract more participants",
-        "tip2": "Choose the right interaction type for your content",
-        "tip3": "Start with smaller target counts to test effectiveness",
-        "tip4": "Monitor your campaign progress in the dashboard"
-      },
-      "errors": {
-        "videoUrlRequired": "TikTok video URL is required",
-        "videoTitleRequired": "Video title is required",
-        "invalidTargetCount": "Target count must be between 1 and 1000",
-        "invalidTikTokUrl": "Please enter a valid TikTok video URL",
-        "insufficientCredits": "Insufficient credits. Need {cost}, but you have {available}",
-        "insufficientCreditsWarning": "You don't have enough credits for this campaign",
-        "createFailed": "Failed to create campaign. Please try again."
-      },
-      "success": {
-        "campaignCreated": "Campaign created successfully! Redirecting to your campaigns..."
+    "modals": {
+      "disconnect": {
+        "title": "Disconnect TikTok Account",
+        "message": "Are you sure you want to disconnect your TikTok account? You will need to reconnect it to create campaigns or earn credits."
       }
     },
-    "preview": {
-      "title": "Campaign Preview",
-      "description": "Review your campaign details before publishing",
-      "campaignDetails": "Campaign Details",
-      "videoDetails": "Video Details",
-      "campaignSettings": "Campaign Settings",
-      "costBreakdown": "Cost Breakdown",
-      "whatHappensNext": "What Happens Next",
-      "edit": "Edit",
-      "editCampaign": "Edit Campaign",
-      "confirmAndCreate": "Confirm & Create Campaign",
-      "creating": "Creating Campaign...",
-      "insufficientCredits": "Insufficient credits to create this campaign"
+    "common": {
+      "success": "Success",
+      "error": "Error"
     }
   },
   "Auth": {
@@ -615,7 +658,8 @@
       "submit": "Sign In",
       "noAccount": "Don't have an account?",
       "signUp": "Sign up",
-      "forgotPassword": "Forgot password?"
+      "forgotPassword": "Forgot password?",
+      "success": "Sign in successful!"
     },
     "register": {
       "title": "Create Account",
@@ -632,7 +676,8 @@
         "1": "10 free credits to start",
         "2": "Unlimited video interactions",
         "3": "Real TikTok growth results"
-      }
+      },
+      "success": "Sign up successful!"
     },
     "errors": {
       "invalidEmail": "Please enter a valid email",

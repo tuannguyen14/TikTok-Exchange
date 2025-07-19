@@ -3,7 +3,7 @@
     Có 2 ngôn ngữ chính: Vietnamese và English quản lý bằng next-intl.
     sử dụng các thư viện hiển thị Toast cho hiển thị thông báo.
     hiển thị loading bằng Lottie animation (mỗi lần chuyển page, load data, submit form,...)
-    lưu ý quan trọng: * tối ưu performance chia server và client hiệu quả nhất có thể.
+    lưu ý quan trọng: tối ưu performance chia server và client hiệu quả nhất có thể.
 
     Màu chủ đạo lấy từ TikTok
     Đỏ tươi #FE2C55 (màu đỏ đặc trưng TikTok)

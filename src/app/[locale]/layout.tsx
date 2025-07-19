@@ -8,6 +8,8 @@ import { routing } from '@/i18n/routing';
 import Navbar from '@/components/layout/Navbar';
 import { AuthProvider } from '@/contexts/auth-context';
 import { Analytics } from '@vercel/analytics/react';
+import { MantineProvider } from '@mantine/core';
+import { Notifications } from '@mantine/notifications';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -50,17 +52,20 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          <AuthProvider>
-            <div className="min-h-screen bg-background">
-              <Navbar />
-              <main>
-                {children}
-                <Analytics />
-              </main>
-            </div>
-          </AuthProvider>
-        </NextIntlClientProvider>
+        <MantineProvider >
+          <Notifications position="top-center" />
+          <NextIntlClientProvider locale={locale} messages={messages}>
+            <AuthProvider>
+              <div className="min-h-screen bg-background">
+                <Navbar />
+                <main>
+                  {children}
+                  <Analytics />
+                </main>
+              </div>
+            </AuthProvider>
+          </NextIntlClientProvider>
+        </MantineProvider>
       </body>
     </html>
   );

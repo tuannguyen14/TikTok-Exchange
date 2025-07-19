@@ -87,7 +87,7 @@ const TestimonialCard = ({
           transition={{ duration: 0.6, delay: index * 0.2 + 0.3 }}
           className="text-gray-600 dark:text-gray-300 leading-relaxed italic"
         >
-          "{content}"
+          &quot;{content}&quot;
         </motion.p>
 
         {/* Decorative elements */}

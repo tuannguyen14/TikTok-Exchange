@@ -2,9 +2,9 @@
 // src/app/[locale]/campaigns/page.tsx
 import { Suspense } from 'react';
 import { getTranslations } from 'next-intl/server';
+import { Container, Title, Text, Stack } from '@mantine/core';
 import CampaignsClient from './components/CampaignsClient';
-import LoadingSpinner from '@/components/ui/LoadingSpinner';
-
+import CampaignsPageSkeleton from './components/CampaignsPageSkeleton';
 
 export default async function CampaignsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -70,22 +70,24 @@ export default async function CampaignsPage({ params }: { params: Promise<{ loca
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          {serverTranslations.title}
-        </h1>
-        <p className="text-gray-600">
-          {serverTranslations.description}
-        </p>
-      </div>
+    <Container size="xl" py="md">
+      <Stack gap="xl">
+        <Stack gap="xs">
+          <Title order={1} size="h1">
+            {serverTranslations.title}
+          </Title>
+          <Text c="dimmed" size="md">
+            {serverTranslations.description}
+          </Text>
+        </Stack>
 
-      <Suspense fallback={<LoadingSpinner />}>
-        <CampaignsClient
-          locale={locale}
-          serverTranslations={serverTranslations}
-        />
-      </Suspense>
-    </div>
+        <Suspense fallback={<CampaignsPageSkeleton />}>
+          <CampaignsClient
+            locale={locale}
+            serverTranslations={serverTranslations}
+          />
+        </Suspense>
+      </Stack>
+    </Container>
   );
 }

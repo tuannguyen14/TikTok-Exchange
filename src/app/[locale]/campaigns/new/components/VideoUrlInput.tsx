@@ -1,9 +1,8 @@
-// 4. Video URL Input & Verification: src/app/[locale]/campaigns/create/components/VideoUrlInput.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LinkIcon, CheckCircleIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
+import { LinkIcon, CheckCircleIcon, ExclamationCircleIcon, EyeIcon } from '@heroicons/react/24/outline';
 import { useTikTokApi } from '@/hooks/useTikTok';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
@@ -74,7 +73,7 @@ export default function VideoUrlInput({
     if (num >= 1000) {
       return (num / 1000).toFixed(1) + 'K';
     }
-    return num.toString();
+    return num.toLocaleString();
   };
 
   useEffect(() => {
@@ -85,37 +84,40 @@ export default function VideoUrlInput({
   }, [value]);
 
   return (
-    <div className="space-y-4">
-      {/* URL Input */}
-      <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-700">
+    <div className="space-y-6">
+      {/* Enhanced URL Input */}
+      <div className="space-y-3">
+        <label className="block text-base font-semibold text-gray-900">
           {translations.form.videoUrl}
         </label>
-        <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <LinkIcon className="h-5 w-5 text-gray-400" />
+        <div className="relative group">
+          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <LinkIcon className="h-5 w-5 text-gray-500 group-focus-within:text-[#FE2C55] transition-colors" />
           </div>
           <input
             type="url"
             value={value}
             onChange={(e) => onChange(e.target.value)}
             placeholder={translations.form.videoUrlPlaceholder}
-            className="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FE2C55] focus:border-[#FE2C55] outline-none transition-colors"
+            className="block w-full pl-12 pr-32 py-4 text-gray-900 placeholder-gray-500 bg-white border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-[#FE2C55]/20 focus:border-[#FE2C55] outline-none transition-all duration-300 text-base font-medium shadow-sm hover:shadow-md"
           />
           <div className="absolute inset-y-0 right-0 flex items-center pr-3">
             <button
               type="button"
               onClick={handleVerify}
               disabled={isVerifying || !value.trim()}
-              className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-[#FE2C55] to-[#EE1D52] rounded-md hover:from-[#EE1D52] hover:to-[#FE2C55] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="inline-flex items-center px-6 py-2.5 text-sm font-bold text-white bg-gradient-to-r from-[#FE2C55] to-[#EE1D52] rounded-xl hover:from-[#EE1D52] hover:to-[#FE2C55] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-xl disabled:shadow-sm"
             >
               {isVerifying ? (
                 <>
                   <LoadingSpinner size="sm" />
-                  Verifying...
+                  <span>{translations.form.verifying}</span>
                 </>
               ) : (
-                translations.buttons.verify
+                <>
+                  <EyeIcon className="w-4 h-4 mr-2" />
+                  <span>{translations.buttons.verify}</span>
+                </>
               )}
             </button>
           </div>
@@ -123,82 +125,91 @@ export default function VideoUrlInput({
         
         {error && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex items-center space-x-2 text-red-600"
+            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            className="flex items-center space-x-3 text-red-600 bg-red-50 p-4 rounded-xl border border-red-200"
           >
-            <ExclamationCircleIcon className="h-5 w-5" />
-            <span className="text-sm">{error}</span>
+            <ExclamationCircleIcon className="h-5 w-5 flex-shrink-0" />
+            <span className="text-sm font-medium">{error}</span>
           </motion.div>
         )}
       </div>
 
-      {/* Verification Result */}
+      {/* Enhanced Verification Result */}
       <AnimatePresence>
         {verificationResult && (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="bg-white border border-gray-200 rounded-xl p-6 shadow-lg"
+            initial={{ opacity: 0, y: 30, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -30, scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 200, damping: 20 }}
+            className="bg-gradient-to-br from-white to-gray-50 border-2 border-green-200 rounded-2xl p-6 shadow-xl"
           >
-            <div className="flex items-center space-x-3 mb-4">
-              <CheckCircleIcon className="h-6 w-6 text-green-500" />
-              <h3 className="text-lg font-semibold text-gray-900">
-                {translations.form.videoVerification}
-              </h3>
+            <div className="flex items-center space-x-3 mb-6">
+              <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center shadow-lg">
+                <CheckCircleIcon className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-gray-900">
+                  {translations.form.videoVerification}
+                </h3>
+                <p className="text-sm text-gray-600">{translations.form.success}</p>
+              </div>
             </div>
 
-            <div className="flex space-x-4">
-              {/* Video Thumbnail */}
-              <div className="flex-shrink-0">
+            <div className="flex space-x-6">
+              {/* Enhanced Video Thumbnail */}
+              <div className="flex-shrink-0 relative group">
                 <img
                   src={verificationResult.url}
                   alt="Video thumbnail"
-                  className="w-24 h-24 object-cover rounded-lg"
+                  className="w-24 h-24 object-cover rounded-2xl shadow-lg group-hover:shadow-xl transition-shadow duration-300"
                 />
+                <div className="absolute inset-0 bg-black/20 rounded-2xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <EyeIcon className="w-6 h-6 text-white" />
+                </div>
               </div>
 
-              {/* Video Info */}
-              <div className="flex-1 space-y-3">
-                <div className="flex items-center space-x-4">
-                  <span className="text-sm text-gray-600">Creator:</span>
-                  <span className="font-medium text-gray-900">@{verificationResult.tiktokID}</span>
+              {/* Enhanced Video Info */}
+              <div className="flex-1 space-y-4">
+                <div className="flex items-center space-x-3">
+                  <span className="text-sm font-medium text-gray-600">{translations.form.creator}:</span>
+                  <div className="bg-gradient-to-r from-[#FE2C55] to-[#EE1D52] text-white px-3 py-1 rounded-full text-sm font-bold">
+                    @{verificationResult.tiktokID}
+                  </div>
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="text-center">
-                    <div className="text-lg font-bold text-gray-900">
-                      {formatCount(verificationResult.playCount)}
-                    </div>
-                    <div className="text-xs text-gray-500">Views</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-lg font-bold text-[#FE2C55]">
-                      {formatCount(verificationResult.diggCount)}
-                    </div>
-                    <div className="text-xs text-gray-500">Likes</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-lg font-bold text-gray-900">
-                      {formatCount(verificationResult.commentCount)}
-                    </div>
-                    <div className="text-xs text-gray-500">Comments</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-lg font-bold text-gray-900">
-                      {formatCount(verificationResult.shareCount)}
-                    </div>
-                    <div className="text-xs text-gray-500">Shares</div>
-                  </div>
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                  {[
+                    { label: 'Views', value: formatCount(verificationResult.playCount), color: 'text-blue-600', bg: 'bg-blue-50' },
+                    { label: 'Likes', value: formatCount(verificationResult.diggCount), color: 'text-[#FE2C55]', bg: 'bg-pink-50' },
+                    { label: 'Comments', value: formatCount(verificationResult.commentCount), color: 'text-emerald-600', bg: 'bg-emerald-50' },
+                    { label: 'Shares', value: formatCount(verificationResult.shareCount), color: 'text-purple-600', bg: 'bg-purple-50' }
+                  ].map((stat, index) => (
+                    <motion.div
+                      key={stat.label}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: index * 0.1 }}
+                      className={`text-center p-3 ${stat.bg} rounded-xl border border-gray-100`}
+                    >
+                      <div className={`text-lg font-bold ${stat.color}`}>
+                        {stat.value}
+                      </div>
+                      <div className="text-xs font-medium text-gray-700">{stat.label}</div>
+                    </motion.div>
+                  ))}
                 </div>
               </div>
             </div>
 
-            <div className="mt-4 p-3 bg-green-50 rounded-lg">
-              <p className="text-sm text-green-800">
-                ✓ Video verified successfully! You can now proceed to configure your campaign.
-              </p>
+            <div className="mt-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
+              <div className="flex items-center space-x-2">
+                <CheckCircleIcon className="w-5 h-5 text-green-600" />
+                <p className="text-sm font-medium text-green-800">
+                  {translations.form.ready}
+                </p>
+              </div>
             </div>
           </motion.div>
         )}

@@ -153,7 +153,7 @@ async function onGetProfile(id: string): Promise<[boolean, string | null, string
 export async function onGetTikTokProfile(id: string): Promise<[boolean, TikTokUserInfo | null]> {
     try {
         const [isExist, msToken, secUid, userInfo] = await onGetProfile(id);
-        console.log("secUid: " + secUid);
+        // console.log("secUid: " + secUid);
         return [isExist, userInfo];
     } catch (error) {
         console.error('Error in onGetTikTokProfile:', error);
@@ -221,8 +221,8 @@ export async function onGetFollowsList(id: string): Promise<[boolean, Array<any>
                 }
             });
 
-            console.log('Followers API URL:', url);
-            console.log('Response:', response.data);
+            // console.log('Followers API URL:', url);
+            // console.log('Response:', response.data);
 
             responseData = response.data;
             if (responseData) {
@@ -267,7 +267,7 @@ async function onGetVideoInfoFunction(videoLink: string): Promise<[boolean, TikT
         const htmlText = response.data;
         const secUidIndex = htmlText.indexOf("secUid");
 
-        console.log("secUidIndex: " + secUidIndex);
+        // console.log("secUidIndex: " + secUidIndex);
 
         if (secUidIndex === -1) {
             return [false, null];
@@ -286,7 +286,7 @@ async function onGetVideoInfoFunction(videoLink: string): Promise<[boolean, TikT
             const videoLink = jsonData['__DEFAULT_SCOPE__']['seo.abtest']['canonical'];
             const videoAvatars = jsonData['__DEFAULT_SCOPE__']['webapp.video-detail']['itemInfo']['itemStruct']['video']['zoomCover'];
 
-            console.log(jsonData['__DEFAULT_SCOPE__']['webapp.video-detail']['itemInfo']['itemStruct']['video']);
+            // console.log(jsonData['__DEFAULT_SCOPE__']['webapp.video-detail']['itemInfo']['itemStruct']['video']);
 
             // Define a regular expression to match the pattern
             const regex = /@([^/]+)\/video\/(\d+)/;

@@ -3,6 +3,12 @@ import { Suspense } from 'react';
 import CreateCampaignClient from './CreateCampaignClient';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
+// CreateCampaignContainer.tsx - Cập nhật ServerTranslations interface
+
+// CreateCampaignContainer.tsx - Cập nhật ServerTranslations interface
+
+// CreateCampaignContainer.tsx - Interface tương ứng
+
 interface ServerTranslations {
     title: string;
     subtitle: string;
@@ -30,13 +36,29 @@ interface ServerTranslations {
         videoUrl: string;
         videoUrlPlaceholder: string;
         interactionType: string;
-        creditsPerAction: string;
         targetCount: string;
-        duration: string;
         totalCost: string;
         verifyVideo: string;
         videoVerification: string;
         confirm: string;
+        verifying: string;
+        success: string;
+        creator: string;
+        ready: string;
+        durationDays: string;
+        selectDuration: string;
+        quickBoost: string;
+        shortCampaign: string;
+        standard: string;
+        extended: string;
+        maximumReach: string;
+        currentBalance: string;
+        balanceAfterCampaign: string;
+        insufficientCredits: string;
+        topUpCredits: string;
+        targetCountPlaceholder: string;
+        loadingCampaign: string;
+        // Bỏ: insufficientCreditsDesc, targetInfo, followersTargetInfo
     };
     buttons: {
         next: string;
@@ -44,12 +66,72 @@ interface ServerTranslations {
         verify: string;
         create: string;
         cancel: string;
+        creating: string;
     };
     messages: {
         invalidUrl: string;
         verificationFailed: string;
         insufficientCredits: string;
         success: string;
+    };
+    review: {
+        title: string;
+        subtitle: string;
+        campaignOverview: string;
+        videoEngagementCampaign: string;
+        followerGrowthCampaign: string;
+        growFollowing: string;
+        targetVideo: string;
+        targetAccount: string;
+        videoId: string;
+        currentStats: string;
+        views: string;
+        likes: string;
+        comments: string;
+        shares: string;
+        followers: string;
+        following: string;
+        targetInteraction: string;
+        accountDescription: string;
+        costBreakdown: string;
+        calculationDetails: string;
+        targetGoal: string;
+        duration: string;
+        daysToComplete: string;
+        followersToReceive: string;
+        currentBalance: string;
+        balanceAfter: string;
+        remainingCredits: string;
+        sufficientBalance: string;
+        insufficientCreditsWarning: string;
+        campaignTerms: string;
+        importantTerms: string;
+        readyToLaunch: string;
+        terms: {
+            distributedToCommunity: string;
+            creditsOnlyOnCompletion: string;
+            pauseAnytime: string;
+            unusedCreditsRefunded: string;
+            realUsers: string;
+            resultsVary: string;
+        };
+        // Bỏ: boostVideoWith, creditsPerAction, creditsToReceive, needMoreCredits, 
+        // campaignStartsImmediately, withinDays, withinWeeks
+    };
+    campaigns: {
+        status: {
+            active: string;
+            paused: string;
+            completed: string;
+            expired: string;
+        };
+        actions: {
+            pause: string;
+            resume: string;
+            edit: string;
+            delete: string;
+            view: string;
+        };
     };
 }
 

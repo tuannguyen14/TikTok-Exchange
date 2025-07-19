@@ -67,15 +67,22 @@ interface ApiResponse<T> {
     error?: string;
 }
 
-interface ProfileResponse extends ApiResponse<TikTokUserInfo> { }
+// interface ProfileResponse extends ApiResponse<TikTokUserInfo> { }
+type ProfileResponse = ApiResponse<TikTokUserInfo>;
 
-interface FollowersResponse extends ApiResponse<{
+// interface FollowersResponse extends ApiResponse<{
+//     followers: Array<any>;
+//     total: number;
+//     responseData: FollowsListResponse | null;
+// }> { }
+type FollowersResponse = ApiResponse<{
     followers: Array<any>;
     total: number;
     responseData: FollowsListResponse | null;
-}> { }
+}>;
 
-interface VideoInfoResponse extends ApiResponse<TikTokVideoInfo> { }
+// interface VideoInfoResponse extends ApiResponse<TikTokVideoInfo> { }
+type VideoInfoResponse = ApiResponse<TikTokVideoInfo>;
 
 // API Client Class
 export class TikTokApiClient {

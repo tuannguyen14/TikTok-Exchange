@@ -221,7 +221,7 @@ const FAQSection = () => {
             </h3>
             
             <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-2xl mx-auto">
-              Can't find the answer you're looking for? Our friendly support team is here to help you get started with TikGrow.
+              Can&apos;t find the answer you&apos;re looking for? Our friendly support team is here to help you get started with TikGrow.
             </p>
             
             <motion.button

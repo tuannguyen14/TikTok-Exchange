@@ -1,8 +1,10 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react';
 import { normalizeError, getUserFriendlyErrorMessage, logError, retryAsync } from '@/lib/utils/errors';
+import { createClient } from '@/lib/supabase/supabase';
 import type { User, AuthState, Profile, ApiResponse } from '@/types/auth';
+import type { RealtimeChannel } from '@supabase/supabase-js';
 
 export interface AuthContextType extends AuthState {
   signUp: (email: string, password: string) => Promise<{ error: string | null; success: boolean }>;
@@ -14,6 +16,7 @@ export interface AuthContextType extends AuthState {
   resetPassword: (email: string) => Promise<{ error: string | null; success: boolean }>;
   changePassword: (currentPassword: string, newPassword: string) => Promise<{ error: string | null; success: boolean }>;
   checkSession: () => Promise<void>;
+  realtimeCredits: number; // Realtime credits value
 }
 
 // Create context
@@ -72,6 +75,58 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     error: null,
     isAuthenticated: false,
   });
+  const [realtimeCredits, setRealtimeCredits] = useState(0);
+  const channelRef = useRef<RealtimeChannel | null>(null);
+
+  // Set up realtime subscription for credits
+  const setupRealtimeCredits = useCallback((userId: string, initialCredits: number) => {
+    // Clean up existing subscription
+    if (channelRef.current) {
+      const supabase = createClient();
+      supabase.removeChannel(channelRef.current);
+      channelRef.current = null;
+    }
+
+    // Set initial credits
+    setRealtimeCredits(initialCredits);
+
+    // Create new subscription
+    const supabase = createClient();
+    const channel = supabase
+      .channel(`credits:${userId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'profiles',
+          filter: `id=eq.${userId}`,
+        },
+        (payload) => {
+          console.log('Credits updated via realtime:', payload);
+          if (payload.new && 'credits' in payload.new) {
+            setRealtimeCredits(payload.new.credits);
+            // Also update the profile in state
+            setState(prev => ({
+              ...prev,
+              profile: prev.profile ? { ...prev.profile, credits: payload.new.credits } : null
+            }));
+          }
+        }
+      )
+      .subscribe();
+
+    channelRef.current = channel;
+  }, []);
+
+  // Clean up realtime subscription
+  const cleanupRealtimeCredits = useCallback(() => {
+    if (channelRef.current) {
+      const supabase = createClient();
+      supabase.removeChannel(channelRef.current);
+      channelRef.current = null;
+    }
+  }, []);
 
   // Check session from API
   const checkSession = useCallback(async () => {
@@ -88,6 +143,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           error: null,
           isAuthenticated: true,
         });
+        // Set up realtime credits
+        setupRealtimeCredits(data.user.id, data.profile.credits || 0);
       } else {
         setState({
           user: null,
@@ -96,6 +153,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           error: error,
           isAuthenticated: false,
         });
+        cleanupRealtimeCredits();
       }
     } catch (error) {
       setState({
@@ -105,13 +163,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         error: error instanceof Error ? error.message : 'Session check failed',
         isAuthenticated: false,
       });
+      cleanupRealtimeCredits();
     }
-  }, []);
+  }, [setupRealtimeCredits, cleanupRealtimeCredits]);
 
   // Initialize auth state
   useEffect(() => {
     checkSession();
   }, [checkSession]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      cleanupRealtimeCredits();
+    };
+  }, [cleanupRealtimeCredits]);
 
   // Sign up method (simplified - no username required)
   const signUp = async (
@@ -165,6 +231,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           error: null,
           isAuthenticated: true,
         });
+        // Set up realtime credits
+        setupRealtimeCredits(data.user.id, data.profile.credits || 0);
         return { error: null, success: true };
       } else {
         setState(prev => ({ ...prev, error, loading: false }));
@@ -186,7 +254,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         method: 'POST',
       });
 
-      // Always clear local state, even if API call fails
+      // Always clear local state and realtime subscription, even if API call fails
+      cleanupRealtimeCredits();
       setState({
         user: null,
         profile: null,
@@ -194,10 +263,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         error: success ? null : error,
         isAuthenticated: false,
       });
+      setRealtimeCredits(0);
 
       return { error: success ? null : error, success };
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Sign out failed';
+      cleanupRealtimeCredits();
       setState({
         user: null,
         profile: null,
@@ -205,6 +276,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         error: errorMessage,
         isAuthenticated: false,
       });
+      setRealtimeCredits(0);
       return { error: errorMessage, success: false };
     }
   };
@@ -232,6 +304,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           loading: false,
           error: null,
         }));
+        // Update realtime credits if changed
+        if (data.credits !== undefined) {
+          setRealtimeCredits(data.credits);
+        }
         return { error: null, success: true };
       } else {
         setState(prev => ({ ...prev, error, loading: false }));
@@ -259,6 +335,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           profile: data,
           error: null,
         }));
+        // Update realtime credits
+        if (data.credits !== undefined) {
+          setRealtimeCredits(data.credits);
+        }
         return { error: null, success: true };
       } else {
         return { error: error || 'Profile refresh failed', success: false };
@@ -357,6 +437,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     resetPassword,
     changePassword,
     checkSession,
+    realtimeCredits,
   };
 
   return (
@@ -417,11 +498,11 @@ export function useProfile() {
   return { profile, refreshProfile };
 }
 
-// Utility hook for credits only
+// Utility hook for credits only (updated to use realtime credits)
 export function useUserCredits() {
-  const { profile, refreshProfile } = useAuth();
+  const { profile, refreshProfile, realtimeCredits } = useAuth();
   return {
-    credits: profile?.credits || 0,
+    credits: realtimeCredits, // Use realtime credits instead of profile.credits
     totalEarned: profile?.total_earned || 0,
     totalSpent: profile?.total_spent || 0,
     refreshCredits: refreshProfile,

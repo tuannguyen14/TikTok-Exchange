@@ -1,66 +1,20 @@
 // src/types/profile.ts
-export interface ProfileStats {
-  totalCampaigns: number;
-  activeCampaigns: number;
-  completedCampaigns: number;
-  totalCreditsEarned: number;
-  totalCreditsSpent: number;
-  totalActionsPerformed: number;
-  totalActionsReceived: number;
-  joinDate: string;
-}
-
-export interface Transaction {
+export interface Profile {
   id: string;
-  type: 'earn' | 'spend' | 'bonus';
-  amount: number;
-  description: string;
+  email: string;
+  tiktok_username: string | null;
+  credits: number;
+  total_earned: number;
+  total_spent: number;
+  status: 'active' | 'banned' | 'pending' | 'inactive';
+  tiktok_stats: TikTokStats | null;
+  notification_settings: NotificationSettings;
+  last_active_at: string;
   created_at: string;
-  balance_after: number;
+  updated_at: string;
 }
 
 export interface TikTokStats {
-  followers?: number;
-  following?: number;
-  likes?: number;
-  videos?: number;
-  verified?: boolean;
-}
-
-export interface TikTokPreview {
-  username: string;
-  nickname: string;
-  avatar: string;
-  verified: boolean;
-  privateAccount: boolean;
-  signature: string;
-  stats: {
-    followers: number;
-    following: number;
-    likes: number;
-    videos: number;
-  };
-}
-
-export interface ProfileFormData {
-  email: string;
-  // Removed avatar_url since we get avatar from TikTok
-}
-
-// TikTok API Response Types
-export interface TikTokApiUser {
-  id: string;
-  uniqueId: string;
-  nickname: string;
-  avatarLarger: string;
-  avatarMedium: string;
-  avatarThumb: string;
-  signature: string;
-  verified: boolean;
-  privateAccount: boolean;
-}
-
-export interface TikTokApiStats {
   followerCount: number;
   followingCount: number;
   heartCount: number;
@@ -69,7 +23,56 @@ export interface TikTokApiStats {
   friendCount: number;
 }
 
+// TikTok API Response structure (from your existing API)
+export interface TikTokApiUser {
+  id: string;
+  shortId: string;
+  uniqueId: string;
+  nickname: string;
+  avatarLarger: string;
+  avatarMedium: string;
+  avatarThumb: string;
+  signature: string;
+  verified: boolean;
+  followerCount?: number;
+  followingCount?: number;
+  heartCount?: number;
+  videoCount?: number;
+}
+
+export interface TikTokApiStats {
+  followerCount: number;
+  followingCount: number;
+  heart: number;
+  heartCount: number;
+  videoCount: number;
+  diggCount: number;
+  friendCount: number;
+}
+
 export interface TikTokApiResponse {
-  user: TikTokApiUser;
-  stats: TikTokApiStats;
+  success: boolean;
+  data: {
+    user: TikTokApiUser;
+    stats: TikTokApiStats;
+    statsV2: TikTokApiStats;
+    itemList: any[];
+  };
+  error?: string;
+}
+
+export interface NotificationSettings {
+  email: boolean;
+  push: boolean;
+  campaigns: boolean;
+  rewards: boolean;
+}
+
+export interface UpdateProfileRequest {
+  tiktok_username?: string;
+  notification_settings?: NotificationSettings;
+}
+
+export interface ConnectTikTokRequest {
+  username: string;
 }
