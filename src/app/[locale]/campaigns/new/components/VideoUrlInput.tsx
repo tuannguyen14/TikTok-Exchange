@@ -22,7 +22,7 @@ export default function VideoUrlInput({
   const [isVerifying, setIsVerifying] = useState(false);
   const [verificationResult, setVerificationResult] = useState<any>(null);
   const [error, setError] = useState('');
-  const { getVideoInfo, extractVideoId } = useTikTokApi();
+  // const { getVideoInfo, extractVideoId } = useTikTokApi();
 
   const isValidUrl = (url: string) => {
     const patterns = [
@@ -48,15 +48,15 @@ export default function VideoUrlInput({
     setError('');
 
     try {
-      const result = await getVideoInfo(value);
+      // const result = await getVideoInfo(value);
       
-      if (result.success && result.data) {
-        setVerificationResult(result.data);
-        onVideoVerified(result.data);
-      } else {
-        setError(result.error || translations.messages.verificationFailed);
-        setVerificationResult(null);
-      }
+      // if (result.success && result.data) {
+      //   setVerificationResult(result.data);
+      //   onVideoVerified(result.data);
+      // } else {
+      //   setError(result.error || translations.messages.verificationFailed);
+      //   setVerificationResult(null);
+      // }
     } catch (err) {
       setError(translations.messages.verificationFailed);
       setVerificationResult(null);
