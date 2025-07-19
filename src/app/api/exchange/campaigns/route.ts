@@ -2,8 +2,6 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient } from '@/lib/supabase/supabase-server';
-import { getTikTokProfile, getTikTokVideoInfo } from '@/lib/utils/server-api';
-
 
 export async function GET(request: NextRequest) {
     try {
@@ -74,45 +72,10 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ success: false, error: 'Failed to fetch campaigns' }, { status: 500 });
         }
 
-        // Enrich campaigns with TikTok data
-        const enrichedCampaigns = await Promise.all(
-            campaigns.map(async (campaign) => {
-                try {
-                    if (campaign.campaign_type === 'video' && campaign.tiktok_video_id && campaign.target_tiktok_username) {
-                        // Get video info from TikTok API
-                        const videoUrl = `https://www.tiktok.com/@${campaign.target_tiktok_username}/video/${campaign.tiktok_video_id}`;
-                        const videoInfo = await getTikTokVideoInfo(videoUrl);
-
-                        if (videoInfo.success) {
-                            campaign.video_info = videoInfo.data;
-                        }
-                    } else if (campaign.campaign_type === 'follow' && campaign.target_tiktok_username) {
-                        // Get user profile from TikTok API
-                        const userInfo = await getTikTokProfile(campaign.target_tiktok_username);
-
-                        if (userInfo.success) {
-                            campaign.user_info = {
-                                uniqueId: userInfo.data.user.uniqueId,
-                                nickname: userInfo.data.user.nickname,
-                                avatarThumb: userInfo.data.user.avatarThumb,
-                                followerCount: userInfo.data.stats.followerCount,
-                                followingCount: userInfo.data.stats.followingCount,
-                                verified: userInfo.data.user.verified
-                            };
-                        }
-                    }
-                } catch (error) {
-                    console.error('Error enriching campaign:', error);
-                    // Continue without enrichment if TikTok API fails
-                }
-
-                return campaign;
-            })
-        );
-
+        // Return campaigns without TikTok enrichment - this will be done on-demand
         return NextResponse.json({
             success: true,
-            data: enrichedCampaigns
+            data: campaigns
         });
 
     } catch (error) {
