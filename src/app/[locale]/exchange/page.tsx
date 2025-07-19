@@ -54,6 +54,8 @@ export default function ExchangePage() {
     // Get current campaign
     const currentCampaign = filteredCampaigns[currentCampaignIndex];
 
+    console.log("currentCampaign: ", currentCampaign);
+
     // Handle skip to next campaign
     const handleSkipCampaign = () => {
         if (filteredCampaigns.length > 1) {
