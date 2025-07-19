@@ -11,7 +11,6 @@ import { useAuth } from '@/contexts/auth-context';
 import CampaignCard from './components/CampaignCard';
 import ExchangeEmptyState from './components/ExchangeEmptyState';
 import LottieLoading from '@/components/ui/loading/loading-overlay';
-import { Campaign } from '@/lib/api/exchange';
 
 export default function ExchangePage() {
     const t = useTranslations('Exchange');
@@ -53,8 +52,6 @@ export default function ExchangePage() {
 
     // Get current campaign
     const currentCampaign = filteredCampaigns[currentCampaignIndex];
-
-    console.log("currentCampaign: ", currentCampaign);
 
     // Handle skip to next campaign
     const handleSkipCampaign = () => {

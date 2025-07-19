@@ -108,7 +108,6 @@ export default function CampaignCard({
     };
 
     const getDisplayInfo = () => {
-        console.log("campaign: ", campaign);
         if (campaign.campaign_type === 'video' && campaign.video_info) {
             return {
                 title: `@${campaign.target_tiktok_username || campaign.video_info.tiktokID}`,
@@ -228,7 +227,6 @@ export default function CampaignCard({
     };
 
     const displayInfo = getDisplayInfo();
-    console.log("displayInfo: ", displayInfo);
 
     return (
         <Card

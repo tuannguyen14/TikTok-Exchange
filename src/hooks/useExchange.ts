@@ -35,6 +35,8 @@ export function useExchangeCampaigns(
     try {
       const response = await exchangeApi.getCampaigns(type, status, sortBy);
 
+      console.log("response:", response);
+
       if (response.success && response.data) {
         setState({
           data: response.data,
