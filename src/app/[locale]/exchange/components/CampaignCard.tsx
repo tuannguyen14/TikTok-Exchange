@@ -227,6 +227,7 @@ export default function CampaignCard({
     };
 
     const displayInfo = getDisplayInfo();
+    console.log("displayInfo: ", displayInfo);
 
     return (
         <Card
