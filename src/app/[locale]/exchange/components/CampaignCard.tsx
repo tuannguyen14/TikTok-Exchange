@@ -6,7 +6,6 @@ import { useState, useEffect } from 'react';
 import {
     Card,
     Button,
-    Badge,
     Avatar,
     Text,
     Group,
@@ -30,6 +29,7 @@ import {
 import { useTranslations } from 'next-intl';
 import { Campaign, Action } from '@/lib/api/exchange';
 import { useExchange } from '@/hooks/useExchange';
+import { useTikTokApi } from '@/hooks/useTikTok';
 import { useAuth } from '@/contexts/auth-context';
 import { notifications } from '@mantine/notifications';
 
@@ -42,8 +42,53 @@ interface CampaignCardProps {
 }
 
 interface TikTokInfo {
-    video_info?: any;
-    user_info?: any;
+    user_info?: {
+        uniqueId: string;
+        nickname: string;
+        avatarThumb: string;
+        followerCount: number;
+        followingCount: number;
+        verified: boolean;
+    };
+    video_info?: {
+        id: string;
+        desc: string;
+        createTime: string;
+        author: {
+            uniqueId: string;
+            nickname: string;
+            avatarThumb: string;
+            verified: boolean;
+        };
+        stats: {
+            diggCount: number;
+            commentCount: number;
+            playCount: number;
+            shareCount: number;
+            collectCount: number;
+        };
+        video: {
+            duration: number;
+            height: number;
+            width: number;
+            cover: string;
+            playAddr: string;
+            downloadAddr: string;
+            zoomCover: {
+                '240': string;
+                '480': string;
+                '720': string;
+                '960': string;
+            };
+        };
+        music: {
+            id: string;
+            title: string;
+            authorName: string;
+            duration: number;
+            original: boolean;
+        };
+    };
 }
 
 export default function CampaignCard({
@@ -56,6 +101,7 @@ export default function CampaignCard({
     const t = useTranslations('Exchange');
     const { profile } = useAuth();
     const exchange = useExchange();
+    const tikTokApi = useTikTokApi();
 
     // States
     const [actionState, setActionState] = useState<'idle' | 'opened' | 'claiming' | 'completed'>('idle');
@@ -80,12 +126,12 @@ export default function CampaignCard({
         setInitialVideoInfo(null);
         setTikTokInfo({});
         setTikTokInfoError(null);
-        
+
         // Fetch TikTok info for new campaign
         fetchTikTokInfo();
     }, [campaign.id]);
 
-    // Fetch TikTok information on-demand
+    // Fetch TikTok information using new API hooks
     const fetchTikTokInfo = async () => {
         if (!campaign.target_tiktok_username) return;
 
@@ -93,26 +139,79 @@ export default function CampaignCard({
         setTikTokInfoError(null);
 
         try {
-            let url: string;
-            
             if (campaign.campaign_type === 'video' && campaign.tiktok_video_id) {
-                url = `/api/exchange/tiktok-info?type=video&username=${encodeURIComponent(campaign.target_tiktok_username)}&videoId=${encodeURIComponent(campaign.tiktok_video_id)}`;
-            } else {
-                url = `/api/exchange/tiktok-info?type=profile&username=${encodeURIComponent(campaign.target_tiktok_username)}`;
-            }
+                // Fetch video post detail
+                const postResponse = await tikTokApi.getPostDetail(campaign.tiktok_video_id);
 
-            const response = await fetch(url);
-            const data = await response.json();
+                if (postResponse.success && postResponse.data) {
+                    const postDetail = postResponse.data.itemInfo?.itemStruct;
 
-            if (data.success) {
-                setTikTokInfo(data.data);
-                
-                // Set initial video info for like verification
-                if (data.data.video_info && campaign.interaction_type === 'like') {
-                    setInitialVideoInfo(data.data.video_info);
+                    if (postDetail) {
+                        const videoInfo = {
+                            id: postDetail.id,
+                            desc: postDetail.desc,
+                            createTime: postDetail.createTime,
+                            author: {
+                                uniqueId: postDetail.author.uniqueId,
+                                nickname: postDetail.author.nickname,
+                                avatarThumb: postDetail.author.avatarThumb,
+                                verified: postDetail.author.verified
+                            },
+                            stats: {
+                                diggCount: parseInt(postDetail.stats.diggCount.toString()),
+                                commentCount: postDetail.stats.commentCount,
+                                playCount: parseInt(postDetail.stats.playCount.toString()),
+                                shareCount: parseInt(postDetail.stats.shareCount.toString()),
+                                collectCount: parseInt(postDetail.stats.collectCount.toString())
+                            },
+                            video: {
+                                duration: postDetail.video.duration,
+                                height: postDetail.video.height,
+                                width: postDetail.video.width,
+                                cover: postDetail.video.cover,
+                                playAddr: postDetail.video.playAddr,
+                                downloadAddr: postDetail.video.downloadAddr,
+                                zoomCover: postDetail.video.zoomCover
+                            },
+                            music: {
+                                id: postDetail.music.id,
+                                title: postDetail.music.title,
+                                authorName: postDetail.music.authorName,
+                                duration: postDetail.music.duration,
+                                original: postDetail.music.original
+                            }
+                        };
+
+                        setTikTokInfo({ video_info: videoInfo });
+
+                        // Set initial video info for like verification
+                        if (campaign.interaction_type === 'like') {
+                            setInitialVideoInfo(videoInfo);
+                        }
+                    } else {
+                        setTikTokInfoError('Invalid post data structure');
+                    }
+                } else {
+                    setTikTokInfoError(postResponse.error || 'Failed to fetch post info');
                 }
-            } else {
-                setTikTokInfoError(data.error || 'Failed to fetch TikTok info');
+            } else if (campaign.campaign_type === 'follow') {
+                // Fetch user profile
+                const profileResponse = await tikTokApi.getProfile(campaign.target_tiktok_username);
+
+                if (profileResponse.success && profileResponse.data) {
+                    const userInfo = {
+                        uniqueId: profileResponse.data.user.uniqueId,
+                        nickname: profileResponse.data.user.nickname,
+                        avatarThumb: profileResponse.data.user.avatarThumb,
+                        followerCount: profileResponse.data.stats.followerCount,
+                        followingCount: profileResponse.data.stats.followingCount,
+                        verified: profileResponse.data.user.verified
+                    };
+
+                    setTikTokInfo({ user_info: userInfo });
+                } else {
+                    setTikTokInfoError(profileResponse.error || 'Failed to fetch profile info');
+                }
             }
         } catch (error) {
             console.error('Error fetching TikTok info:', error);
@@ -167,38 +266,40 @@ export default function CampaignCard({
         }
 
         if (campaign.campaign_type === 'video' && tikTokInfo.video_info) {
+            const videoInfo = tikTokInfo.video_info;
             return {
-                title: `@${campaign.target_tiktok_username || tikTokInfo.video_info.tiktokID}`,
-                subtitle: `${exchange.formatCount(tikTokInfo.video_info.playCount)} ${t('stats.views')}`,
-                avatar: tikTokInfo.video_info.url,
+                title: `@${videoInfo.author.uniqueId}`,
+                subtitle: `${tikTokApi.formatCount(videoInfo.stats.playCount)} ${t('stats.views')}`,
+                avatar: videoInfo.video.zoomCover['720'] || videoInfo.video.cover,
                 stats: [
                     {
                         icon: <IconHeart size={16} />,
                         label: t('stats.likes'),
-                        value: exchange.formatCount(tikTokInfo.video_info.diggCount)
+                        value: tikTokApi.formatCount(videoInfo.stats.diggCount)
                     },
                     {
                         icon: <IconMessageCircle size={16} />,
                         label: t('stats.comments'),
-                        value: exchange.formatCount(tikTokInfo.video_info.commentCount)
+                        value: tikTokApi.formatCount(videoInfo.stats.commentCount)
                     }
                 ]
             };
         } else if (campaign.campaign_type === 'follow' && tikTokInfo.user_info) {
+            const userInfo = tikTokInfo.user_info;
             return {
-                title: tikTokInfo.user_info.nickname,
-                subtitle: `@${tikTokInfo.user_info.uniqueId}`,
-                avatar: tikTokInfo.user_info.avatarThumb,
+                title: userInfo.nickname,
+                subtitle: `@${userInfo.uniqueId}`,
+                avatar: userInfo.avatarThumb,
                 stats: [
                     {
                         icon: <IconUsers size={16} />,
                         label: t('stats.followers'),
-                        value: exchange.formatCount(tikTokInfo.user_info.followerCount)
+                        value: tikTokApi.formatCount(userInfo.followerCount)
                     },
                     {
                         icon: <IconUsers size={16} />,
                         label: t('stats.following'),
-                        value: exchange.formatCount(tikTokInfo.user_info.followingCount)
+                        value: tikTokApi.formatCount(userInfo.followingCount)
                     }
                 ]
             };
@@ -237,23 +338,37 @@ export default function CampaignCard({
             let result;
 
             if (campaign.campaign_type === 'follow') {
+                // Use the new follow verification method
                 result = await exchange.verifyFollowAction(
                     campaign.id,
                     campaign.target_tiktok_username!,
                     profile.tiktok_username
                 );
             } else if (campaign.campaign_type === 'video' && campaign.interaction_type === 'like') {
-                const previousCount = initialVideoInfo?.diggCount || 0;
+                // Use the new like verification method with video ID
                 result = await exchange.verifyLikeAction(
                     campaign.id,
                     campaign,
-                    previousCount
+                    campaign.tiktok_video_id!
+                );
+            } else if (campaign.campaign_type === 'video' && campaign.interaction_type === 'comment') {
+                // Use comment verification method
+                result = await exchange.verifyCommentAction(
+                    campaign.id,
+                    campaign,
+                    profile.tiktok_username,
+                    '' // Comment text - could be from user input
                 );
             } else {
+                // Fallback to generic action
                 result = await exchange.performAction({
                     campaignId: campaign.id,
                     actionType: actionType!,
-                    proofData: {}
+                    proofData: {
+                        targetUsername: campaign.target_tiktok_username,
+                        videoId: campaign.tiktok_video_id,
+                        userTikTok: profile.tiktok_username
+                    }
                 });
             }
 

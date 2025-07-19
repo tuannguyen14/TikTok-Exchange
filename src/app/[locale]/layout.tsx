@@ -53,7 +53,7 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <MantineProvider >
-          <Notifications position="top-center" />
+          <Notifications position="top-center" zIndex={9999} />
           <NextIntlClientProvider locale={locale} messages={messages}>
             <AuthProvider>
               <div className="min-h-screen bg-background">

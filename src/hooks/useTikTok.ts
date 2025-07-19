@@ -4,8 +4,9 @@ import { useState, useEffect, useCallback } from 'react';
 import {
   tiktokApi,
   TikTokUserInfo,
-  TikTokVideoInfo,
-  FollowsListResponse
+  TikTokPostDetail,
+  FollowsListResponse,
+  PostDetailResponse
 } from '@/lib/api/tiktok';
 
 // Generic hook state interface
@@ -16,7 +17,7 @@ interface ApiState<T> {
 }
 
 // Hook for getting user profile
-export function useTikTokProfile(username: string | null) {
+export function useTikTokProfile(uniqueId: string | null) {
   const [state, setState] = useState<ApiState<TikTokUserInfo>>({
     data: null,
     loading: false,
@@ -24,12 +25,12 @@ export function useTikTokProfile(username: string | null) {
   });
 
   const fetchProfile = useCallback(async () => {
-    if (!username) return;
+    if (!uniqueId) return;
 
     setState(prev => ({ ...prev, loading: true, error: null }));
 
     try {
-      const response = await tiktokApi.getProfile(username);
+      const response = await tiktokApi.getProfile(uniqueId);
 
       if (response.success && response.data) {
         setState({
@@ -51,7 +52,7 @@ export function useTikTokProfile(username: string | null) {
         error: error instanceof Error ? error.message : 'Unknown error'
       });
     }
-  }, [username]);
+  }, [uniqueId]);
 
   useEffect(() => {
     fetchProfile();
@@ -64,9 +65,17 @@ export function useTikTokProfile(username: string | null) {
 }
 
 // Hook for getting user followers
-export function useTikTokFollowers(username: string | null) {
+export function useTikTokFollowers(
+  uniqueId: string | null,
+  secUid?: string,
+  count: number = 30,
+  minCursor: number = 0
+) {
   const [state, setState] = useState<ApiState<{
-    followers: Array<any>;
+    followers: Array<{
+      user: any;
+      stats: any;
+    }>;
     total: number;
     responseData: FollowsListResponse | null;
   }>>({
@@ -76,12 +85,12 @@ export function useTikTokFollowers(username: string | null) {
   });
 
   const fetchFollowers = useCallback(async () => {
-    if (!username) return;
+    if (!uniqueId && !secUid) return;
 
     setState(prev => ({ ...prev, loading: true, error: null }));
 
     try {
-      const response = await tiktokApi.getFollowers(username);
+      const response = await tiktokApi.getFollowers(uniqueId || undefined, secUid, count, minCursor);
 
       if (response.success && response.data) {
         setState({
@@ -103,7 +112,7 @@ export function useTikTokFollowers(username: string | null) {
         error: error instanceof Error ? error.message : 'Unknown error'
       });
     }
-  }, [username]);
+  }, [uniqueId, secUid, count, minCursor]);
 
   useEffect(() => {
     fetchFollowers();
@@ -115,21 +124,21 @@ export function useTikTokFollowers(username: string | null) {
   };
 }
 
-// Hook for getting video information
-export function useTikTokVideo(videoLink: string | null) {
-  const [state, setState] = useState<ApiState<TikTokVideoInfo>>({
+// Hook for getting post detail (replacing liked posts)
+export function useTikTokPostDetail(videoId: string | null) {
+  const [state, setState] = useState<ApiState<PostDetailResponse>>({
     data: null,
     loading: false,
     error: null
   });
 
-  const fetchVideoInfo = useCallback(async () => {
-    if (!videoLink) return;
+  const fetchPostDetail = useCallback(async () => {
+    if (!videoId) return;
 
     setState(prev => ({ ...prev, loading: true, error: null }));
 
     try {
-      const response = await tiktokApi.getVideoInfo(videoLink);
+      const response = await tiktokApi.getPostDetail(videoId);
 
       if (response.success && response.data) {
         setState({
@@ -141,7 +150,7 @@ export function useTikTokVideo(videoLink: string | null) {
         setState({
           data: null,
           loading: false,
-          error: response.error || 'Failed to fetch video info'
+          error: response.error || 'Failed to fetch post detail'
         });
       }
     } catch (error) {
@@ -151,33 +160,33 @@ export function useTikTokVideo(videoLink: string | null) {
         error: error instanceof Error ? error.message : 'Unknown error'
       });
     }
-  }, [videoLink]);
+  }, [videoId]);
 
   useEffect(() => {
-    fetchVideoInfo();
-  }, [fetchVideoInfo]);
+    fetchPostDetail();
+  }, [fetchPostDetail]);
 
   return {
     ...state,
-    refetch: fetchVideoInfo
+    refetch: fetchPostDetail
   };
 }
 
 // Hook for batch profile fetching
-export function useTikTokMultipleProfiles(usernames: string[]) {
-  const [state, setState] = useState<ApiState<Array<{ username: string; data: any }>>>({
+export function useTikTokMultipleProfiles(uniqueIds: string[]) {
+  const [state, setState] = useState<ApiState<Array<{ uniqueId: string; data: any }>>>({
     data: null,
     loading: false,
     error: null
   });
 
   const fetchMultipleProfiles = useCallback(async () => {
-    if (usernames.length === 0) return;
+    if (uniqueIds.length === 0) return;
 
     setState(prev => ({ ...prev, loading: true, error: null }));
 
     try {
-      const response = await tiktokApi.getMultipleProfiles(usernames);
+      const response = await tiktokApi.getMultipleProfiles(uniqueIds);
 
       if (response.success) {
         setState({
@@ -199,7 +208,7 @@ export function useTikTokMultipleProfiles(usernames: string[]) {
         error: error instanceof Error ? error.message : 'Unknown error'
       });
     }
-  }, [usernames]);
+  }, [uniqueIds]);
 
   useEffect(() => {
     fetchMultipleProfiles();
@@ -215,51 +224,66 @@ export function useTikTokMultipleProfiles(usernames: string[]) {
 export function useTikTokApi() {
   const [loading, setLoading] = useState(false);
 
-  const getProfile = useCallback(async (username: string) => {
+  const getProfile = useCallback(async (uniqueId: string) => {
     setLoading(true);
     try {
-      const response = await tiktokApi.getProfile(username);
+      const response = await tiktokApi.getProfile(uniqueId);
       return response;
     } finally {
       setLoading(false);
     }
   }, []);
 
-  const getFollowers = useCallback(async (username: string) => {
+  const getFollowers = useCallback(async (
+    uniqueId?: string,
+    secUid?: string,
+    count: number = 30,
+    minCursor: number = 0
+  ) => {
     setLoading(true);
     try {
-      const response = await tiktokApi.getFollowers(username);
+      const response = await tiktokApi.getFollowers(uniqueId, secUid, count, minCursor);
       return response;
     } finally {
       setLoading(false);
     }
   }, []);
 
-  const getVideoInfo = useCallback(async (videoLink: string) => {
+  const getPostDetail = useCallback(async (videoId: string) => {
     setLoading(true);
     try {
-      const response = await tiktokApi.getVideoInfo(videoLink);
+      const response = await tiktokApi.getPostDetail(videoId);
       return response;
     } finally {
       setLoading(false);
     }
   }, []);
 
-  const checkUserExists = useCallback(async (username: string) => {
+  const checkUserExists = useCallback(async (uniqueId: string) => {
     setLoading(true);
     try {
-      const exists = await tiktokApi.userExists(username);
+      const exists = await tiktokApi.userExists(uniqueId);
       return exists;
     } finally {
       setLoading(false);
     }
   }, []);
 
-  const getFormattedStats = useCallback(async (username: string) => {
+  const getFormattedStats = useCallback(async (uniqueId: string) => {
     setLoading(true);
     try {
-      const stats = await tiktokApi.getFormattedStats(username);
+      const stats = await tiktokApi.getFormattedStats(uniqueId);
       return stats;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const getUserSecUid = useCallback(async (uniqueId: string) => {
+    setLoading(true);
+    try {
+      const secUid = await tiktokApi.getUserSecUid(uniqueId);
+      return secUid;
     } finally {
       setLoading(false);
     }
@@ -269,12 +293,80 @@ export function useTikTokApi() {
     loading,
     getProfile,
     getFollowers,
-    getVideoInfo,
+    getPostDetail,
     checkUserExists,
     getFormattedStats,
+    getUserSecUid,
     // Utility methods
     extractUsername: tiktokApi.extractUsername,
     extractVideoId: tiktokApi.extractVideoId,
-    formatCount: tiktokApi.formatCount
+    formatCount: tiktokApi.formatCount,
+    getVideoThumbnail: tiktokApi.getVideoThumbnail,
+    getVideoPlayUrl: tiktokApi.getVideoPlayUrl,
+    getVideoDownloadUrl: tiktokApi.getVideoDownloadUrl,
+    formatCreateTime: tiktokApi.formatCreateTime,
+    formatDuration: tiktokApi.formatDuration
+  };
+}
+
+// Hook for paginated followers with infinite scroll support
+export function useTikTokFollowersPaginated(uniqueId: string | null, pageSize: number = 30) {
+  const [followers, setFollowers] = useState<Array<any>>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [hasMore, setHasMore] = useState(true);
+  const [minCursor, setMinCursor] = useState(0);
+
+  const loadMore = useCallback(async () => {
+    if (!uniqueId || loading || !hasMore) return;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await tiktokApi.getFollowers(uniqueId, undefined, pageSize, minCursor);
+
+      if (response.success && response.data) {
+        const newFollowers = response.data.followers;
+        setFollowers(prev => [...prev, ...newFollowers]);
+
+        // Update pagination
+        if (response.data.responseData) {
+          setHasMore(response.data.responseData.hasMore);
+          setMinCursor(response.data.responseData.maxCursor);
+        } else {
+          setHasMore(false);
+        }
+      } else {
+        setError(response.error || 'Failed to fetch followers');
+        setHasMore(false);
+      }
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Unknown error');
+      setHasMore(false);
+    } finally {
+      setLoading(false);
+    }
+  }, [uniqueId, pageSize, minCursor, loading, hasMore]);
+
+  const reset = useCallback(() => {
+    setFollowers([]);
+    setMinCursor(0);
+    setHasMore(true);
+    setError(null);
+  }, []);
+
+  useEffect(() => {
+    reset();
+    loadMore();
+  }, [uniqueId]);
+
+  return {
+    followers,
+    loading,
+    error,
+    hasMore,
+    loadMore,
+    reset
   };
 }

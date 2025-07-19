@@ -1,0 +1,122 @@
+curl --request GET 
+	--url 'https://tiktok-api23.p.rapidapi.com/api/user/followers?secUid=MS4wLjABAAAAqB08cUbXaDWqbD6MCga2RbGTuhfO2EsHayBYx08NDrN7IE3jQuRDNNN6YwyfH6_6&count=30&minCursor=0' 
+	--header 'x-rapidapi-host: tiktok-api23.p.rapidapi.com' 
+	--header 'x-rapidapi-key: 80cc20eb9amsh706b7e8bed903c8p14195cjsn3ead5a6170d1'
+
+{
+  "extra": {
+    "fatal_item_ids": [],
+    "logid": "20240204232234F8E3D630A5085C643A0E",
+    "now": 1707088954000
+  },
+  "hasMore": false,
+  "log_pb": {
+    "impr_id": "20240204232234F8E3D630A5085C643A0E"
+  },
+  "maxCursor": 1706822859,
+  "minCursor": 1563547337,
+  "statusCode": 0,
+  "status_code": 0,
+  "total": 0,
+  "userList": [
+    {
+      "stats": {
+        "diggCount": 82,
+        "followerCount": 282000,
+        "followingCount": 9,
+        "friendCount": 0,
+        "heart": 4300000,
+        "heartCount": 4300000,
+        "videoCount": 204
+      },
+      "user": {
+        "avatarLarger": "https://p16-sign-useast2a.tiktokcdn.com/tos-useast2a-avt-0068-euttp/146408c8c9e2fec2f42357b639081296~c5_1080x1080.jpeg?lk3s=a5d48078&x-expires=1707260400&x-signature=IpTcNHrT3E7lRM%2Bn9KF%2FmsoZ2hA%3D",
+        "avatarMedium": "https://p16-sign-useast2a.tiktokcdn.com/tos-useast2a-avt-0068-euttp/146408c8c9e2fec2f42357b639081296~c5_720x720.jpeg?lk3s=a5d48078&x-expires=1707260400&x-signature=xFH3sWhA%2FpbHfNBnbusgod29TM0%3D",
+        "avatarThumb": "https://p16-sign-useast2a.tiktokcdn.com/tos-useast2a-avt-0068-euttp/146408c8c9e2fec2f42357b639081296~c5_100x100.jpeg?lk3s=a5d48078&x-expires=1707260400&x-signature=pmo0EXsjOffFHU5IC3XO3A2jzmU%3D",
+        "commentSetting": 0,
+        "downloadSetting": 0,
+        "duetSetting": 0,
+        "ftc": false,
+        "id": "7307903467192157217",
+        "isADVirtual": false,
+        "nickname": "Baby lovely",
+        "openFavorite": false,
+        "privateAccount": false,
+        "relation": 0,
+        "secUid": "MS4wLjABAAAACS8brjDWAwA6mqffs-72XXW4lvADi3vqxZJH_JIcD0qQNMRjGGKBIVd7I41Ar890",
+        "secret": false,
+        "signature": "",
+        "stitchSetting": 0,
+        "ttSeller": false,
+        "uniqueId": "baby.lovely15",
+        "verified": false
+      }
+    },
+    {
+      "stats": {
+        "diggCount": 35800,
+        "followerCount": 19,
+        "followingCount": 215,
+        "friendCount": 0,
+        "heart": 35,
+        "heartCount": 35,
+        "videoCount": 6
+      },
+      "user": {
+        "avatarLarger": "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/dff7f644c1afe1097f6aa3e26ad455fd~c5_1080x1080.jpeg?lk3s=a5d48078&x-expires=1707260400&x-signature=dRfc4Sfw1ESycBZPIO3kHeIeZes%3D",
+        "avatarMedium": "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/dff7f644c1afe1097f6aa3e26ad455fd~c5_720x720.jpeg?lk3s=a5d48078&x-expires=1707260400&x-signature=hd%2BzDo1vNIZyvat6CeKJkI8qDxc%3D",
+        "avatarThumb": "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/dff7f644c1afe1097f6aa3e26ad455fd~c5_100x100.jpeg?lk3s=a5d48078&x-expires=1707260400&x-signature=5hWeQPJITwQJTcCaYP39x2FkeDI%3D",
+        "commentSetting": 1,
+        "downloadSetting": 3,
+        "duetSetting": 3,
+        "ftc": false,
+        "id": "6855187218932302849",
+        "isADVirtual": false,
+        "nickname": "Langga",
+        "openFavorite": false,
+        "privateAccount": true,
+        "relation": 0,
+        "secUid": "MS4wLjABAAAAvF-YNIOF3XS3Ek4f0QSNhd-n0PU1e2Ta1Tj7-vpqFgSJji5raJEWMYkbttTa65ew",
+        "secret": true,
+        "signature": "This is just a dump",
+        "stitchSetting": 3,
+        "ttSeller": false,
+        "uniqueId": "sharafuba",
+        "verified": false
+      }
+    },
+    {
+      "stats": {
+        "diggCount": 5410,
+        "followerCount": 723,
+        "followingCount": 287,
+        "friendCount": 0,
+        "heart": 2402,
+        "heartCount": 2402,
+        "videoCount": 195
+      },
+      "user": {
+        "avatarLarger": "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/91d8329ddfd5deebf2593c84299475e0~c5_1080x1080.jpeg?lk3s=a5d48078&x-expires=1707260400&x-signature=n43iGUqrC%2FI4ofmIJTYxx2b9krQ%3D",
+        "avatarMedium": "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/91d8329ddfd5deebf2593c84299475e0~c5_720x720.jpeg?lk3s=a5d48078&x-expires=1707260400&x-signature=7xKWD%2F8qWEi%2BPiBkSDuNlpF%2Fxns%3D",
+        "avatarThumb": "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/91d8329ddfd5deebf2593c84299475e0~c5_100x100.jpeg?lk3s=a5d48078&x-expires=1707260400&x-signature=cLV7I8Yz2KztTea%2BHXem3PYbS4I%3D",
+        "commentSetting": 0,
+        "downloadSetting": 0,
+        "duetSetting": 0,
+        "ftc": false,
+        "id": "6551585608614445058",
+        "isADVirtual": false,
+        "nickname": "Trisha Nicole Cruz C",
+        "openFavorite": false,
+        "privateAccount": false,
+        "relation": 0,
+        "secUid": "MS4wLjABAAAAiKvPe0r1QEFzMG0q7mPGuoFmW9WC0CahRnHNEoxzSSJsBt_E786EmIdLAcTQxI23",
+        "secret": false,
+        "signature": "HAPPINESS💖",
+        "stitchSetting": 0,
+        "ttSeller": false,
+        "uniqueId": "trishhhhh14",
+        "verified": false
+      }
+    }
+  ]
+}

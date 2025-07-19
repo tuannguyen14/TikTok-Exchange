@@ -1,0 +1,318 @@
+curl --request GET \
+	--url 'https://tiktok-api23.p.rapidapi.com/api/post/detail?videoId=7306132438047116586' \
+	--header 'x-rapidapi-host: tiktok-api23.p.rapidapi.com' \
+	--header 'x-rapidapi-key: 80cc20eb9amsh706b7e8bed903c8p14195cjsn3ead5a6170d1'
+
+{
+  "itemInfo": {
+    "itemStruct": {
+      "AIGCDescription": "",
+      "IsAigc": false,
+      "author": {
+        "avatarLarger": "https://p16-sign.tiktokcdn-us.com/tos-useast8-avt-0068-tx2/f8c7cad75f3a12205d31d6662d2555d5~c5_1080x1080.jpeg?lk3s=a5d48078&nonce=81334&refresh_token=cc03962811b0a232a36259c7343f7b09&x-expires=1717653600&x-signature=Jz4jiolo8UStgbDrJYLH0QBzmBI%3D&shp=a5d48078&shcp=81f88b70",
+        "avatarMedium": "https://p19-sign.tiktokcdn-us.com/tos-useast8-avt-0068-tx2/f8c7cad75f3a12205d31d6662d2555d5~c5_720x720.jpeg?lk3s=a5d48078&nonce=27963&refresh_token=9a89adf874e6f39268e24a9a11e5168a&x-expires=1717653600&x-signature=p84uzYkmTWpMKYzv1Xohb6czCZc%3D&shp=a5d48078&shcp=81f88b70",
+        "avatarThumb": "https://p19-sign.tiktokcdn-us.com/tos-useast8-avt-0068-tx2/f8c7cad75f3a12205d31d6662d2555d5~c5_100x100.jpeg?lk3s=a5d48078&nonce=11183&refresh_token=e6eaa588e50f11714cc798818e34c6b9&x-expires=1717653600&x-signature=ZmFyfAPIH0Ph2pgcdjo%2B8LHiez0%3D&shp=a5d48078&shcp=81f88b70",
+        "canExpPlaylist": false,
+        "commentSetting": 0,
+        "createTime": 0,
+        "downloadSetting": 0,
+        "duetSetting": 0,
+        "ftc": false,
+        "id": "6881290705605477381",
+        "isADVirtual": false,
+        "isEmbedBanned": false,
+        "nickNameModifyTime": 0,
+        "nickname": "Taylor Swift",
+        "nowInvitationCardUrl": "",
+        "openFavorite": true,
+        "privateAccount": false,
+        "recommendReason": "",
+        "relation": 0,
+        "roomId": "",
+        "secUid": "MS4wLjABAAAAqB08cUbXaDWqbD6MCga2RbGTuhfO2EsHayBYx08NDrN7IE3jQuRDNNN6YwyfH6_6",
+        "secret": false,
+        "shortId": "",
+        "signature": "This is pretty much just a cat account",
+        "stitchSetting": 0,
+        "suggestAccountBind": false,
+        "ttSeller": false,
+        "uniqueId": "taylorswift",
+        "uniqueIdModifyTime": 0,
+        "verified": true
+      },
+      "challenges": [],
+      "channelTags": [],
+      "collected": false,
+      "comments": [],
+      "contents": [
+        {
+          "desc": "Hi! Well, so, basically I have a birthday coming up and I was thinking a fun way to celebrate the year we’ve had together would be to make The Eras Tour Concert Film available for you to watch at home! Very happy to be able to tell you that the extended version of the film including “Wildest Dreams,” “The Archer” and “Long Live” will be available to rent on demand in the US, Canada & additional countries to be announced soon starting on … you guessed it, December 13 🫶💋",
+          "textExtra": []
+        }
+      ],
+      "createTime": "1701091554",
+      "desc": "Hi! Well, so, basically I have a birthday coming up and I was thinking a fun way to celebrate the year we’ve had together would be to make The Eras Tour Concert Film available for you to watch at home! Very happy to be able to tell you that the extended version of the film including “Wildest Dreams,” “The Archer” and “Long Live” will be available to rent on demand in the US, Canada & additional countries to be announced soon starting on … you guessed it, December 13 🫶💋",
+      "digged": false,
+      "diversificationId": 10046,
+      "diversificationLabels": [
+        "Music",
+        "Entertainment"
+      ],
+      "duetDisplay": 0,
+      "duetEnabled": true,
+      "effectStickers": [],
+      "forFriend": false,
+      "id": "7306132438047116586",
+      "indexEnabled": true,
+      "itemCommentStatus": 0,
+      "item_control": {
+        "can_repost": true
+      },
+      "keywordTags": [
+        {
+          "keyword": "Taylor-swift-buckner",
+          "pageType": 0
+        },
+        {
+          "keyword": "taylor-swift-tongue",
+          "pageType": 0
+        },
+        {
+          "keyword": "taylor-swift-frequency",
+          "pageType": 0
+        },
+        {
+          "keyword": "taylor-swift-travel",
+          "pageType": 0
+        },
+        {
+          "keyword": "taylor-swift-tiktok-sound",
+          "pageType": 0
+        },
+        {
+          "keyword": "Taylor-swift-tiktok-influencers",
+          "pageType": 0
+        },
+        {
+          "keyword": "taylor-swift-per",
+          "pageType": 0
+        },
+        {
+          "keyword": "taylor-swift-tiktok",
+          "pageType": 0
+        },
+        {
+          "keyword": "taylor-swift-tiktok-account",
+          "pageType": 0
+        },
+        {
+          "keyword": "taylor-swift-tiktok-comments",
+          "pageType": 0
+        }
+      ],
+      "locationCreated": "US",
+      "music": {
+        "authorName": "Taylor Swift",
+        "collected": false,
+        "coverLarge": "https://p16-sign.tiktokcdn-us.com/tos-useast8-avt-0068-tx2/f8c7cad75f3a12205d31d6662d2555d5~c5_1080x1080.jpeg?lk3s=a5d48078&nonce=81334&refresh_token=cc03962811b0a232a36259c7343f7b09&x-expires=1717653600&x-signature=Jz4jiolo8UStgbDrJYLH0QBzmBI%3D&shp=a5d48078&shcp=81f88b70",
+        "coverMedium": "https://p19-sign.tiktokcdn-us.com/tos-useast8-avt-0068-tx2/f8c7cad75f3a12205d31d6662d2555d5~c5_720x720.jpeg?lk3s=a5d48078&nonce=27963&refresh_token=9a89adf874e6f39268e24a9a11e5168a&x-expires=1717653600&x-signature=p84uzYkmTWpMKYzv1Xohb6czCZc%3D&shp=a5d48078&shcp=81f88b70",
+        "coverThumb": "https://p19-sign.tiktokcdn-us.com/tos-useast8-avt-0068-tx2/f8c7cad75f3a12205d31d6662d2555d5~c5_100x100.jpeg?lk3s=a5d48078&nonce=11183&refresh_token=e6eaa588e50f11714cc798818e34c6b9&x-expires=1717653600&x-signature=ZmFyfAPIH0Ph2pgcdjo%2B8LHiez0%3D&shp=a5d48078&shcp=81f88b70",
+        "duration": 59,
+        "id": "7306132624873917226",
+        "original": false,
+        "playUrl": "https://v16-webapp-prime.tiktok.com/video/tos/useast5/tos-useast5-v-27dcd7-tx/oQt0O6BlUk4rgb6TxMvlO76Y1WkmIAviCiZSS/?a=1988&bti=ODszNWYuMDE6&ch=0&cr=0&dr=0&er=0&lr=default&cd=0%7C0%7C0%7C0&br=250&bt=125&ft=GNDpcInz7ThGuXDrXq8Zmo&mime_type=audio_mpeg&qs=6&rc=N2Q5aDRlOzw1N2dnMzM4N0BpajhwZ3Q5cnQ8bzMzZzU8NEBgLV8vYWJjNWExY2A0MTMxYSNxc2FuMmRrZWZgLS1kMS9zcw%3D%3D&btag=e00088000&expire=1717484595&l=202406040602158ABAA3043767360223E8&ply_type=3&policy=3&signature=7e9a1da5370984d261baf16c93c51012&tk=0",
+        "preciseDuration": {
+          "preciseAuditionDuration": 59.089,
+          "preciseDuration": 59.089,
+          "preciseShootDuration": 59.089,
+          "preciseVideoDuration": 59.089
+        },
+        "scheduleSearchTime": 0,
+        "title": "original sound"
+      },
+      "officalItem": false,
+      "originalItem": false,
+      "privateItem": false,
+      "scheduleTime": 0,
+      "secret": false,
+      "shareEnabled": true,
+      "stats": {
+        "collectCount": "291901",
+        "commentCount": 68700,
+        "diggCount": 5300000,
+        "playCount": 44400000,
+        "shareCount": 91200
+      },
+      "statsV2": {
+        "collectCount": "291901",
+        "commentCount": "68700",
+        "diggCount": "5300000",
+        "playCount": "44400000",
+        "repostCount": "0",
+        "shareCount": "91200"
+      },
+      "stickersOnItem": [],
+      "stitchDisplay": 0,
+      "stitchEnabled": true,
+      "suggestedWords": [
+        "Taylor Swift",
+        "wildest dreams",
+        "taylor nation",
+        "wildest dreams eras tour",
+        "wildest dreams taylor swift",
+        "taylor swift song",
+        "Taylor Swift Eras Tour",
+        "cardigan taylor swift",
+        "Taylor Swift Concert",
+        "ginny and georgia taylor swift"
+      ],
+      "takeDown": 0,
+      "textExtra": [],
+      "video": {
+        "bitrate": 1221776,
+        "bitrateInfo": [
+          {
+            "Bitrate": 1502364,
+            "CodecType": "h265_hvc1",
+            "GearName": "adapt_lowest_1080_1",
+            "PlayAddr": {
+              "DataSize": "11083320",
+              "FileCs": "c:0-37421-07a9",
+              "FileHash": "7d9e0b8266714dcd7f860a1bdcb63524",
+              "Uri": "v12044gd0000cli9hf7og65idkgii4dg",
+              "UrlKey": "v12044gd0000cli9hf7og65idkgii4dg_bytevc1_1080p_1502364",
+              "UrlList": [
+                "https://v16-webapp-prime.tiktok.com/video/tos/maliva/tos-maliva-ve-0068c799-us/oQ2WsiKbbkpZPgkBdEEEBJvamYiQAaS4UySEI/?a=1988&bti=ODszNWYuMDE6&ch=0&cr=3&dr=0&lr=unwatermarked&cd=0%7C0%7C0%7C&cv=1&br=2934&bt=1467&cs=2&ds=4&ft=4fUEKMzm8Zmo0aA4R-4jVKQkPpWrKsd.&mime_type=video_mp4&qs=15&rc=Z2c0aDc1Zzg8ZzlpPGk0NUBpajdsbmw5cmk8bzMzZzczNEAuNWEuYi0wXy0xYC81Y2A1YSNhZmRhMmQ0ZWZgLS1kMS9zcw%3D%3D&btag=e00088000&expire=1717502595&l=202406040602158ABAA3043767360223E8&ply_type=2&policy=2&signature=05498aa671f7ebc58246d5ddbe55a11f&tk=tt_chain_token",
+                "https://v19-webapp-prime.tiktok.com/video/tos/maliva/tos-maliva-ve-0068c799-us/oQ2WsiKbbkpZPgkBdEEEBJvamYiQAaS4UySEI/?a=1988&bti=ODszNWYuMDE6&ch=0&cr=3&dr=0&lr=unwatermarked&cd=0%7C0%7C0%7C&cv=1&br=2934&bt=1467&cs=2&ds=4&ft=4fUEKMzm8Zmo0aA4R-4jVKQkPpWrKsd.&mime_type=video_mp4&qs=15&rc=Z2c0aDc1Zzg8ZzlpPGk0NUBpajdsbmw5cmk8bzMzZzczNEAuNWEuYi0wXy0xYC81Y2A1YSNhZmRhMmQ0ZWZgLS1kMS9zcw%3D%3D&btag=e00088000&expire=1717502595&l=202406040602158ABAA3043767360223E8&ply_type=2&policy=2&signature=05498aa671f7ebc58246d5ddbe55a11f&tk=tt_chain_token"
+              ]
+            },
+            "QualityType": 2
+          },
+          {
+            "Bitrate": 1221776,
+            "CodecType": "h264",
+            "GearName": "normal_540_0",
+            "PlayAddr": {
+              "DataSize": "9013351",
+              "FileCs": "c:0-37158-ea71",
+              "FileHash": "5cd85d6495465a44bb20fc5701dad38d",
+              "Uri": "v12044gd0000cli9hf7og65idkgii4dg",
+              "UrlKey": "v12044gd0000cli9hf7og65idkgii4dg_h264_540p_1221776",
+              "UrlList": [
+                "https://v16-webapp-prime.tiktok.com/video/tos/maliva/tos-maliva-ve-0068c799-us/o0EpmZiEkvmyIJASWgY4BbUmIQWSEPbUiBiEP/?a=1988&bti=ODszNWYuMDE6&ch=0&cr=3&dr=0&lr=unwatermarked&cd=0%7C0%7C0%7C&cv=1&br=2386&bt=1193&cs=0&ds=6&ft=4fUEKMzm8Zmo0aA4R-4jVKQkPpWrKsd.&mime_type=video_mp4&qs=0&rc=aTg6aDVnOTs2Mzk2aGc0OkBpajdsbmw5cmk8bzMzZzczNEBgNF81MC4zNjMxNGEzYF5hYSNhZmRhMmQ0ZWZgLS1kMS9zcw%3D%3D&btag=e00088000&expire=1717502595&l=202406040602158ABAA3043767360223E8&ply_type=2&policy=2&signature=0ec87371219a4eb0b02ed598db914092&tk=tt_chain_token",
+                "https://v19-webapp-prime.tiktok.com/video/tos/maliva/tos-maliva-ve-0068c799-us/o0EpmZiEkvmyIJASWgY4BbUmIQWSEPbUiBiEP/?a=1988&bti=ODszNWYuMDE6&ch=0&cr=3&dr=0&lr=unwatermarked&cd=0%7C0%7C0%7C&cv=1&br=2386&bt=1193&cs=0&ds=6&ft=4fUEKMzm8Zmo0aA4R-4jVKQkPpWrKsd.&mime_type=video_mp4&qs=0&rc=aTg6aDVnOTs2Mzk2aGc0OkBpajdsbmw5cmk8bzMzZzczNEBgNF81MC4zNjMxNGEzYF5hYSNhZmRhMmQ0ZWZgLS1kMS9zcw%3D%3D&btag=e00088000&expire=1717502595&l=202406040602158ABAA3043767360223E8&ply_type=2&policy=2&signature=0ec87371219a4eb0b02ed598db914092&tk=tt_chain_token"
+              ]
+            },
+            "QualityType": 20
+          },
+          {
+            "Bitrate": 996121,
+            "CodecType": "h265_hvc1",
+            "GearName": "adapt_lower_720_1",
+            "PlayAddr": {
+              "DataSize": "7348634",
+              "FileCs": "c:0-37444-1834",
+              "FileHash": "7becc8e58a831e9889877acc5deb6a53",
+              "Uri": "v12044gd0000cli9hf7og65idkgii4dg",
+              "UrlKey": "v12044gd0000cli9hf7og65idkgii4dg_bytevc1_720p_996121",
+              "UrlList": [
+                "https://v16-webapp-prime.tiktok.com/video/tos/maliva/tos-maliva-ve-0068c799-us/oghkSSEiABcUpQZIAHobEEbYPmiBEy2vgoWP4/?a=1988&bti=ODszNWYuMDE6&ch=0&cr=3&dr=0&lr=unwatermarked&cd=0%7C0%7C0%7C&cv=1&br=1944&bt=972&cs=2&ds=3&ft=4fUEKMzm8Zmo0aA4R-4jVKQkPpWrKsd.&mime_type=video_mp4&qs=14&rc=ZTNpZDQ8ZDU0OmdmPDo2O0Bpajdsbmw5cmk8bzMzZzczNEAtYDQtYGEyNWMxXmMuMS4wYSNhZmRhMmQ0ZWZgLS1kMS9zcw%3D%3D&btag=e00088000&expire=1717502595&l=202406040602158ABAA3043767360223E8&ply_type=2&policy=2&signature=0b936793683c9d7b38bbf7a8c25b688c&tk=tt_chain_token",
+                "https://v19-webapp-prime.tiktok.com/video/tos/maliva/tos-maliva-ve-0068c799-us/oghkSSEiABcUpQZIAHobEEbYPmiBEy2vgoWP4/?a=1988&bti=ODszNWYuMDE6&ch=0&cr=3&dr=0&lr=unwatermarked&cd=0%7C0%7C0%7C&cv=1&br=1944&bt=972&cs=2&ds=3&ft=4fUEKMzm8Zmo0aA4R-4jVKQkPpWrKsd.&mime_type=video_mp4&qs=14&rc=ZTNpZDQ8ZDU0OmdmPDo2O0Bpajdsbmw5cmk8bzMzZzczNEAtYDQtYGEyNWMxXmMuMS4wYSNhZmRhMmQ0ZWZgLS1kMS9zcw%3D%3D&btag=e00088000&expire=1717502595&l=202406040602158ABAA3043767360223E8&ply_type=2&policy=2&signature=0b936793683c9d7b38bbf7a8c25b688c&tk=tt_chain_token"
+              ]
+            },
+            "QualityType": 14
+          },
+          {
+            "Bitrate": 975545,
+            "CodecType": "h265_hvc1",
+            "GearName": "adapt_540_1",
+            "PlayAddr": {
+              "DataSize": "7196845",
+              "FileCs": "c:0-37434-89e0",
+              "FileHash": "e6d50acaf5b09789944291a6e2c8a7b7",
+              "Uri": "v12044gd0000cli9hf7og65idkgii4dg",
+              "UrlKey": "v12044gd0000cli9hf7og65idkgii4dg_bytevc1_540p_975545",
+              "UrlList": [
+                "https://v16-webapp-prime.tiktok.com/video/tos/maliva/tos-maliva-ve-0068c799-us/og0vIEEB4PQkSiWg3EmRSBbAZGEEyZYTLiUpb/?a=1988&bti=ODszNWYuMDE6&ch=0&cr=3&dr=0&lr=unwatermarked&cd=0%7C0%7C0%7C&cv=1&br=1904&bt=952&cs=2&ds=6&ft=4fUEKMzm8Zmo0aA4R-4jVKQkPpWrKsd.&mime_type=video_mp4&qs=11&rc=Ozw1M2k7M2Q3NjQ1OWQ5aEBpajdsbmw5cmk8bzMzZzczNEBfLl4wYy41X14xNmMtXjM0YSNhZmRhMmQ0ZWZgLS1kMS9zcw%3D%3D&btag=e00088000&expire=1717502595&l=202406040602158ABAA3043767360223E8&ply_type=2&policy=2&signature=a5b95744d56856b312a54ea275a52c39&tk=tt_chain_token",
+                "https://v19-webapp-prime.tiktok.com/video/tos/maliva/tos-maliva-ve-0068c799-us/og0vIEEB4PQkSiWg3EmRSBbAZGEEyZYTLiUpb/?a=1988&bti=ODszNWYuMDE6&ch=0&cr=3&dr=0&lr=unwatermarked&cd=0%7C0%7C0%7C&cv=1&br=1904&bt=952&cs=2&ds=6&ft=4fUEKMzm8Zmo0aA4R-4jVKQkPpWrKsd.&mime_type=video_mp4&qs=11&rc=Ozw1M2k7M2Q3NjQ1OWQ5aEBpajdsbmw5cmk8bzMzZzczNEBfLl4wYy41X14xNmMtXjM0YSNhZmRhMmQ0ZWZgLS1kMS9zcw%3D%3D&btag=e00088000&expire=1717502595&l=202406040602158ABAA3043767360223E8&ply_type=2&policy=2&signature=a5b95744d56856b312a54ea275a52c39&tk=tt_chain_token"
+              ]
+            },
+            "QualityType": 28
+          },
+          {
+            "Bitrate": 631856,
+            "CodecType": "h264",
+            "GearName": "lower_540_0",
+            "PlayAddr": {
+              "DataSize": "4661360",
+              "FileCs": "c:0-37158-1e88",
+              "FileHash": "7e1891a3f77a8b32dc6920ed8b26ddf2",
+              "Uri": "v12044gd0000cli9hf7og65idkgii4dg",
+              "UrlKey": "v12044gd0000cli9hf7og65idkgii4dg_h264_540p_631856",
+              "UrlList": [
+                "https://v16-webapp-prime.tiktok.com/video/tos/maliva/tos-maliva-ve-0068c799-us/oouApbxEEcbUEyPPkWi4QEIhvESYiBZgmSBEB/?a=1988&bti=ODszNWYuMDE6&ch=0&cr=3&dr=0&lr=unwatermarked&cd=0%7C0%7C0%7C&cv=1&br=1234&bt=617&cs=0&ds=6&ft=4fUEKMzm8Zmo0aA4R-4jVKQkPpWrKsd.&mime_type=video_mp4&qs=4&rc=NTo7Nzs0Zjw7OjczN2QzZEBpajdsbmw5cmk8bzMzZzczNEAvYl5hNGI0NmMxYmAyNTJfYSNhZmRhMmQ0ZWZgLS1kMS9zcw%3D%3D&btag=e00088000&expire=1717502595&l=202406040602158ABAA3043767360223E8&ply_type=2&policy=2&signature=0aaa0d1c297988f37d886994f45cc990&tk=tt_chain_token",
+                "https://v19-webapp-prime.tiktok.com/video/tos/maliva/tos-maliva-ve-0068c799-us/oouApbxEEcbUEyPPkWi4QEIhvESYiBZgmSBEB/?a=1988&bti=ODszNWYuMDE6&ch=0&cr=3&dr=0&lr=unwatermarked&cd=0%7C0%7C0%7C&cv=1&br=1234&bt=617&cs=0&ds=6&ft=4fUEKMzm8Zmo0aA4R-4jVKQkPpWrKsd.&mime_type=video_mp4&qs=4&rc=NTo7Nzs0Zjw7OjczN2QzZEBpajdsbmw5cmk8bzMzZzczNEAvYl5hNGI0NmMxYmAyNTJfYSNhZmRhMmQ0ZWZgLS1kMS9zcw%3D%3D&btag=e00088000&expire=1717502595&l=202406040602158ABAA3043767360223E8&ply_type=2&policy=2&signature=0aaa0d1c297988f37d886994f45cc990&tk=tt_chain_token"
+              ]
+            },
+            "QualityType": 24
+          },
+          {
+            "Bitrate": 447905,
+            "CodecType": "h264",
+            "GearName": "lowest_540_0",
+            "PlayAddr": {
+              "DataSize": "3304313",
+              "FileCs": "c:0-37158-af91",
+              "FileHash": "26d64fb7d212d132ca74ad43b670a0a7",
+              "Uri": "v12044gd0000cli9hf7og65idkgii4dg",
+              "UrlKey": "v12044gd0000cli9hf7og65idkgii4dg_h264_540p_447905",
+              "UrlList": [
+                "https://v16-webapp-prime.tiktok.com/video/tos/maliva/tos-maliva-ve-0068c799-us/oYpBWBAQbEiDTEySEHgUvJTEZkIPp4YPSmiUb/?a=1988&bti=ODszNWYuMDE6&ch=0&cr=3&dr=0&lr=unwatermarked&cd=0%7C0%7C0%7C&cv=1&br=874&bt=437&cs=0&ds=6&ft=4fUEKMzm8Zmo0aA4R-4jVKQkPpWrKsd.&mime_type=video_mp4&qs=5&rc=O2Q3Ozo8Zzs1OzplZmU8OEBpajdsbmw5cmk8bzMzZzczNEAwLTYzYjA2NS4xNjU2XzNjYSNhZmRhMmQ0ZWZgLS1kMS9zcw%3D%3D&btag=e00088000&expire=1717502595&l=202406040602158ABAA3043767360223E8&ply_type=2&policy=2&signature=ab78b643389f23ddfd52b461d02394e3&tk=tt_chain_token",
+                "https://v19-webapp-prime.tiktok.com/video/tos/maliva/tos-maliva-ve-0068c799-us/oYpBWBAQbEiDTEySEHgUvJTEZkIPp4YPSmiUb/?a=1988&bti=ODszNWYuMDE6&ch=0&cr=3&dr=0&lr=unwatermarked&cd=0%7C0%7C0%7C&cv=1&br=874&bt=437&cs=0&ds=6&ft=4fUEKMzm8Zmo0aA4R-4jVKQkPpWrKsd.&mime_type=video_mp4&qs=5&rc=O2Q3Ozo8Zzs1OzplZmU8OEBpajdsbmw5cmk8bzMzZzczNEAwLTYzYjA2NS4xNjU2XzNjYSNhZmRhMmQ0ZWZgLS1kMS9zcw%3D%3D&btag=e00088000&expire=1717502595&l=202406040602158ABAA3043767360223E8&ply_type=2&policy=2&signature=ab78b643389f23ddfd52b461d02394e3&tk=tt_chain_token"
+              ]
+            },
+            "QualityType": 25
+          }
+        ],
+        "codecType": "h264",
+        "cover": "https://p16-sign.tiktokcdn-us.com/obj/tos-useast5-p-0068-tx/3334e9d54705479d95c404e673e8cc00_1701091645?x-expires=1717653600&x-signature=5s1W2MwTwU8wnAvrsmlmVOf%2FHCM%3D",
+        "definition": "540p",
+        "downloadAddr": "https://v16-webapp-prime.tiktok.com/video/tos/maliva/tos-maliva-ve-0068c799-us/oYgPmYBbpkBEE4UEEKBvSiOybQQWmiIZASEoD/?a=1988&bti=ODszNWYuMDE6&ch=0&cr=3&dr=0&lr=tiktok_m&cd=0%7C0%7C1%7C&cv=1&br=2948&bt=1474&cs=0&ds=3&ft=4fUEKMzm8Zmo0aA4R-4jVKQkPpWrKsd.&mime_type=video_mp4&qs=0&rc=aDY7ODo6ZDc7MzY3OTtnOUBpajdsbmw5cmk8bzMzZzczNEAuNF9iYF4xXi4xNF5fMTZhYSNhZmRhMmQ0ZWZgLS1kMS9zcw%3D%3D&btag=e00088000&expire=1717502595&l=202406040602158ABAA3043767360223E8&ply_type=2&policy=2&signature=295dd780356377a1e35d861c6981af55&tk=tt_chain_token",
+        "duration": 59,
+        "dynamicCover": "https://p16-sign.tiktokcdn-us.com/obj/tos-useast5-p-0068-tx/22092b96169d4c48aa72b0e0a349a9fb_1701091556?x-expires=1717653600&x-signature=iRCU9ANCxqs0L8Dl3MO4UkVJdt8%3D",
+        "encodeUserTag": "",
+        "encodedType": "normal",
+        "format": "mp4",
+        "height": 1024,
+        "id": "",
+        "originCover": "https://p16-sign.tiktokcdn-us.com/obj/tos-useast5-p-0068-tx/66e2c5a524664c95b0a7cfa28b2975ab_1701091555?x-expires=1717653600&x-signature=ZRQIoEtQA9rmQ6DaCExTF9hw%2BJw%3D",
+        "playAddr": "https://v16-webapp-prime.tiktok.com/video/tos/maliva/tos-maliva-ve-0068c799-us/o0EpmZiEkvmyIJASWgY4BbUmIQWSEPbUiBiEP/?a=1988&bti=ODszNWYuMDE6&ch=0&cr=3&dr=0&lr=unwatermarked&cd=0%7C0%7C0%7C&cv=1&br=2386&bt=1193&cs=0&ds=6&ft=4fUEKMzm8Zmo0aA4R-4jVKQkPpWrKsd.&mime_type=video_mp4&qs=0&rc=aTg6aDVnOTs2Mzk2aGc0OkBpajdsbmw5cmk8bzMzZzczNEBgNF81MC4zNjMxNGEzYF5hYSNhZmRhMmQ0ZWZgLS1kMS9zcw%3D%3D&btag=e00088000&expire=1717502595&l=202406040602158ABAA3043767360223E8&ply_type=2&policy=2&signature=0ec87371219a4eb0b02ed598db914092&tk=tt_chain_token",
+        "ratio": "540p",
+        "reflowCover": "",
+        "shareCover": [
+          ""
+        ],
+        "subtitleInfos": [],
+        "videoQuality": "normal",
+        "volumeInfo": {
+          "Loudness": -18.3,
+          "Peak": 0.39811
+        },
+        "width": 576,
+        "zoomCover": {
+          "240": "https://p16-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/3334e9d54705479d95c404e673e8cc00_1701091645~tplv-photomode-zoomcover:240:240.jpeg?x-expires=1717653600&x-signature=gs9ArgYqRemR7JEUG3TyWTErd1M%3D",
+          "480": "https://p16-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/3334e9d54705479d95c404e673e8cc00_1701091645~tplv-photomode-zoomcover:480:480.jpeg?x-expires=1717653600&x-signature=JuoHKX3BDvQoLW4LvTAfqPCRq%2B4%3D",
+          "720": "https://p16-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/3334e9d54705479d95c404e673e8cc00_1701091645~tplv-photomode-zoomcover:720:720.jpeg?x-expires=1717653600&x-signature=XPN5Y%2BFQ5jR7Fv83hjzeAwI4mEE%3D",
+          "960": "https://p19-sign.tiktokcdn-us.com/tos-useast5-p-0068-tx/3334e9d54705479d95c404e673e8cc00_1701091645~tplv-photomode-zoomcover:960:960.jpeg?x-expires=1717653600&x-signature=1Cda2fyQk3uY1vQ0D5NNd3HnM%2Bw%3D"
+        }
+      },
+      "warnInfo": []
+    }
+  },
+  "shareMeta": {
+    "desc": "Hi! Well, so, basically I have a birthday coming up and I was thinking a fun way to celebrate the year we’ve had together would be to make The Eras Tour Concert Film available for you to watch at home! Very happy to be able to tell you that the extended version of the film including “Wildest Dreams,” “The Archer” and “Long Live” will be available to rent on demand in the US, Canada & additional countries to be announced soon starting on … you guessed it, December 13 🫶💋",
+    "title": "Taylor Swift on TikTok"
+  },
+  "statusCode": 0,
+  "statusMsg": "ok"
+}

@@ -1,6 +1,6 @@
 // lib/tiktok-api-client.ts
 
-// Types (copy from your route.ts)
+// Types - Updated to match RapidAPI response structure
 interface TikTokUserStats {
     followerCount: number;
     followingCount: number;
@@ -28,6 +28,26 @@ interface TikTokUser {
     duetSetting: number;
     stitchSetting: number;
     privateAccount: boolean;
+    // Additional fields from RapidAPI
+    bioLink?: {
+        link: string;
+        risk: number;
+    };
+    commerceUserInfo?: {
+        commerceUser: boolean;
+    };
+    downloadSetting?: number;
+    followingVisibility?: number;
+    isADVirtual?: boolean;
+    isEmbedBanned?: boolean;
+    nickNameModifyTime?: number;
+    profileEmbedPermission?: number;
+    profileTab?: {
+        showMusicTab: boolean;
+        showPlayListTab: boolean;
+    };
+    secret?: boolean;
+    ttSeller?: boolean;
 }
 
 interface TikTokUserInfo {
@@ -36,17 +56,80 @@ interface TikTokUserInfo {
 }
 
 interface TikTokVideoStats {
-    diggCount: number;
-    shareCount: number;
+    collectCount: string;
     commentCount: number;
+    diggCount: number;
     playCount: number;
-    collectCount: number;
+    shareCount: number;
 }
 
-interface TikTokVideoInfo extends TikTokVideoStats {
-    tiktokID: string;
-    videoID: string;
-    url: string;
+interface TikTokPostAuthor {
+    id: string;
+    uniqueId: string;
+    nickname: string;
+    avatarLarger: string;
+    avatarMedium: string;
+    avatarThumb: string;
+    signature: string;
+    verified: boolean;
+    secUid: string;
+}
+
+interface TikTokPostMusic {
+    authorName: string;
+    collected: boolean;
+    coverLarge: string;
+    coverMedium: string;
+    coverThumb: string;
+    duration: number;
+    id: string;
+    original: boolean;
+    playUrl: string;
+    title: string;
+}
+
+interface TikTokPostVideo {
+    bitrate: number;
+    codecType: string;
+    cover: string;
+    definition: string;
+    downloadAddr: string;
+    duration: number;
+    dynamicCover: string;
+    format: string;
+    height: number;
+    id: string;
+    originCover: string;
+    playAddr: string;
+    ratio: string;
+    videoQuality: string;
+    width: number;
+    zoomCover: {
+        '240': string;
+        '480': string;
+        '720': string;
+        '960': string;
+    };
+}
+
+interface TikTokPostDetail {
+    id: string;
+    desc: string;
+    createTime: string;
+    author: TikTokPostAuthor;
+    music: TikTokPostMusic;
+    video: TikTokPostVideo;
+    stats: TikTokVideoStats;
+    collected: boolean;
+    digged: boolean;
+    duetEnabled: boolean;
+    stitchEnabled: boolean;
+    shareEnabled: boolean;
+    forFriend: boolean;
+    officalItem: boolean;
+    originalItem: boolean;
+    privateItem: boolean;
+    secret: boolean;
 }
 
 interface FollowsListResponse {
@@ -58,6 +141,20 @@ interface FollowsListResponse {
     hasMore: boolean;
     maxCursor: number;
     minCursor: number;
+    statusCode: number;
+    status_code: number;
+}
+
+interface PostDetailResponse {
+    itemInfo: {
+        itemStruct: TikTokPostDetail;
+    };
+    shareMeta: {
+        desc: string;
+        title: string;
+    };
+    statusCode: number;
+    statusMsg: string;
 }
 
 // API Response interfaces
@@ -67,22 +164,18 @@ interface ApiResponse<T> {
     error?: string;
 }
 
-// interface ProfileResponse extends ApiResponse<TikTokUserInfo> { }
 type ProfileResponse = ApiResponse<TikTokUserInfo>;
 
-// interface FollowersResponse extends ApiResponse<{
-//     followers: Array<any>;
-//     total: number;
-//     responseData: FollowsListResponse | null;
-// }> { }
 type FollowersResponse = ApiResponse<{
-    followers: Array<any>;
+    followers: Array<{
+        user: TikTokUser;
+        stats: TikTokUserStats;
+    }>;
     total: number;
     responseData: FollowsListResponse | null;
 }>;
 
-// interface VideoInfoResponse extends ApiResponse<TikTokVideoInfo> { }
-type VideoInfoResponse = ApiResponse<TikTokVideoInfo>;
+type PostDetailResponse_API = ApiResponse<PostDetailResponse>;
 
 // API Client Class
 export class TikTokApiClient {
@@ -95,11 +188,11 @@ export class TikTokApiClient {
     /**
      * Fetch user profile information
      */
-    async getProfile(username: string): Promise<ProfileResponse> {
+    async getProfile(uniqueId: string): Promise<ProfileResponse> {
         try {
             const params = new URLSearchParams({
                 action: 'getProfile',
-                id: username
+                uniqueId: uniqueId
             });
 
             const response = await fetch(`${this.baseUrl}?${params.toString()}`, {
@@ -125,13 +218,33 @@ export class TikTokApiClient {
 
     /**
      * Fetch user followers list
+     * @param uniqueId - User's unique ID (username)
+     * @param secUid - User's security ID (optional, will be fetched if not provided)
+     * @param count - Number of followers to fetch (default: 30)
+     * @param minCursor - Pagination cursor (default: 0)
      */
-    async getFollowers(username: string): Promise<FollowersResponse> {
+    async getFollowers(
+        uniqueId?: string,
+        secUid?: string,
+        count: number = 30,
+        minCursor: number = 0
+    ): Promise<FollowersResponse> {
         try {
+            if (!uniqueId && !secUid) {
+                return {
+                    success: false,
+                    error: 'Either uniqueId or secUid is required'
+                };
+            }
+
             const params = new URLSearchParams({
                 action: 'getFollowers',
-                id: username
+                count: count.toString(),
+                minCursor: minCursor.toString()
             });
+
+            if (uniqueId) params.append('uniqueId', uniqueId);
+            if (secUid) params.append('secUid', secUid);
 
             const response = await fetch(`${this.baseUrl}?${params.toString()}`, {
                 method: 'GET',
@@ -155,13 +268,14 @@ export class TikTokApiClient {
     }
 
     /**
-     * Fetch video information
+     * Fetch post detail by video ID
+     * @param videoId - TikTok video ID
      */
-    async getVideoInfo(videoLink: string): Promise<VideoInfoResponse> {
+    async getPostDetail(videoId: string): Promise<PostDetailResponse_API> {
         try {
             const params = new URLSearchParams({
-                action: 'getVideoInfo',
-                videoLink: videoLink
+                action: 'getPostDetail',
+                videoId: videoId
             });
 
             const response = await fetch(`${this.baseUrl}?${params.toString()}`, {
@@ -177,7 +291,7 @@ export class TikTokApiClient {
 
             return await response.json();
         } catch (error) {
-            console.error('Error fetching video info:', error);
+            console.error('Error fetching post detail:', error);
             return {
                 success: false,
                 error: error instanceof Error ? error.message : 'Unknown error'
@@ -188,14 +302,14 @@ export class TikTokApiClient {
     /**
      * Batch operations - Get multiple profiles
      */
-    async getMultipleProfiles(usernames: string[]): Promise<{
+    async getMultipleProfiles(uniqueIds: string[]): Promise<{
         success: boolean;
-        results: Array<{ username: string; data: ProfileResponse }>;
+        results: Array<{ uniqueId: string; data: ProfileResponse }>;
     }> {
         try {
-            const promises = usernames.map(async (username) => ({
-                username,
-                data: await this.getProfile(username)
+            const promises = uniqueIds.map(async (uniqueId) => ({
+                uniqueId,
+                data: await this.getProfile(uniqueId)
             }));
 
             const results = await Promise.all(promises);
@@ -216,25 +330,33 @@ export class TikTokApiClient {
     /**
      * Utility method to check if a user exists
      */
-    async userExists(username: string): Promise<boolean> {
-        const response = await this.getProfile(username);
+    async userExists(uniqueId: string): Promise<boolean> {
+        const response = await this.getProfile(uniqueId);
         return response.success;
     }
 
     /**
      * Get user stats only (without full profile)
      */
-    async getUserStats(username: string): Promise<TikTokUserStats | null> {
-        const response = await this.getProfile(username);
+    async getUserStats(uniqueId: string): Promise<TikTokUserStats | null> {
+        const response = await this.getProfile(uniqueId);
         return response.success && response.data ? response.data.stats : null;
     }
 
     /**
      * Get basic user info only (without stats)
      */
-    async getUserInfo(username: string): Promise<TikTokUser | null> {
-        const response = await this.getProfile(username);
+    async getUserInfo(uniqueId: string): Promise<TikTokUser | null> {
+        const response = await this.getProfile(uniqueId);
         return response.success && response.data ? response.data.user : null;
+    }
+
+    /**
+     * Get user's secUid
+     */
+    async getUserSecUid(uniqueId: string): Promise<string | null> {
+        const response = await this.getProfile(uniqueId);
+        return response.success && response.data ? response.data.user.secUid : null;
     }
 
     /**
@@ -252,13 +374,13 @@ export class TikTokApiClient {
     /**
      * Get formatted user stats
      */
-    async getFormattedStats(username: string): Promise<{
+    async getFormattedStats(uniqueId: string): Promise<{
         followers: string;
         following: string;
         hearts: string;
         videos: string;
     } | null> {
-        const stats = await this.getUserStats(username);
+        const stats = await this.getUserStats(uniqueId);
         if (!stats) return null;
 
         return {
@@ -284,6 +406,43 @@ export class TikTokApiClient {
         const match = url.match(/video\/(\d+)/);
         return match ? match[1] : null;
     }
+
+    /**
+     * Get video thumbnail from post detail
+     */
+    getVideoThumbnail(post: TikTokPostDetail, size: '240' | '480' | '720' | '960' = '720'): string {
+        return post.video.zoomCover[size] || post.video.cover;
+    }
+
+    /**
+     * Get video play URL from post detail
+     */
+    getVideoPlayUrl(post: TikTokPostDetail): string {
+        return post.video.playAddr;
+    }
+
+    /**
+     * Get video download URL from post detail
+     */
+    getVideoDownloadUrl(post: TikTokPostDetail): string {
+        return post.video.downloadAddr;
+    }
+
+    /**
+     * Format timestamp to readable date
+     */
+    formatCreateTime(timestamp: string): string {
+        return new Date(parseInt(timestamp) * 1000).toLocaleDateString();
+    }
+
+    /**
+     * Get video duration in readable format
+     */
+    formatDuration(seconds: number): string {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+    }
 }
 
 // Create a singleton instance
@@ -294,10 +453,14 @@ export type {
     TikTokUser,
     TikTokUserInfo,
     TikTokUserStats,
-    TikTokVideoInfo,
+    TikTokPostDetail,
     TikTokVideoStats,
+    TikTokPostAuthor,
+    TikTokPostMusic,
+    TikTokPostVideo,
     FollowsListResponse,
+    PostDetailResponse,
     ProfileResponse,
     FollowersResponse,
-    VideoInfoResponse
+    PostDetailResponse_API
 };
