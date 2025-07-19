@@ -96,7 +96,7 @@ function getDeviceInfo() {
     };
 }
 
-// Core API functions
+// Internal functions (not exported)
 async function onGetProfile(id: string): Promise<[boolean, string | null, string | null, TikTokUserInfo | null, string | null]> {
     try {
         const url = `https://www.tiktok.com/@${id}`;
@@ -150,18 +150,17 @@ async function onGetProfile(id: string): Promise<[boolean, string | null, string
     }
 }
 
-export async function onGetTikTokProfile(id: string): Promise<[boolean, TikTokUserInfo | null]> {
+async function getTikTokProfile(id: string): Promise<[boolean, TikTokUserInfo | null]> {
     try {
         const [isExist, msToken, secUid, userInfo] = await onGetProfile(id);
-        // console.log("secUid: " + secUid);
         return [isExist, userInfo];
     } catch (error) {
-        console.error('Error in onGetTikTokProfile:', error);
+        console.error('Error in getTikTokProfile:', error);
         return [false, null];
     }
 }
 
-export async function onGetFollowsList(id: string): Promise<[boolean, Array<any>, number, FollowsListResponse | null]> {
+async function getFollowsList(id: string): Promise<[boolean, Array<any>, number, FollowsListResponse | null]> {
     try {
         const [isExist, msToken, secUid, userInfo] = await onGetProfile(id);
         let followersList: Array<any> = [];
@@ -221,9 +220,6 @@ export async function onGetFollowsList(id: string): Promise<[boolean, Array<any>
                 }
             });
 
-            // console.log('Followers API URL:', url);
-            // console.log('Response:', response.data);
-
             responseData = response.data;
             if (responseData) {
                 followersList = responseData.userList || [];
@@ -233,12 +229,12 @@ export async function onGetFollowsList(id: string): Promise<[boolean, Array<any>
 
         return [isExist, followersList, total, responseData];
     } catch (error) {
-        console.error('Error in onGetFollowsList:', error);
+        console.error('Error in getFollowsList:', error);
         return [false, [], -1, null];
     }
 }
 
-async function onGetVideoInfoFunction(videoLink: string): Promise<[boolean, TikTokVideoInfo | null]> {
+async function getVideoInfoFunction(videoLink: string): Promise<[boolean, TikTokVideoInfo | null]> {
     try {
         if (videoLink.indexOf("tiktok") === -1) {
             return [false, null];
@@ -267,8 +263,6 @@ async function onGetVideoInfoFunction(videoLink: string): Promise<[boolean, TikT
         const htmlText = response.data;
         const secUidIndex = htmlText.indexOf("secUid");
 
-        // console.log("secUidIndex: " + secUidIndex);
-
         if (secUidIndex === -1) {
             return [false, null];
         }
@@ -285,8 +279,6 @@ async function onGetVideoInfoFunction(videoLink: string): Promise<[boolean, TikT
             const videoInfo = jsonData['__DEFAULT_SCOPE__']['webapp.video-detail']['itemInfo']['itemStruct']['stats'];
             const videoLink = jsonData['__DEFAULT_SCOPE__']['seo.abtest']['canonical'];
             const videoAvatars = jsonData['__DEFAULT_SCOPE__']['webapp.video-detail']['itemInfo']['itemStruct']['video']['zoomCover'];
-
-            // console.log(jsonData['__DEFAULT_SCOPE__']['webapp.video-detail']['itemInfo']['itemStruct']['video']);
 
             // Define a regular expression to match the pattern
             const regex = /@([^/]+)\/video\/(\d+)/;
@@ -313,22 +305,22 @@ async function onGetVideoInfoFunction(videoLink: string): Promise<[boolean, TikT
 
         return [false, null];
     } catch (error) {
-        console.error('Error in onGetVideoInfoFunction:', error);
+        console.error('Error in getVideoInfoFunction:', error);
         return [false, null];
     }
 }
 
-export async function onGetVideoInfo(videoLink: string): Promise<[boolean, TikTokVideoInfo | null]> {
+async function getVideoInfo(videoLink: string): Promise<[boolean, TikTokVideoInfo | null]> {
     try {
-        const [isExist, videoInfo] = await onGetVideoInfoFunction(videoLink);
+        const [isExist, videoInfo] = await getVideoInfoFunction(videoLink);
         return [isExist, videoInfo];
     } catch (error) {
-        console.error('Error in onGetVideoInfo:', error);
+        console.error('Error in getVideoInfo:', error);
         return [false, null];
     }
 }
 
-// API Routes for Next.js
+// Only export the HTTP method handler - this is what Next.js expects
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const action = searchParams.get('action');
@@ -341,7 +333,7 @@ export async function GET(request: Request) {
                 if (!id) {
                     return Response.json({ error: 'ID is required' }, { status: 400 });
                 }
-                const [profileExists, userInfo] = await onGetTikTokProfile(id);
+                const [profileExists, userInfo] = await getTikTokProfile(id);
                 return Response.json({
                     success: profileExists,
                     data: userInfo
@@ -351,7 +343,7 @@ export async function GET(request: Request) {
                 if (!id) {
                     return Response.json({ error: 'ID is required' }, { status: 400 });
                 }
-                const [followersExists, followers, total, responseData] = await onGetFollowsList(id);
+                const [followersExists, followers, total, responseData] = await getFollowsList(id);
                 return Response.json({
                     success: followersExists,
                     data: { followers, total, responseData }
@@ -361,7 +353,7 @@ export async function GET(request: Request) {
                 if (!videoLink) {
                     return Response.json({ error: 'Video link is required' }, { status: 400 });
                 }
-                const [videoExists, videoInfo] = await onGetVideoInfo(videoLink);
+                const [videoExists, videoInfo] = await getVideoInfo(videoLink);
                 return Response.json({
                     success: videoExists,
                     data: videoInfo
