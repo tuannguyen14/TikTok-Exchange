@@ -153,7 +153,7 @@ const LoginPage = () => {
             color: '#bbf7d0',
           },
         });
-        window.location.href = '/dashboard';
+        window.location.href = '/exchange';
       } else {
         setGeneralError(data.error || 'An error occurred');
       }

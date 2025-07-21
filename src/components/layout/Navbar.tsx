@@ -181,14 +181,19 @@ export default function Navbar() {
                 </Paper>
               )}
 
-              {/* Language Selector */}
-              <LocaleSelector variant="dropdown" showFlag={true} showName={false} size="sm" />
+              {/* Language Selector with enhanced styling */}
+              <LocaleSelector 
+                variant="dropdown" 
+                showFlag={true} 
+                showName={false} 
+                size="sm"
+              />
 
               {/* Auth Section */}
               {loading ? (
-                <Group gap="xs">
+                <Group gap="xs" className={classes.loadingContainer}>
                   <Loader size="sm" />
-                  <Text size="sm" c="dimmed" visibleFrom="sm">Loading...</Text>
+                  <Text size="sm" fw={500} visibleFrom="sm">Loading...</Text>
                 </Group>
               ) : isAuthenticated ? (
                 /* User Profile Menu */
@@ -208,14 +213,14 @@ export default function Navbar() {
                       </Group>
                     </UnstyledButton>
                   </Menu.Target>
-                  <Menu.Dropdown>
+                  <Menu.Dropdown className={classes.userMenuDropdown}>
                     <Menu.Label>
                       <Stack gap={2}>
-                        <Text size="sm" fw={500}>
+                        <Text size="sm" fw={600}>
                           {profile?.email || 'User'}
                         </Text>
                         {profile?.tiktok_username && (
-                          <Text size="xs" c="#FE2C55">
+                          <Text size="xs" c="#FE2C55" fw={500}>
                             @{profile.tiktok_username}
                           </Text>
                         )}
@@ -225,45 +230,48 @@ export default function Navbar() {
                     <Menu.Item
                       component={Link}
                       href={`/${locale}/profile`}
-                      leftSection={<IconUser size={16} />}
+                      leftSection={<IconUser size={16} stroke={1.5} />}
                     >
-                      {t('profile')}
+                      <Text fw={500}>{t('profile')}</Text>
                     </Menu.Item>
                     <Menu.Item
                       component={Link}
                       href={`/${locale}/profile`}
-                      leftSection={<IconSettings size={16} />}
+                      leftSection={<IconSettings size={16} stroke={1.5} />}
                     >
-                      {t('settings')}
+                      <Text fw={500}>{t('settings')}</Text>
                     </Menu.Item>
                     <Menu.Divider />
                     <Menu.Item
                       color="red"
-                      leftSection={<IconLogout size={16} />}
+                      leftSection={<IconLogout size={16} stroke={1.5} />}
                       onClick={handleLogout}
                     >
-                      {t('logout')}
+                      <Text fw={500}>{t('logout')}</Text>
                     </Menu.Item>
                   </Menu.Dropdown>
                 </Menu>
               ) : (
                 /* Auth Buttons for Guest Users */
-                <Group gap="xs" visibleFrom="sm">
+                <Group gap="xs" visibleFrom="sm" className={classes.authButtons}>
                   <Button
                     variant="subtle"
-                    leftSection={<IconLogin size={16} />}
+                    leftSection={<IconLogin size={16} stroke={1.5} />}
                     component={Link}
                     href={`/${locale}/auth/login`}
                     size="sm"
+                    fw={600}
                   >
                     Đăng nhập
                   </Button>
                   <Button
+                    variant="gradient"
                     gradient={{ from: '#FE2C55', to: '#FF4081' }}
-                    leftSection={<IconUserPlus size={16} />}
+                    leftSection={<IconUserPlus size={16} stroke={1.5} />}
                     component={Link}
                     href={`/${locale}/auth/login`}
                     size="sm"
+                    fw={600}
                   >
                     Đăng ký
                   </Button>
@@ -277,6 +285,7 @@ export default function Navbar() {
                 size="sm"
                 hiddenFrom="md"
                 color="var(--mantine-color-gray-6)"
+                lineSize={2}
               />
             </Group>
           </Flex>
@@ -329,21 +338,24 @@ export default function Navbar() {
                   <Stack gap="xs">
                     <Button
                       variant="outline"
-                      leftSection={<IconLogin size={16} />}
+                      leftSection={<IconLogin size={16} stroke={1.5} />}
                       component={Link}
                       href={`/${locale}/auth/login`}
                       fullWidth
                       onClick={closeMobileMenu}
+                      fw={600}
                     >
                       Đăng nhập
                     </Button>
                     <Button
+                      variant="gradient"
                       gradient={{ from: '#FE2C55', to: '#FF4081' }}
-                      leftSection={<IconUserPlus size={16} />}
+                      leftSection={<IconUserPlus size={16} stroke={1.5} />}
                       component={Link}
                       href={`/${locale}/auth/login`}
                       fullWidth
                       onClick={closeMobileMenu}
+                      fw={600}
                     >
                       Đăng ký
                     </Button>

@@ -72,14 +72,6 @@ export default async function CampaignsPage({ params }: { params: Promise<{ loca
   return (
     <Container size="xl" py="md">
       <Stack gap="xl">
-        <Stack gap="xs">
-          <Title order={1} size="h1">
-            {serverTranslations.title}
-          </Title>
-          <Text c="dimmed" size="md">
-            {serverTranslations.description}
-          </Text>
-        </Stack>
 
         <Suspense fallback={<CampaignsPageSkeleton />}>
           <CampaignsClient

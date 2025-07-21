@@ -6,7 +6,7 @@ import { routing } from '@/i18n/routing'
 
 // Routes that require authentication
 const PROTECTED_ROUTES = [
-  '/dashboard',
+  // '/dashboard',
   '/exchange', 
   '/campaigns',
   '/profile',
@@ -158,7 +158,7 @@ export async function middleware(request: NextRequest) {
     // If user is authenticated and trying to access auth pages, redirect to dashboard
     if (isAuthenticated && isAuth) {
       const locale = getLocaleFromPathname(pathname) || routing.defaultLocale
-      const url = new URL(`/${locale}/dashboard`, request.url)
+      const url = new URL(`/${locale}/exchange`, request.url)
       return NextResponse.redirect(url)
     }
 

@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LinkIcon, CheckCircleIcon, ExclamationCircleIcon, EyeIcon } from '@heroicons/react/24/outline';
+import { LinkIcon, CheckCircleIcon, ExclamationCircleIcon, EyeIcon, PlayIcon, HeartIcon, ChatBubbleLeftIcon, ShareIcon } from '@heroicons/react/24/outline';
 import { useTikTokApi } from '@/hooks/useTikTok';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
+import { validateTikTokURL } from '@/lib/utils/validate-video-url';
 
 interface VideoUrlInputProps {
   value: string;
@@ -13,50 +14,84 @@ interface VideoUrlInputProps {
   translations: any;
 }
 
-export default function VideoUrlInput({ 
-  value, 
-  onChange, 
-  onVideoVerified, 
-  translations 
+export default function VideoUrlInput({
+  value,
+  onChange,
+  onVideoVerified,
+  translations
 }: VideoUrlInputProps) {
   const [isVerifying, setIsVerifying] = useState(false);
   const [verificationResult, setVerificationResult] = useState<any>(null);
   const [error, setError] = useState('');
-  // const { getVideoInfo, extractVideoId } = useTikTokApi();
-
-  const isValidUrl = (url: string) => {
-    const patterns = [
-      /(?:https?:\/\/)?(?:www\.)?tiktok\.com\/@[^\/]+\/video\/(\d+)/,
-      /(?:https?:\/\/)?vt\.tiktok\.com\/([A-Za-z0-9]+)/,
-      /(?:https?:\/\/)?vm\.tiktok\.com\/([A-Za-z0-9]+)/
-    ];
-    return patterns.some(pattern => pattern.test(url));
-  };
+  const { getPostDetail } = useTikTokApi();
 
   const handleVerify = async () => {
-    if (!value.trim()) {
+    const validateResult = validateTikTokURL(value);
+    if (!validateResult.isValid) {
       setError(translations.messages.invalidUrl);
       return;
     }
-
-    if (!isValidUrl(value)) {
-      setError(translations.messages.invalidUrl);
-      return;
-    }
-
     setIsVerifying(true);
     setError('');
 
+    if (!validateResult.videoId) {
+      setError(translations.messages.invalidUrl);
+      return;
+    }
+
     try {
-      // const result = await getVideoInfo(value);
-      
-      // if (result.success && result.data) {
-      //   setVerificationResult(result.data);
-      //   onVideoVerified(result.data);
-      // } else {
-      //   setError(result.error || translations.messages.verificationFailed);
-      //   setVerificationResult(null);
-      // }
+      const result = await getPostDetail(validateResult.videoId);
+
+      if (result.success && result.data) {
+        // Transform the new API response to match expected format
+        const postDetail = result.data.itemInfo?.itemStruct;
+        if (postDetail) {
+          const transformedData = {
+            id: postDetail.id,
+            tiktokID: postDetail.author.uniqueId,
+            videoID: postDetail.id,
+            url: postDetail.video.zoomCover['720'] || postDetail.video.cover,
+            playCount: parseInt(postDetail.stats.playCount.toString()),
+            diggCount: parseInt(postDetail.stats.diggCount.toString()),
+            commentCount: postDetail.stats.commentCount,
+            shareCount: parseInt(postDetail.stats.shareCount.toString()),
+            collectCount: parseInt(postDetail.stats.collectCount.toString()),
+            author: {
+              uniqueId: postDetail.author.uniqueId,
+              nickname: postDetail.author.nickname,
+              avatarThumb: postDetail.author.avatarThumb,
+              verified: postDetail.author.verified
+            },
+            video: {
+              duration: postDetail.video.duration,
+              height: postDetail.video.height,
+              width: postDetail.video.width,
+              cover: postDetail.video.cover,
+              playAddr: postDetail.video.playAddr,
+              downloadAddr: postDetail.video.downloadAddr,
+              zoomCover: postDetail.video.zoomCover
+            },
+            music: {
+              id: postDetail.music.id,
+              title: postDetail.music.title,
+              authorName: postDetail.music.authorName,
+              duration: postDetail.music.duration,
+              original: postDetail.music.original
+            },
+            desc: postDetail.desc,
+            createTime: postDetail.createTime
+          };
+
+          setVerificationResult(transformedData);
+          onVideoVerified(transformedData);
+        } else {
+          setError(translations.messages.verificationFailed);
+          setVerificationResult(null);
+        }
+      } else {
+        setError(result.error || translations.messages.verificationFailed);
+        setVerificationResult(null);
+      }
     } catch (err) {
       setError(translations.messages.verificationFailed);
       setVerificationResult(null);
@@ -76,12 +111,15 @@ export default function VideoUrlInput({
     return num.toLocaleString();
   };
 
-  useEffect(() => {
-    if (value && verificationResult) {
-      setVerificationResult(null);
-    }
-    setError('');
-  }, [value]);
+  const formatDuration = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
+
+  const formatDate = (timestamp: string) => {
+    return new Date(parseInt(timestamp) * 1000).toLocaleDateString();
+  };
 
   return (
     <div className="space-y-6">
@@ -122,7 +160,7 @@ export default function VideoUrlInput({
             </button>
           </div>
         </div>
-        
+
         {error && (
           <motion.div
             initial={{ opacity: 0, y: -10, scale: 0.95 }}
@@ -145,6 +183,7 @@ export default function VideoUrlInput({
             transition={{ type: "spring", stiffness: 200, damping: 20 }}
             className="bg-gradient-to-br from-white to-gray-50 border-2 border-green-200 rounded-2xl p-6 shadow-xl"
           >
+            {/* Header */}
             <div className="flex items-center space-x-3 mb-6">
               <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center shadow-lg">
                 <CheckCircleIcon className="h-6 w-6 text-white" />
@@ -157,44 +196,105 @@ export default function VideoUrlInput({
               </div>
             </div>
 
-            <div className="flex space-x-6">
+            {/* Video Content */}
+            <div className="flex flex-col lg:flex-row space-y-6 lg:space-y-0 lg:space-x-6">
               {/* Enhanced Video Thumbnail */}
               <div className="flex-shrink-0 relative group">
-                <img
-                  src={verificationResult.url}
-                  alt="Video thumbnail"
-                  className="w-24 h-24 object-cover rounded-2xl shadow-lg group-hover:shadow-xl transition-shadow duration-300"
-                />
-                <div className="absolute inset-0 bg-black/20 rounded-2xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <EyeIcon className="w-6 h-6 text-white" />
+                <div className="relative">
+                  <img
+                    src={verificationResult.url}
+                    alt="Video thumbnail"
+                    className="w-32 h-40 lg:w-24 lg:h-32 object-cover rounded-2xl shadow-lg group-hover:shadow-xl transition-all duration-300"
+                  />
+                  <div className="absolute inset-0 bg-black/30 rounded-2xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <PlayIcon className="w-8 h-8 text-white" />
+                  </div>
+                  {/* Duration badge */}
+                  <div className="absolute bottom-2 right-2 bg-black/80 text-white px-2 py-1 rounded-lg text-xs font-medium">
+                    {formatDuration(verificationResult.video?.duration || 0)}
+                  </div>
                 </div>
               </div>
 
               {/* Enhanced Video Info */}
               <div className="flex-1 space-y-4">
+                {/* Author Info */}
                 <div className="flex items-center space-x-3">
-                  <span className="text-sm font-medium text-gray-600">{translations.form.creator}:</span>
-                  <div className="bg-gradient-to-r from-[#FE2C55] to-[#EE1D52] text-white px-3 py-1 rounded-full text-sm font-bold">
-                    @{verificationResult.tiktokID}
+                  <img
+                    src={verificationResult.author?.avatarThumb || ''}
+                    alt={verificationResult.author?.nickname || ''}
+                    className="w-10 h-10 rounded-full object-cover border-2 border-gray-200"
+                  />
+                  <div>
+                    <div className="flex items-center space-x-2">
+                      <span className="font-bold text-gray-900">
+                        {verificationResult.author?.nickname || verificationResult.tiktokID}
+                      </span>
+                      {verificationResult.author?.verified && (
+                        <div className="w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
+                          <CheckCircleIcon className="w-3 h-3 text-white" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="bg-gradient-to-r from-[#FE2C55] to-[#EE1D52] text-white px-3 py-1 rounded-full text-sm font-bold inline-block">
+                      @{verificationResult.tiktokID}
+                    </div>
                   </div>
                 </div>
 
+                {/* Video Description */}
+                {verificationResult.desc && (
+                  <div className="bg-gray-50 p-3 rounded-xl border border-gray-200">
+                    <p className="text-sm text-gray-700 line-clamp-2">
+                      {verificationResult.desc}
+                    </p>
+                  </div>
+                )}
+
+                {/* Stats Grid */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
                   {[
-                    { label: 'Views', value: formatCount(verificationResult.playCount), color: 'text-blue-600', bg: 'bg-blue-50' },
-                    { label: 'Likes', value: formatCount(verificationResult.diggCount), color: 'text-[#FE2C55]', bg: 'bg-pink-50' },
-                    { label: 'Comments', value: formatCount(verificationResult.commentCount), color: 'text-emerald-600', bg: 'bg-emerald-50' },
-                    { label: 'Shares', value: formatCount(verificationResult.shareCount), color: 'text-purple-600', bg: 'bg-purple-50' }
+                    {
+                      label: 'Views',
+                      value: formatCount(verificationResult.playCount),
+                      color: 'text-blue-600',
+                      bg: 'bg-blue-50',
+                      icon: <EyeIcon className="w-4 h-4" />
+                    },
+                    {
+                      label: 'Likes',
+                      value: formatCount(verificationResult.diggCount),
+                      color: 'text-[#FE2C55]',
+                      bg: 'bg-pink-50',
+                      icon: <HeartIcon className="w-4 h-4" />
+                    },
+                    {
+                      label: 'Comments',
+                      value: formatCount(verificationResult.commentCount),
+                      color: 'text-emerald-600',
+                      bg: 'bg-emerald-50',
+                      icon: <ChatBubbleLeftIcon className="w-4 h-4" />
+                    },
+                    {
+                      label: 'Shares',
+                      value: formatCount(verificationResult.shareCount),
+                      color: 'text-purple-600',
+                      bg: 'bg-purple-50',
+                      icon: <ShareIcon className="w-4 h-4" />
+                    }
                   ].map((stat, index) => (
                     <motion.div
                       key={stat.label}
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: index * 0.1 }}
-                      className={`text-center p-3 ${stat.bg} rounded-xl border border-gray-100`}
+                      className={`text-center p-3 ${stat.bg} rounded-xl border border-gray-100 hover:shadow-md transition-shadow`}
                     >
-                      <div className={`text-lg font-bold ${stat.color}`}>
-                        {stat.value}
+                      <div className={`flex items-center justify-center space-x-1 mb-1 ${stat.color}`}>
+                        {stat.icon}
+                        <div className="text-lg font-bold">
+                          {stat.value}
+                        </div>
                       </div>
                       <div className="text-xs font-medium text-gray-700">{stat.label}</div>
                     </motion.div>
@@ -203,6 +303,7 @@ export default function VideoUrlInput({
               </div>
             </div>
 
+            {/* Success Footer */}
             <div className="mt-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
               <div className="flex items-center space-x-2">
                 <CheckCircleIcon className="w-5 h-5 text-green-600" />

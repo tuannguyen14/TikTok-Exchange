@@ -1,7 +1,7 @@
 // src/app/[locale]/campaigns/components/CampaignTable.tsx
 'use client';
 
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 import { Paper, Table, Stack, Group, Pagination } from '@mantine/core';
 import { Campaign } from '@/lib/api/campaigns';
 import CampaignTableRow from './CampaignTableRow';
@@ -47,6 +47,57 @@ interface CampaignTableProps {
   dateLocale: any;
 }
 
+// Memoized table header
+const TableHeader = memo(({ translations }: { 
+  translations: CampaignTableProps['translations']['table'] 
+}) => {
+  const headerStyle = {
+    fontWeight: 600,
+    color: 'var(--mantine-color-gray-8)',
+    borderBottom: '2px solid var(--mantine-color-gray-2)'
+  };
+
+  return (
+    <Table.Thead style={{ backgroundColor: 'var(--mantine-color-gray-0)' }}>
+      <Table.Tr>
+        <Table.Th style={headerStyle}>{translations.type}</Table.Th>
+        <Table.Th style={headerStyle}>{translations.target}</Table.Th>
+        <Table.Th style={headerStyle}>{translations.interaction}</Table.Th>
+        <Table.Th style={headerStyle}>{translations.progress}</Table.Th>
+        <Table.Th style={headerStyle}>{translations.creditsPerAction}</Table.Th>
+        <Table.Th style={headerStyle}>{translations.status}</Table.Th>
+        <Table.Th style={headerStyle}>{translations.created}</Table.Th>
+        <Table.Th style={headerStyle}>{translations.actions}</Table.Th>
+      </Table.Tr>
+    </Table.Thead>
+  );
+});
+TableHeader.displayName = 'TableHeader';
+
+// Memoized pagination component
+const TablePagination = memo(({ 
+  pagination, 
+  onPageChange 
+}: {
+  pagination: CampaignTableProps['pagination'];
+  onPageChange: (page: number) => void;
+}) => {
+  if (pagination.totalPages <= 1) return null;
+
+  return (
+    <Group justify="center" p="lg" style={{ backgroundColor: 'var(--mantine-color-gray-0)' }}>
+      <Pagination
+        value={pagination.page}
+        onChange={onPageChange}
+        total={pagination.totalPages}
+        size="sm"
+        radius="md"
+      />
+    </Group>
+  );
+});
+TablePagination.displayName = 'TablePagination';
+
 const CampaignTable = memo(({
   campaigns,
   locale,
@@ -59,9 +110,21 @@ const CampaignTable = memo(({
   onPageChange,
   dateLocale
 }: CampaignTableProps) => {
+  
+  // Memoize row translations to prevent recreating objects
+  const rowTranslations = useMemo(() => ({
+    status: translations.status
+  }), [translations.status]);
+
+  // Early return for empty state
   if (campaigns.length === 0) {
     return (
-      <Paper shadow="sm" radius="md" withBorder>
+      <Paper 
+        shadow="xs" 
+        radius="md" 
+        withBorder
+        style={{ overflow: 'hidden' }}
+      >
         <CampaignEmptyState 
           onCreateCampaign={onCreateCampaign}
           translations={translations.empty}
@@ -71,22 +134,24 @@ const CampaignTable = memo(({
   }
 
   return (
-    <Paper shadow="sm" radius="md" withBorder>
+    <Paper 
+      shadow="xs" 
+      radius="md" 
+      withBorder
+      style={{ overflow: 'hidden' }}
+    >
       <Stack gap={0}>
         <Table.ScrollContainer minWidth={800}>
-          <Table striped highlightOnHover>
-            <Table.Thead>
-              <Table.Tr>
-                <Table.Th>{translations.table.type}</Table.Th>
-                <Table.Th>{translations.table.target}</Table.Th>
-                <Table.Th>{translations.table.interaction}</Table.Th>
-                <Table.Th>{translations.table.progress}</Table.Th>
-                <Table.Th>{translations.table.creditsPerAction}</Table.Th>
-                <Table.Th>{translations.table.status}</Table.Th>
-                <Table.Th>{translations.table.created}</Table.Th>
-                <Table.Th>{translations.table.actions}</Table.Th>
-              </Table.Tr>
-            </Table.Thead>
+          <Table 
+            striped 
+            highlightOnHover
+            style={{
+              borderCollapse: 'separate',
+              borderSpacing: 0
+            }}
+          >
+            <TableHeader translations={translations.table} />
+            
             <Table.Tbody>
               {campaigns.map((campaign) => (
                 <CampaignTableRow
@@ -94,7 +159,7 @@ const CampaignTable = memo(({
                   campaign={campaign}
                   dateLocale={dateLocale}
                   actionLoading={actionLoading}
-                  translations={translations}
+                  translations={rowTranslations}
                   onStatusChange={onStatusChange}
                   onDelete={onDelete}
                 />
@@ -103,17 +168,10 @@ const CampaignTable = memo(({
           </Table>
         </Table.ScrollContainer>
 
-        {/* Pagination */}
-        {pagination.totalPages > 1 && (
-          <Group justify="center" p="md">
-            <Pagination
-              value={pagination.page}
-              onChange={onPageChange}
-              total={pagination.totalPages}
-              size="sm"
-            />
-          </Group>
-        )}
+        <TablePagination 
+          pagination={pagination}
+          onPageChange={onPageChange}
+        />
       </Stack>
     </Paper>
   );

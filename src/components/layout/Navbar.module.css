@@ -43,7 +43,7 @@
 .navLink {
     padding: var(--mantine-spacing-xs) var(--mantine-spacing-sm);
     border-radius: var(--mantine-radius-md);
-    color: light-dark(var(--mantine-color-gray-7), var(--mantine-color-gray-3));
+    color: light-dark(var(--mantine-color-gray-8), var(--mantine-color-gray-2));
     transition: all 0.2s ease;
     position: relative;
     overflow: hidden;
@@ -119,17 +119,33 @@
     color: light-dark(var(--mantine-color-yellow-8), var(--mantine-color-yellow-3));
 }
 
+/* Language Selector styles are now handled in LocaleSelector.module.css */
+
+/* Enhanced User Button Styles */
 .userButton {
     padding: var(--mantine-spacing-xs);
     border-radius: var(--mantine-radius-md);
     transition: all 0.2s ease;
-    border: 1px solid transparent;
+    border: 1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-5));
+    background: light-dark(var(--mantine-color-white), var(--mantine-color-dark-7));
 }
 
 .userButton:hover {
     background: light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-6));
-    border-color: light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+    border-color: light-dark(var(--mantine-color-gray-4), var(--mantine-color-dark-4));
     transform: translateY(-1px);
+}
+
+.userButton :global(.mantine-Group-root) {
+    color: light-dark(var(--mantine-color-gray-9), var(--mantine-color-gray-1));
+}
+
+.userButton svg {
+    color: light-dark(var(--mantine-color-gray-7), var(--mantine-color-gray-3)) !important;
+}
+
+.userButton:hover svg {
+    color: light-dark(var(--mantine-color-gray-9), var(--mantine-color-gray-1)) !important;
 }
 
 .avatar {
@@ -147,6 +163,57 @@
 .userButton:hover .avatar {
     transform: scale(1.1);
     box-shadow: 0 4px 12px rgba(254, 44, 85, 0.3);
+}
+
+/* Enhanced Menu Styles */
+.userMenuDropdown {
+    background: light-dark(rgba(255, 255, 255, 0.98), rgba(26, 27, 30, 0.98)) !important;
+    backdrop-filter: blur(12px);
+    border: 1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4)) !important;
+}
+
+.userMenuDropdown :global(.mantine-Menu-label) {
+    color: light-dark(var(--mantine-color-gray-8), var(--mantine-color-gray-2)) !important;
+}
+
+.userMenuDropdown :global(.mantine-Menu-item) {
+    color: light-dark(var(--mantine-color-gray-8), var(--mantine-color-gray-2)) !important;
+    font-weight: 500;
+}
+
+.userMenuDropdown :global(.mantine-Menu-item:hover) {
+    background: light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-6)) !important;
+    color: light-dark(var(--mantine-color-dark-9), var(--mantine-color-gray-0)) !important;
+}
+
+.userMenuDropdown :global(.mantine-Menu-item[data-color="red"]) {
+    color: var(--mantine-color-red-6) !important;
+}
+
+.userMenuDropdown :global(.mantine-Menu-item[data-color="red"]:hover) {
+    background: var(--mantine-color-red-0) !important;
+    color: var(--mantine-color-red-7) !important;
+}
+
+[data-mantine-color-scheme="dark"] .userMenuDropdown :global(.mantine-Menu-item[data-color="red"]:hover) {
+    background: var(--mantine-color-red-9) !important;
+    color: var(--mantine-color-red-4) !important;
+}
+
+/* Auth Buttons Enhanced */
+.authButtons :global(.mantine-Button-root) {
+    font-weight: 600;
+    border-width: 1.5px;
+}
+
+.authButtons :global(.mantine-Button-root[data-variant="subtle"]) {
+    color: light-dark(var(--mantine-color-gray-8), var(--mantine-color-gray-2)) !important;
+    border: 1px solid light-dark(var(--mantine-color-gray-4), var(--mantine-color-dark-4));
+}
+
+.authButtons :global(.mantine-Button-root[data-variant="subtle"]:hover) {
+    background: light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-6)) !important;
+    color: light-dark(var(--mantine-color-dark-9), var(--mantine-color-gray-0)) !important;
 }
 
 .mobileMenu {
@@ -194,9 +261,10 @@
     transition: all 0.2s ease;
     width: 100%;
     text-align: left;
-    color: light-dark(var(--mantine-color-gray-7), var(--mantine-color-gray-3));
+    color: light-dark(var(--mantine-color-gray-8), var(--mantine-color-gray-2));
     position: relative;
     overflow: hidden;
+    font-weight: 500;
 }
 
 .mobileNavLink::before {
@@ -223,11 +291,6 @@
 .mobileNavLink:hover::before {
     width: 100%;
 }
-
-/* Smooth transitions for theme changes */
-/* .{
-    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
-} */
 
 /* Enhanced hover effects */
 @media (hover: hover) {
@@ -258,6 +321,17 @@
         width: 28px;
         height: 28px;
     }
+
+    /* Mobile auth buttons with better contrast */
+    .mobileMenu :global(.mantine-Button-root) {
+        font-weight: 600;
+        color: light-dark(var(--mantine-color-gray-9), var(--mantine-color-gray-1)) !important;
+    }
+
+    .mobileMenu :global(.mantine-Button-root[data-variant="outline"]) {
+        border-color: light-dark(var(--mantine-color-gray-5), var(--mantine-color-dark-4)) !important;
+        color: light-dark(var(--mantine-color-gray-8), var(--mantine-color-gray-2)) !important;
+    }
 }
 
 /* Focus styles for accessibility */
@@ -269,14 +343,16 @@
     outline-offset: 2px;
 }
 
+.languageSelector :global(.mantine-Button-root:focus-visible) {
+    outline: 2px solid #FE2C55 !important;
+    outline-offset: 2px;
+}
+
 /* Animation for credits counter */
 @keyframes pulse {
-
-    0%,
-    100% {
+    0%, 100% {
         transform: scale(1);
     }
-
     50% {
         transform: scale(1.05);
     }
@@ -284,4 +360,13 @@
 
 .creditsContainer:hover .creditsText {
     animation: pulse 0.6s ease-in-out;
+}
+
+/* Loading state improvements */
+.loadingContainer {
+    color: light-dark(var(--mantine-color-gray-7), var(--mantine-color-gray-4));
+}
+
+.loadingContainer :global(.mantine-Loader-root) {
+    color: light-dark(var(--mantine-color-gray-6), var(--mantine-color-gray-5));
 }

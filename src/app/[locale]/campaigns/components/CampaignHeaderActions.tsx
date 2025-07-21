@@ -1,7 +1,7 @@
 // src/app/[locale]/campaigns/components/CampaignHeaderActions.tsx
 'use client';
 
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 import { Group, SegmentedControl, ActionIcon, Button } from '@mantine/core';
 import { IconRefresh, IconPlus } from '@tabler/icons-react';
 
@@ -23,6 +23,72 @@ interface CampaignHeaderActionsProps {
   };
 }
 
+// Memoized refresh button
+const RefreshButton = memo(({ 
+  loading, 
+  onRefresh 
+}: { 
+  loading: boolean; 
+  onRefresh: () => void; 
+}) => (
+  <ActionIcon
+    variant="default"
+    onClick={onRefresh}
+    loading={loading}
+    size="lg"
+    style={{ transition: 'all 200ms ease' }}
+    aria-label="Làm mới dữ liệu"
+    onMouseEnter={(e) => {
+      if (!loading) {
+        e.currentTarget.style.backgroundColor = 'var(--mantine-color-gray-1)';
+        e.currentTarget.style.transform = 'rotate(90deg)';
+      }
+    }}
+    onMouseLeave={(e) => {
+      if (!loading) {
+        e.currentTarget.style.backgroundColor = '';
+        e.currentTarget.style.transform = '';
+      }
+    }}
+  >
+    <IconRefresh size={16} />
+  </ActionIcon>
+));
+RefreshButton.displayName = 'RefreshButton';
+
+// Memoized create button
+const CreateButton = memo(({ 
+  onCreateCampaign, 
+  text 
+}: { 
+  onCreateCampaign: () => void; 
+  text: string; 
+}) => (
+  <Button
+    leftSection={<IconPlus size={16} />}
+    onClick={onCreateCampaign}
+    gradient={{ from: 'pink', to: 'red' }}
+    variant="gradient"
+    size="md"
+    radius="md"
+    style={{
+      fontWeight: 600,
+      transition: 'all 200ms ease'
+    }}
+    onMouseEnter={(e) => {
+      e.currentTarget.style.transform = 'translateY(-1px)';
+      e.currentTarget.style.boxShadow = 'var(--mantine-shadow-md)';
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.transform = '';
+      e.currentTarget.style.boxShadow = '';
+    }}
+  >
+    {text}
+  </Button>
+));
+CreateButton.displayName = 'CreateButton';
+
 const CampaignHeaderActions = memo(({
   activeTab,
   loading,
@@ -31,36 +97,38 @@ const CampaignHeaderActions = memo(({
   onCreateCampaign,
   translations
 }: CampaignHeaderActionsProps) => {
+  
+  // Memoize segmented control data to prevent recreating on every render
+  const segmentedData = useMemo(() => [
+    { label: translations.tabs.all, value: 'all' },
+    { label: translations.tabs.video, value: 'video' },
+    { label: translations.tabs.follow, value: 'follow' },
+  ], [translations.tabs]);
+
   return (
-    <Group justify="space-between" wrap="wrap">
+    <Group justify="space-between" wrap="wrap" gap="md">
       <SegmentedControl
         value={activeTab}
         onChange={onTabChange}
-        data={[
-          { label: translations.tabs.all, value: 'all' },
-          { label: translations.tabs.video, value: 'video' },
-          { label: translations.tabs.follow, value: 'follow' },
-        ]}
+        data={segmentedData}
+        size="md"
+        style={{
+          backgroundColor: 'var(--mantine-color-gray-1)',
+          padding: '4px',
+          borderRadius: 'var(--mantine-radius-md)'
+        }}
       />
       
-      <Group gap="xs">
-        <ActionIcon
-          variant="default"
-          onClick={onRefresh}
-          loading={loading}
-          size="lg"
-        >
-          <IconRefresh size={16} />
-        </ActionIcon>
+      <Group gap="sm">
+        <RefreshButton 
+          loading={loading} 
+          onRefresh={onRefresh} 
+        />
         
-        <Button
-          leftSection={<IconPlus size={16} />}
-          onClick={onCreateCampaign}
-          gradient={{ from: 'pink', to: 'red' }}
-          variant="gradient"
-        >
-          {translations.buttons.createCampaign}
-        </Button>
+        <CreateButton 
+          onCreateCampaign={onCreateCampaign}
+          text={translations.buttons.createCampaign}
+        />
       </Group>
     </Group>
   );

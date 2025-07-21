@@ -4,15 +4,19 @@
 import { useLocale } from 'next-intl'
 import { usePathname, useRouter } from '@/i18n/navigation'
 import { routing, type Locale } from '@/i18n/routing'
-import { Button } from '@/components/ui/button'
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Globe, ChevronDown } from 'lucide-react'
-import { removeLocaleFromPathname } from '@/lib/utils/routing'
+  Button,
+  Menu,
+  Group,
+  Text,
+  Stack,
+  Indicator,
+} from '@mantine/core'
+import {
+  IconWorld,
+  IconChevronDown,
+} from '@tabler/icons-react'
+import classes from './LocaleSelector.module.css'
 
 interface Language {
   code: Locale
@@ -40,7 +44,7 @@ interface LocaleSelectorProps {
   variant?: 'dropdown' | 'buttons'
   showFlag?: boolean
   showName?: boolean
-  size?: 'sm' | 'md' | 'lg'
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 }
 
 export default function LocaleSelector({ 
@@ -65,74 +69,97 @@ export default function LocaleSelector({
 
   if (variant === 'buttons') {
     return (
-      <div className="flex items-center space-x-1 p-1 bg-gray-100 dark:bg-gray-800 rounded-lg">
+      <Group gap={4} className={classes.buttonGroup}>
         {languages.map((language) => (
           <Button
             key={language.code}
-            variant={locale === language.code ? 'default' : 'ghost'}
-            size="sm"
+            variant={locale === language.code ? 'filled' : 'subtle'}
+            size={size}
             onClick={() => handleLocaleChange(language.code)}
-            className={`h-8 px-3 ${
-              locale === language.code 
-                ? 'bg-white dark:bg-gray-700 shadow-sm' 
-                : 'hover:bg-white/50 dark:hover:bg-gray-700/50'
-            }`}
+            className={locale === language.code ? classes.activeButton : classes.inactiveButton}
+            fw={600}
           >
-            {showFlag && <span className="mr-1">{language.flag}</span>}
-            {showName && (
-              <span className="text-xs font-medium">
-                {language.code.toUpperCase()}
-              </span>
-            )}
+            <Group gap="xs">
+              {showFlag && <Text component="span">{language.flag}</Text>}
+              {showName && (
+                <Text size="xs" fw={600}>
+                  {language.code.toUpperCase()}
+                </Text>
+              )}
+            </Group>
           </Button>
         ))}
-      </div>
+      </Group>
     )
   }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button 
-          variant="ghost" 
-          size="lg" 
-          className="flex items-center space-x-2"
+    <Menu shadow="lg" width={220} position="bottom-end">
+      <Menu.Target>
+        <Button
+          variant="subtle"
+          size={size}
+          className={classes.triggerButton}
+          fw={500}
+          rightSection={<IconChevronDown size={12} stroke={1.5} />}
         >
-          <Globe className="w-4 h-4" />
-          {showFlag && (
-            <span className="hidden sm:inline">{currentLanguage?.flag}</span>
-          )}
-          {showName && (
-            <span className="hidden md:inline text-sm">
-              {currentLanguage?.nativeName}
-            </span>
-          )}
-          <ChevronDown className="w-3 h-3" />
+          <Group gap="xs">
+            <IconWorld size={16} stroke={1.5} />
+            {showFlag && (
+              <Text component="span" className={classes.flagText}>
+                {currentLanguage?.flag}
+              </Text>
+            )}
+            {showName && (
+              <Text size="sm" className={classes.nameText}>
+                {currentLanguage?.nativeName}
+              </Text>
+            )}
+          </Group>
         </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="min-w-[200px]">
+      </Menu.Target>
+      
+      <Menu.Dropdown className={classes.dropdown}>
+        <Menu.Label>
+          <Text size="xs" fw={600} tt="uppercase" c="dimmed">
+            Select Language
+          </Text>
+        </Menu.Label>
+        
         {languages.map((language) => (
-          <DropdownMenuItem
+          <Menu.Item
             key={language.code}
             onClick={() => handleLocaleChange(language.code)}
-            className={`flex items-center space-x-3 cursor-pointer ${
-              locale === language.code 
-                ? 'bg-gray-100 dark:bg-gray-800' 
-                : ''
-            }`}
+            className={locale === language.code ? classes.activeItem : classes.menuItem}
           >
-            <span className="text-lg">{language.flag}</span>
-            <div className="flex flex-col">
-              <span className="font-medium">{language.nativeName}</span>
-              <span className="text-xs text-gray-500">{language.name}</span>
-            </div>
-            {locale === language.code && (
-              <div className="ml-auto w-2 h-2 bg-blue-500 rounded-full" />
-            )}
-          </DropdownMenuItem>
+            <Group justify="space-between" wrap="nowrap">
+              <Group gap="sm">
+                <Text component="span" size="lg">
+                  {language.flag}
+                </Text>
+                <Stack gap={2}>
+                  <Text size="sm" fw={500}>
+                    {language.nativeName}
+                  </Text>
+                  <Text size="xs" c="dimmed">
+                    {language.name}
+                  </Text>
+                </Stack>
+              </Group>
+              
+              {locale === language.code && (
+                <Indicator
+                  inline
+                  size={8}
+                  color="blue"
+                  processing={false}
+                />
+              )}
+            </Group>
+          </Menu.Item>
         ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
+      </Menu.Dropdown>
+    </Menu>
   )
 }
 

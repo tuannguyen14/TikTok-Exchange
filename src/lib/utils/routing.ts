@@ -111,7 +111,7 @@ export function getRedirectUrl(returnTo?: string, locale?: string): string {
   }
   
   // Default redirect to dashboard
-  return `/${defaultLocale}/dashboard`
+  return `/${defaultLocale}/exchange`
 }
 
 /**

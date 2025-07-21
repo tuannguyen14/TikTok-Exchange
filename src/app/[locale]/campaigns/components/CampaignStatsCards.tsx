@@ -1,9 +1,9 @@
 // src/app/[locale]/campaigns/components/CampaignStatsCards.tsx
 'use client';
 
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 import { Card, Group, Text, ThemeIcon, SimpleGrid, rem } from '@mantine/core';
-import { 
+import {
   IconTrendingUp,
   IconActivity,
   IconCreditCard,
@@ -25,52 +25,125 @@ interface CampaignStatsCardsProps {
   };
 }
 
+// Memoized individual stat card component
+const StatCard = memo(({
+  value,
+  label,
+  color,
+  icon: Icon
+}: {
+  value: string | number;
+  label: string;
+  color: string;
+  icon: React.ComponentType<any>;
+}) => (
+  <Card
+    withBorder
+    radius="md"
+    p="md"
+    style={{
+      transition: 'all 200ms ease',
+      cursor: 'default'
+    }}
+    onMouseEnter={(e) => {
+      e.currentTarget.style.boxShadow = 'var(--mantine-shadow-md)';
+      e.currentTarget.style.transform = 'translateY(-2px)';
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.boxShadow = '';
+      e.currentTarget.style.transform = '';
+    }}
+  >
+    <Group justify="space-between" wrap="nowrap">
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <Text
+          c="gray.6"
+          size="sm"
+          fw={600}
+          style={{
+            textOverflow: 'ellipsis',
+            overflow: 'hidden',
+            whiteSpace: 'nowrap'
+          }}
+        >
+          {label}
+        </Text>
+        <Text
+          fw={700}
+          size="xl"
+          c="gray.9"
+          style={{
+            lineHeight: 1.2,
+            marginTop: '4px',
+            fontFeatureSettings: '"tnum"' // Tabular numbers for better alignment
+          }}
+        >
+          {value}
+        </Text>
+      </div>
+      <ThemeIcon
+        color={color}
+        variant="light"
+        size="lg"
+        style={{ flexShrink: 0 }}
+      >
+        <Icon style={{ width: rem(18), height: rem(18) }} />
+      </ThemeIcon>
+    </Group>
+  </Card>
+));
+StatCard.displayName = 'StatCard';
+
 const CampaignStatsCards = memo(({ stats, translations }: CampaignStatsCardsProps) => {
-  const statCards = [
+  // Memoize formatted values to prevent recalculation on every render
+  const formattedStats = useMemo(() => ({
+    total: stats.total.toLocaleString(),
+    active: stats.active.toLocaleString(),
+    creditsSpent: stats.totalCreditsSpent.toLocaleString(),
+    actionsReceived: stats.totalActionsReceived.toLocaleString()
+  }), [stats]);
+
+  // Memoize stat cards configuration
+  const statCards = useMemo(() => [
     {
-      value: stats.total,
+      value: formattedStats.total,
       label: translations.total,
       color: 'blue',
       icon: IconTrendingUp
     },
     {
-      value: stats.active,
+      value: formattedStats.active,
       label: translations.active,
       color: 'green',
       icon: IconActivity
     },
     {
-      value: stats.totalCreditsSpent.toLocaleString(),
+      value: formattedStats.creditsSpent,
       label: translations.creditsSpent,
       color: 'violet',
       icon: IconCreditCard
     },
     {
-      value: stats.totalActionsReceived.toLocaleString(),
+      value: formattedStats.actionsReceived,
       label: translations.actionsReceived,
       color: 'orange',
       icon: IconUsers
     }
-  ];
+  ], [formattedStats, translations]);
 
   return (
-    <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }}>
+    <SimpleGrid
+      cols={{ base: 1, sm: 2, lg: 4 }}
+      spacing="md"
+    >
       {statCards.map((stat, index) => (
-        <Card key={index} withBorder radius="md" p="md">
-          <Group justify="space-between">
-            <div>
-              <Text c="dimmed" size="sm" fw={500}>
-                {stat.label}
-              </Text>
-              <Text fw={700} size="xl">
-                {stat.value}
-              </Text>
-            </div>
-            <ThemeIcon color={stat.color} variant="light" size="lg">
-              <stat.icon style={{ width: rem(18), height: rem(18) }} />
-            </ThemeIcon>
-          </Group>
-        </Card>
+        <StatCard
+          key={index}
+          value={stat.value}
+          label={stat.label}
+          color={stat.color}
+          icon={stat.icon}
+        />
       ))}
     </SimpleGrid>
   );
