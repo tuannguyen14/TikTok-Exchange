@@ -4,20 +4,40 @@ import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
 import { useInView } from 'framer-motion';
 import { useRef } from 'react';
-import { Shield, Heart, Users, TrendingUp, Star, Zap } from 'lucide-react';
+import {
+  Container,
+  Title,
+  Text,
+  Grid,
+  Paper,
+  Group,
+  Box,
+  ThemeIcon,
+  Stack,
+  Badge,
+  Flex
+} from '@mantine/core';
+import {
+  IconShield,
+  IconHeart,
+  IconUsers,
+  IconTrendingUp,
+  IconStar,
+  IconBolt
+} from '@tabler/icons-react';
 
-const FeatureCard = ({ 
-  icon: Icon, 
-  title, 
-  description, 
-  index, 
-  gradient 
+const FeatureCard = ({
+  icon: Icon,
+  title,
+  description,
+  index,
+  gradient
 }: {
   icon: any;
   title: string;
   description: string;
   index: number;
-  gradient: string;
+  gradient: { from: string; to: string };
 }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
@@ -27,60 +47,111 @@ const FeatureCard = ({
       ref={ref}
       initial={{ opacity: 0, y: 50 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-      transition={{ 
-        duration: 0.6, 
+      transition={{
+        duration: 0.6,
         delay: index * 0.1,
         ease: "easeOut"
       }}
-      className="group relative"
     >
-      <motion.div
-        whileHover={{ y: -5 }}
-        className="relative bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700 h-full"
-      >
-        {/* Icon container */}
-        <motion.div
-          className={`w-16 h-16 rounded-xl bg-gradient-to-r ${gradient} p-4 mb-6 shadow-lg`}
-          whileHover={{ scale: 1.1, rotate: 5 }}
-          transition={{ type: "spring", stiffness: 300 }}
+      <motion.div whileHover={{ y: -8, scale: 1.02 }}>
+        <Paper
+          radius="xl"
+          p="xl"
+          style={{
+            background: 'white',
+            boxShadow: '0 10px 40px rgba(0, 0, 0, 0.1)',
+            border: '1px solid rgba(0, 0, 0, 0.05)',
+            height: '100%',
+            transition: 'all 0.3s ease',
+            position: 'relative',
+            overflow: 'hidden'
+          }}
         >
-          <Icon className="w-full h-full text-white" />
-        </motion.div>
+          {/* Background gradient on hover */}
+          <motion.div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background: `linear-gradient(135deg, ${gradient.from === 'green' ? '#10b981' : gradient.from === 'pink' ? '#ec4899' : gradient.from === 'blue' ? '#3b82f6' : '#8b5cf6'}08, ${gradient.to === 'teal' ? '#14b8a6' : gradient.to === 'red' ? '#ef4444' : gradient.to === 'cyan' ? '#06b6d4' : '#ec4899'}08)`,
+              opacity: 0,
+              borderRadius: '12px'
+            }}
+            whileHover={{ opacity: 1 }}
+          />
 
-        {/* Content */}
-        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors">
-          {title}
-        </h3>
-        
-        <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-          {description}
-        </p>
-
-        {/* Hover effect overlay */}
-        <motion.div
-          className={`absolute inset-0 bg-gradient-to-r ${gradient} opacity-0 rounded-2xl group-hover:opacity-5 transition-opacity duration-300`}
-          whileHover={{ opacity: 0.05 }}
-        />
-
-        {/* Decorative elements */}
-        <div className="absolute top-4 right-4 flex gap-1">
-          {[...Array(3)].map((_, i) => (
+          <Stack gap="lg" style={{ position: 'relative', zIndex: 1 }}>
+            {/* Icon container */}
             <motion.div
-              key={i}
-              className={`w-1 h-1 bg-gradient-to-r ${gradient} rounded-full opacity-40`}
-              animate={{ 
-                scale: [1, 1.2, 1],
-                opacity: [0.4, 0.8, 0.4]
-              }}
-              transition={{ 
-                duration: 2,
-                repeat: Infinity,
-                delay: i * 0.2,
-                ease: "easeInOut"
-              }}
-            />
-          ))}
-        </div>
+              whileHover={{ scale: 1.1, rotate: 5 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <ThemeIcon
+                size={64}
+                radius="xl"
+                variant="gradient"
+                gradient={gradient}
+                style={{ boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)' }}
+              >
+                <Icon size={32} />
+              </ThemeIcon>
+            </motion.div>
+
+            {/* Content */}
+            <Stack gap="md">
+              <Title
+                order={3}
+                size="xl"
+                c="dark"
+                fw={700}
+                style={{ transition: 'color 0.3s ease' }}
+              >
+                {title}
+              </Title>
+
+              <Text
+                c="dimmed"
+                size="md"
+                style={{ lineHeight: 1.6 }}
+              >
+                {description}
+              </Text>
+            </Stack>
+          </Stack>
+
+          {/* Decorative elements */}
+          <Box
+            style={{
+              position: 'absolute',
+              top: 16,
+              right: 16,
+              display: 'flex',
+              gap: 4
+            }}
+          >
+            {[...Array(3)].map((_, i) => (
+              <motion.div
+                key={i}
+                style={{
+                  width: 4,
+                  height: 4,
+                  background: `linear-gradient(135deg, ${gradient.from === 'green' ? '#10b981' : gradient.from === 'pink' ? '#ec4899' : gradient.from === 'blue' ? '#3b82f6' : '#8b5cf6'}, ${gradient.to === 'teal' ? '#14b8a6' : gradient.to === 'red' ? '#ef4444' : gradient.to === 'cyan' ? '#06b6d4' : '#ec4899'})`,
+                  borderRadius: '50%',
+                  opacity: 0.4
+                }}
+                animate={{
+                  scale: [1, 1.2, 1],
+                  opacity: [0.4, 0.8, 0.4]
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  delay: i * 0.2,
+                  ease: "easeInOut"
+                }}
+              />
+            ))}
+          </Box>
+        </Paper>
       </motion.div>
     </motion.div>
   );
@@ -93,40 +164,55 @@ const FeaturesSection = () => {
 
   const features = [
     {
-      icon: TrendingUp,
+      icon: IconTrendingUp,
       title: t('items.organic.title'),
       description: t('items.organic.description'),
-      gradient: 'from-green-500 to-emerald-500'
+      gradient: { from: 'green', to: 'teal' }
     },
     {
-      icon: Heart,
+      icon: IconHeart,
       title: t('items.credits.title'),
       description: t('items.credits.description'),
-      gradient: 'from-pink-500 to-red-500'
+      gradient: { from: 'pink', to: 'red' }
     },
     {
-      icon: Shield,
+      icon: IconShield,
       title: t('items.safe.title'),
       description: t('items.safe.description'),
-      gradient: 'from-blue-500 to-cyan-500'
+      gradient: { from: 'blue', to: 'cyan' }
     },
     {
-      icon: Users,
+      icon: IconUsers,
       title: t('items.community.title'),
       description: t('items.community.description'),
-      gradient: 'from-purple-500 to-pink-500'
+      gradient: { from: 'purple', to: 'pink' }
     }
   ];
 
   return (
-    <section 
+    <Box
+      component="section"
       ref={containerRef}
-      className="py-24 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 relative overflow-hidden"
+      py={96}
+      style={{
+        background: 'linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%)',
+        position: 'relative',
+        overflow: 'hidden'
+      }}
     >
       {/* Background decorations */}
-      <div className="absolute inset-0">
+      <Box style={{ position: 'absolute', inset: 0 }}>
         <motion.div
-          className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-r from-pink-500/10 to-purple-500/10 rounded-full blur-xl"
+          style={{
+            position: 'absolute',
+            top: '5rem',
+            left: '2.5rem',
+            width: '8rem',
+            height: '8rem',
+            background: 'linear-gradient(45deg, rgba(236, 72, 153, 0.1), rgba(139, 92, 246, 0.1))',
+            borderRadius: '50%',
+            filter: 'blur(3rem)'
+          }}
           animate={{
             x: [0, 50, 0],
             y: [0, -30, 0],
@@ -138,9 +224,18 @@ const FeaturesSection = () => {
             ease: "easeInOut",
           }}
         />
-        
+
         <motion.div
-          className="absolute bottom-20 right-10 w-24 h-24 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-full blur-xl"
+          style={{
+            position: 'absolute',
+            bottom: '5rem',
+            right: '2.5rem',
+            width: '6rem',
+            height: '6rem',
+            background: 'linear-gradient(45deg, rgba(59, 130, 246, 0.1), rgba(6, 182, 212, 0.1))',
+            borderRadius: '50%',
+            filter: 'blur(3rem)'
+          }}
           animate={{
             x: [0, -40, 0],
             y: [0, 40, 0],
@@ -153,90 +248,143 @@ const FeaturesSection = () => {
             delay: 2,
           }}
         />
-      </div>
+      </Box>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <Container size="xl" style={{ position: 'relative', zIndex: 10 }}>
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
         >
-          <motion.div
-            className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-pink-500/10 to-purple-500/10 backdrop-blur-sm border border-pink-500/20 rounded-full text-sm font-medium text-pink-600 dark:text-pink-400 mb-6"
-            whileHover={{ scale: 1.05 }}
-          >
-            <Star className="w-4 h-4" />
-            Features
-          </motion.div>
-          
-          <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-            <span className="bg-gradient-to-r from-gray-900 via-pink-600 to-purple-600 dark:from-white dark:via-pink-400 dark:to-purple-400 bg-clip-text text-transparent">
+          <Stack align="center" gap="xl" mb={64}>
+            <Badge
+              size="lg"
+              variant="gradient"
+              gradient={{ from: 'pink', to: 'purple' }}
+              leftSection={<IconStar size={16} />}
+              style={{
+                backgroundColor: 'rgba(236, 72, 153, 0.1)',
+                color: '#db2777',
+                backdropFilter: 'blur(8px)',
+                border: '1px solid rgba(236, 72, 153, 0.2)'
+              }}
+            >
+              Features
+            </Badge>
+
+            <Title
+              order={2}
+              size="3rem"
+              ta="center"
+              style={{
+                background: 'linear-gradient(135deg, #1f2937, #db2777, #8b5cf6)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                fontWeight: 700
+              }}
+            >
               {t('title')}
-            </span>
-          </h2>
-          
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            {t('subtitle')}
-          </p>
+            </Title>
+
+            <Text
+              size="xl"
+              ta="center"
+              c="dimmed"
+              maw={800}
+              style={{ lineHeight: 1.6 }}
+            >
+              {t('subtitle')}
+            </Text>
+          </Stack>
         </motion.div>
 
         {/* Features grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <Grid gutter="xl" mb={64}>
           {features.map((feature, index) => (
-            <FeatureCard
-              key={index}
-              icon={feature.icon}
-              title={feature.title}
-              description={feature.description}
-              index={index}
-              gradient={feature.gradient}
-            />
+            <Grid.Col key={index} span={{ base: 12, md: 6 }}>
+              <FeatureCard
+                icon={feature.icon}
+                title={feature.title}
+                description={feature.description}
+                index={index}
+                gradient={feature.gradient}
+              />
+            </Grid.Col>
           ))}
-        </div>
+        </Grid>
 
         {/* Bottom CTA */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.6, delay: 0.8 }}
-          className="text-center mt-16"
         >
-          <div className="inline-flex items-center gap-4 px-6 py-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-full">
-            <div className="flex -space-x-2">
-              {[...Array(5)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  className={`w-8 h-8 rounded-full bg-gradient-to-r ${
-                    ['from-pink-400 to-red-400', 'from-blue-400 to-cyan-400', 'from-purple-400 to-pink-400', 'from-green-400 to-emerald-400', 'from-yellow-400 to-orange-400'][i]
-                  } border-2 border-white dark:border-gray-800`}
-                  animate={{ 
-                    scale: [1, 1.1, 1],
-                    rotate: [0, 10, -10, 0]
-                  }}
-                  transition={{ 
-                    duration: 2,
-                    repeat: Infinity,
-                    delay: i * 0.2,
-                    ease: "easeInOut"
-                  }}
-                />
-              ))}
-            </div>
-            <span className="text-sm text-gray-600 dark:text-gray-300 font-medium">
-              Join 10,000+ creators already growing with TikGrow
-            </span>
-            <motion.div
-              animate={{ scale: [1, 1.2, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
+          <Group justify="center">
+            <Paper
+              radius="xl"
+              p="lg"
+              style={{
+                background: 'rgba(255, 255, 255, 0.8)',
+                backdropFilter: 'blur(16px)',
+                border: '1px solid rgba(0, 0, 0, 0.1)'
+              }}
             >
-              <Zap className="w-4 h-4 text-yellow-500" />
-            </motion.div>
-          </div>
+              <Flex align="center" gap="md">
+                <Group gap={-8}>
+                  {[...Array(5)].map((_, i) => {
+                    const gradients = [
+                      { from: 'pink', to: 'red' },
+                      { from: 'blue', to: 'cyan' },
+                      { from: 'purple', to: 'pink' },
+                      { from: 'green', to: 'teal' },
+                      { from: 'yellow', to: 'orange' }
+                    ];
+
+                    return (
+                      <motion.div
+                        key={i}
+                        animate={{
+                          scale: [1, 1.1, 1],
+                          rotate: [0, 10, -10, 0]
+                        }}
+                        transition={{
+                          duration: 2,
+                          repeat: Infinity,
+                          delay: i * 0.2,
+                          ease: "easeInOut"
+                        }}
+                      >
+                        <ThemeIcon
+                          size="sm"
+                          radius="xl"
+                          variant="gradient"
+                          gradient={gradients[i]}
+                          style={{ border: '2px solid white' }}
+                        />
+                      </motion.div>
+                    );
+                  })}
+                </Group>
+
+                <Text size="sm" c="dimmed" fw={500}>
+                  Join 10,000+ creators already growing with TikGrow
+                </Text>
+
+                <motion.div
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
+                  <ThemeIcon size="sm" color="yellow" variant="filled">
+                    <IconBolt size={16} />
+                  </ThemeIcon>
+                </motion.div>
+              </Flex>
+            </Paper>
+          </Group>
         </motion.div>
-      </div>
-    </section>
+      </Container>
+    </Box>
   );
 };
 

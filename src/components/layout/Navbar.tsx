@@ -21,7 +21,6 @@ import {
   Box,
   Flex,
   Loader,
-  rem,
 } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import {
@@ -182,10 +181,10 @@ export default function Navbar() {
               )}
 
               {/* Language Selector with enhanced styling */}
-              <LocaleSelector 
-                variant="dropdown" 
-                showFlag={true} 
-                showName={false} 
+              <LocaleSelector
+                variant="dropdown"
+                showFlag={true}
+                showName={false}
                 size="sm"
               />
 

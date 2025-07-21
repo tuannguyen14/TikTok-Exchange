@@ -9,7 +9,6 @@ import {
   EyeIcon,
   ChatBubbleLeftIcon,
   CurrencyDollarIcon,
-  ClockIcon,
   CheckCircleIcon,
   ExclamationTriangleIcon,
   SparklesIcon,

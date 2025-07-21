@@ -2,10 +2,32 @@
 
 import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { ArrowRight, Play, Sparkles, TrendingUp, Users } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import {
+  Container,
+  Title,
+  Text,
+  Button,
+  Group,
+  Stack,
+  Badge,
+  Box,
+  Center,
+  Paper,
+  ActionIcon,
+  Flex,
+  ThemeIcon,
+  Anchor
+} from '@mantine/core';
+import {
+  IconArrowRight,
+  IconPlayerPlay,
+  IconSparkles,
+  IconTrendingUp,
+  IconUsers,
+  IconChevronDown
+} from '@tabler/icons-react';
 
 const HeroSection = () => {
   const t = useTranslations('LandingPage.hero');
@@ -22,14 +44,32 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Animated background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20">
-        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
-        
-        {/* Floating elements */}
+    <Box
+      component="section"
+      style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #fef7ff 0%, #f3e8ff 50%, #dbeafe 100%)',
+        position: 'relative',
+        overflow: 'hidden',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}
+    >
+      {/* Animated background elements */}
+      <Box style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
         <motion.div
-          className="absolute top-20 left-10 w-20 h-20 bg-gradient-to-r from-pink-500 to-red-500 rounded-full opacity-20 blur-xl"
+          style={{
+            position: 'absolute',
+            top: '5rem',
+            left: '2.5rem',
+            width: '5rem',
+            height: '5rem',
+            background: 'linear-gradient(45deg, #ec4899, #ef4444)',
+            borderRadius: '50%',
+            opacity: 0.2,
+            filter: 'blur(2rem)'
+          }}
           animate={{
             y: [0, -20, 0],
             scale: [1, 1.1, 1],
@@ -40,9 +80,19 @@ const HeroSection = () => {
             ease: "easeInOut",
           }}
         />
-        
+
         <motion.div
-          className="absolute top-40 right-20 w-16 h-16 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full opacity-20 blur-xl"
+          style={{
+            position: 'absolute',
+            top: '10rem',
+            right: '5rem',
+            width: '4rem',
+            height: '4rem',
+            background: 'linear-gradient(45deg, #3b82f6, #06b6d4)',
+            borderRadius: '50%',
+            opacity: 0.2,
+            filter: 'blur(2rem)'
+          }}
           animate={{
             y: [0, 20, 0],
             scale: [1, 1.2, 1],
@@ -54,186 +104,294 @@ const HeroSection = () => {
             delay: 1,
           }}
         />
-        
-        <motion.div
-          className="absolute bottom-32 left-1/4 w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full opacity-20 blur-xl"
-          animate={{
-            x: [0, 30, 0],
-            y: [0, -10, 0],
-          }}
-          transition={{
-            duration: 5,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 2,
-          }}
-        />
-      </div>
+      </Box>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div className="space-y-8">
-          {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-pink-500/10 to-purple-500/10 backdrop-blur-sm border border-pink-500/20 rounded-full text-sm font-medium text-pink-600 dark:text-pink-400"
-          >
-            <Sparkles className="w-4 h-4" />
-            100% Organic Growth Platform
-          </motion.div>
+      <Container size="xl" style={{ position: 'relative', zIndex: 10 }}>
+        <Center>
+          <Stack align="center" gap="xl">
+            {/* Badge */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <Badge
+                size="lg"
+                variant="gradient"
+                gradient={{ from: 'pink', to: 'purple' }}
+                leftSection={<IconSparkles size={16} />}
+                style={{
+                  backgroundColor: 'rgba(236, 72, 153, 0.1)',
+                  color: '#db2777',
+                  backdropFilter: 'blur(8px)',
+                  border: '1px solid rgba(236, 72, 153, 0.2)'
+                }}
+              >
+                100% Organic Growth Platform
+              </Badge>
+            </motion.div>
 
-          {/* Title */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="space-y-4"
-          >
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight">
-              <span className="bg-gradient-to-r from-gray-900 via-pink-600 to-purple-600 dark:from-white dark:via-pink-400 dark:to-purple-400 bg-clip-text text-transparent">
-                {t('title')}
-              </span>
-              <br />
-              <span className="bg-gradient-to-r from-pink-600 to-red-500 bg-clip-text text-transparent relative">
-                {t('subtitle')}
-                <motion.div
-                  className="absolute -top-2 -right-8 w-6 h-6"
-                  animate={{
-                    rotate: [0, 15, -15, 0],
-                    scale: [1, 1.2, 1, 1],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut",
+            {/* Title */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              <Stack align="center" gap="md">
+                <Title
+                  order={1}
+                  size="4rem"
+                  ta="center"
+                  style={{
+                    background: 'linear-gradient(135deg, #1f2937, #db2777, #8b5cf6)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    lineHeight: 1.2,
+                    fontWeight: 700
                   }}
                 >
-                  <TrendingUp className="w-6 h-6 text-pink-500" />
-                </motion.div>
-              </span>
-            </h1>
-          </motion.div>
+                  {t('title')}
+                </Title>
 
-          {/* Description */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="max-w-3xl mx-auto text-xl text-gray-600 dark:text-gray-300 leading-relaxed"
-          >
-            {t('description')}
-          </motion.p>
+                <Flex align="center" gap="sm">
+                  <Title
+                    order={1}
+                    size="4rem"
+                    ta="center"
+                    style={{
+                      background: 'linear-gradient(135deg, #db2777, #ef4444)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      lineHeight: 1.2,
+                      fontWeight: 700
+                    }}
+                  >
+                    {t('subtitle')}
+                  </Title>
 
-          {/* CTA Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
-          >
-            <Button
-              onClick={handleGetStarted}
-              size="lg"
-              className="bg-gradient-to-r from-pink-600 to-red-500 hover:from-pink-700 hover:to-red-600 text-white px-8 py-4 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group"
+                  <motion.div
+                    animate={{
+                      rotate: [0, 15, -15, 0],
+                      scale: [1, 1.2, 1, 1],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  >
+                    <ThemeIcon
+                      size="lg"
+                      variant="gradient"
+                      gradient={{ from: 'pink', to: 'purple' }}
+                    >
+                      <IconTrendingUp size={24} />
+                    </ThemeIcon>
+                  </motion.div>
+                </Flex>
+              </Stack>
+            </motion.div>
+
+            {/* Description */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
             >
-              {t('cta')}
-              <motion.div
-                className="ml-2"
-                animate={{ x: [0, 5, 0] }}
-                transition={{ duration: 1.5, repeat: Infinity }}
+              <Text
+                size="xl"
+                ta="center"
+                c="dimmed"
+                maw={800}
+                style={{ lineHeight: 1.6 }}
               >
-                <ArrowRight className="w-5 h-5" />
-              </motion.div>
-            </Button>
+                {t('description')}
+              </Text>
+            </motion.div>
 
-            <Button
-              onClick={handleLearnMore}
-              variant="outline"
-              size="lg"
-              className="border-2 border-gray-300 hover:border-pink-500 px-8 py-4 text-lg font-medium rounded-xl transition-all duration-300 group"
+            {/* CTA Buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
             >
-              <Play className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
-              {t('ctaSecondary')}
-            </Button>
-          </motion.div>
+              <Group justify="center" gap="md">
+                <Button
+                  size="xl"
+                  variant="gradient"
+                  gradient={{ from: 'pink', to: 'red' }}
+                  rightSection={
+                    <motion.div
+                      animate={{ x: [0, 5, 0] }}
+                      transition={{ duration: 1.5, repeat: Infinity }}
+                    >
+                      <IconArrowRight size={20} />
+                    </motion.div>
+                  }
+                  onClick={handleGetStarted}
+                  style={{
+                    boxShadow: '0 10px 30px rgba(236, 72, 153, 0.3)',
+                    transition: 'all 0.3s ease'
+                  }}
+                >
+                  {t('cta')}
+                </Button>
 
-          {/* Trust indicators */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.8 }}
-            className="flex flex-wrap justify-center items-center gap-8 text-sm text-gray-500 dark:text-gray-400"
-          >
-            <div className="flex items-center gap-2">
-              <Users className="w-4 h-4" />
-              <span>No password required</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4" />
-              <span>100% Safe & Secure</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <TrendingUp className="w-4 h-4" />
-              <span>Real organic growth</span>
-            </div>
-          </motion.div>
-        </div>
+                <Button
+                  size="xl"
+                  variant="outline"
+                  color="pink"
+                  leftSection={<IconPlayerPlay size={20} />}
+                  onClick={handleLearnMore}
+                >
+                  {t('ctaSecondary')}
+                </Button>
+              </Group>
+            </motion.div>
+
+            {/* Trust indicators */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.8 }}
+            >
+              <Group justify="center" gap="xl">
+                <Flex align="center" gap="xs">
+                  <IconUsers size={16} />
+                  <Text size="sm" c="dimmed">No password required</Text>
+                </Flex>
+                <Flex align="center" gap="xs">
+                  <IconSparkles size={16} />
+                  <Text size="sm" c="dimmed">100% Safe & Secure</Text>
+                </Flex>
+                <Flex align="center" gap="xs">
+                  <IconTrendingUp size={16} />
+                  <Text size="sm" c="dimmed">Real organic growth</Text>
+                </Flex>
+              </Group>
+            </motion.div>
+          </Stack>
+        </Center>
 
         {/* Video/Demo section */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 1 }}
-          className="mt-16 relative max-w-4xl mx-auto"
+          style={{ marginTop: '4rem' }}
         >
-          <div className="relative bg-gradient-to-r from-pink-500/10 to-purple-500/10 backdrop-blur-sm border border-pink-500/20 rounded-2xl p-2">
-            <div className="bg-white dark:bg-gray-900 rounded-xl shadow-2xl overflow-hidden">
-              <div className="aspect-video bg-gradient-to-br from-pink-100 to-purple-100 dark:from-gray-800 dark:to-gray-700 flex items-center justify-center relative">
-                {!isVideoPlaying ? (
-                  <motion.button
-                    onClick={() => setIsVideoPlaying(true)}
-                    className="flex items-center justify-center w-20 h-20 bg-white/90 hover:bg-white dark:bg-gray-800/90 dark:hover:bg-gray-800 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
+          <Center>
+            <Paper
+              radius="xl"
+              p="xs"
+              style={{
+                background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(139, 92, 246, 0.1))',
+                border: '1px solid rgba(236, 72, 153, 0.2)',
+                backdropFilter: 'blur(8px)',
+                maxWidth: '900px',
+                width: '100%'
+              }}
+            >
+              <Paper
+                radius="lg"
+                style={{
+                  background: 'white',
+                  overflow: 'hidden',
+                  boxShadow: '0 25px 50px rgba(0, 0, 0, 0.15)'
+                }}
+              >
+                <Box
+                  style={{
+                    aspectRatio: '16/9',
+                    background: 'linear-gradient(135deg, #fce7f3, #e0e7ff)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    position: 'relative'
+                  }}
+                >
+                  {!isVideoPlaying ? (
+                    <motion.div
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <ActionIcon
+                        size={80}
+                        radius="xl"
+                        variant="filled"
+                        color="white"
+                        onClick={() => setIsVideoPlaying(true)}
+                        style={{
+                          boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)',
+                          transition: 'all 0.3s ease'
+                        }}
+                      >
+                        <IconPlayerPlay size={32} color="#db2777" />
+                      </ActionIcon>
+                    </motion.div>
+                  ) : (
+                    <Center p="xl">
+                      <Text c="dimmed" ta="center">
+                        Demo video would play here
+                      </Text>
+                    </Center>
+                  )}
+
+                  {/* Browser controls */}
+                  <Group
+                    gap="xs"
+                    style={{
+                      position: 'absolute',
+                      top: '1rem',
+                      left: '1rem'
+                    }}
                   >
-                    <Play className="w-8 h-8 text-pink-600 ml-1 group-hover:scale-110 transition-transform" />
-                  </motion.button>
-                ) : (
-                  <div className="text-center p-8">
-                    <div className="animate-pulse text-gray-500 dark:text-gray-400">
-                      Demo video would play here
-                    </div>
-                  </div>
-                )}
-                
-                {/* Decorative elements */}
-                <div className="absolute top-4 left-4 flex gap-2">
-                  <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                  <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                </div>
-              </div>
-            </div>
-          </div>
+                    <Box w={12} h={12} bg="red" style={{ borderRadius: '50%' }} />
+                    <Box w={12} h={12} bg="yellow" style={{ borderRadius: '50%' }} />
+                    <Box w={12} h={12} bg="green" style={{ borderRadius: '50%' }} />
+                  </Group>
+                </Box>
+              </Paper>
+            </Paper>
+          </Center>
         </motion.div>
-      </div>
+      </Container>
 
       {/* Scroll indicator */}
       <motion.div
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+        style={{
+          position: 'absolute',
+          bottom: '2rem',
+          left: '50%',
+          transform: 'translateX(-50%)'
+        }}
         animate={{ y: [0, 10, 0] }}
         transition={{ duration: 2, repeat: Infinity }}
       >
-        <div className="w-6 h-10 border-2 border-gray-400 dark:border-gray-600 rounded-full flex justify-center">
+        <Box
+          style={{
+            width: 24,
+            height: 40,
+            border: '2px solid #9ca3af',
+            borderRadius: '12px',
+            display: 'flex',
+            justifyContent: 'center'
+          }}
+        >
           <motion.div
-            className="w-1 h-3 bg-gray-400 dark:bg-gray-600 rounded-full mt-2"
+            style={{
+              width: 4,
+              height: 12,
+              backgroundColor: '#9ca3af',
+              borderRadius: '2px',
+              marginTop: 8
+            }}
             animate={{ y: [0, 12, 0] }}
             transition={{ duration: 2, repeat: Infinity }}
           />
-        </div>
+        </Box>
       </motion.div>
-    </section>
+    </Box>
   );
 };
 

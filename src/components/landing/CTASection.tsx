@@ -4,8 +4,29 @@ import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
 import { useInView } from 'framer-motion';
 import { useRef } from 'react';
-import { ArrowRight, Sparkles, Shield, TrendingUp, CheckCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import {
+  Container,
+  Title,
+  Text,
+  Button,
+  Group,
+  Box,
+  ThemeIcon,
+  Stack,
+  Badge,
+  Paper,
+  SimpleGrid,
+  Flex,
+  Avatar
+} from '@mantine/core';
+import { 
+  IconArrowRight, 
+  IconSparkles, 
+  IconShield, 
+  IconTrendingUp, 
+  IconCheck 
+} from '@tabler/icons-react';
 
 const CTASection = () => {
   const t = useTranslations('LandingPage.cta');
@@ -20,31 +41,53 @@ const CTASection = () => {
   const features = [
     {
       text: t('features.free'),
-      icon: CheckCircle
+      icon: IconCheck
     },
     {
       text: t('features.noPassword'),
-      icon: Shield
+      icon: IconShield
     },
     {
       text: t('features.organic'),
-      icon: TrendingUp
+      icon: IconTrendingUp
     }
   ];
 
   return (
-    <section 
+    <Box
+      component="section"
       ref={containerRef}
-      className="py-24 bg-gradient-to-br from-pink-600 via-purple-600 to-blue-600 relative overflow-hidden"
+      style={{
+        padding: '6rem 0',
+        background: 'linear-gradient(135deg, #ec4899 0%, #8b5cf6 50%, #3b82f6 100%)',
+        position: 'relative',
+        overflow: 'hidden'
+      }}
     >
       {/* Background decorations */}
-      <div className="absolute inset-0">
+      <Box style={{ position: 'absolute', inset: 0 }}>
         {/* Animated background pattern */}
-        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
+        <Box
+          style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='6' cy='6' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            opacity: 0.1
+          }}
+        />
         
         {/* Floating elements */}
         <motion.div
-          className="absolute top-20 left-20 w-32 h-32 bg-white/10 rounded-full blur-xl"
+          style={{
+            position: 'absolute',
+            top: '5rem',
+            left: '5rem',
+            width: '8rem',
+            height: '8rem',
+            background: 'rgba(255, 255, 255, 0.1)',
+            borderRadius: '50%',
+            filter: 'blur(3rem)'
+          }}
           animate={{
             x: [0, 50, 0],
             y: [0, -30, 0],
@@ -58,7 +101,16 @@ const CTASection = () => {
         />
         
         <motion.div
-          className="absolute bottom-20 right-20 w-24 h-24 bg-white/10 rounded-full blur-xl"
+          style={{
+            position: 'absolute',
+            bottom: '5rem',
+            right: '5rem',
+            width: '6rem',
+            height: '6rem',
+            background: 'rgba(255, 255, 255, 0.1)',
+            borderRadius: '50%',
+            filter: 'blur(3rem)'
+          }}
           animate={{
             x: [0, -40, 0],
             y: [0, 40, 0],
@@ -73,7 +125,17 @@ const CTASection = () => {
         />
         
         <motion.div
-          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-white/5 rounded-full blur-3xl"
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '24rem',
+            height: '24rem',
+            background: 'rgba(255, 255, 255, 0.05)',
+            borderRadius: '50%',
+            filter: 'blur(4rem)'
+          }}
           animate={{
             scale: [1, 1.1, 1],
             rotate: [0, 180, 360],
@@ -84,238 +146,310 @@ const CTASection = () => {
             ease: "linear",
           }}
         />
-      </div>
+      </Box>
 
-      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-          transition={{ duration: 0.6 }}
-          className="mb-12"
-        >
+      <Container size="lg" style={{ position: 'relative', zIndex: 10 }}>
+        <Stack align="center" gap="xl">
+          {/* Header */}
           <motion.div
-            className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full text-sm font-medium text-white mb-6"
-            whileHover={{ scale: 1.05 }}
-            animate={{
-              y: [0, -5, 0],
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+            transition={{ duration: 0.6 }}
           >
-            <Sparkles className="w-4 h-4" />
-            Start Your Journey
-          </motion.div>
-          
-          <h2 className="text-4xl lg:text-6xl font-bold text-white mb-6">
-            {t('title')}
-          </h2>
-          
-          <p className="text-xl text-white/90 max-w-3xl mx-auto leading-relaxed">
-            {t('subtitle')}
-          </p>
-        </motion.div>
-
-        {/* CTA Button */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="mb-12"
-        >
-          <motion.button
-            onClick={handleGetStarted}
-            className="bg-white text-purple-600 px-10 py-5 rounded-2xl font-bold text-lg shadow-2xl hover:shadow-3xl transition-all duration-300 group relative overflow-hidden"
-            whileHover={{ scale: 1.05, y: -2 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            {/* Button background animation */}
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-pink-100 to-purple-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-              whileHover={{ opacity: 1 }}
-            />
-            
-            <span className="relative z-10 flex items-center gap-3">
-              {t('button')}
+            <Stack align="center" gap="lg">
               <motion.div
-                animate={{ x: [0, 5, 0] }}
-                transition={{ duration: 1.5, repeat: Infinity }}
-              >
-                <ArrowRight className="w-6 h-6" />
-              </motion.div>
-            </span>
-          </motion.button>
-        </motion.div>
-
-        {/* Features list */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          className="flex flex-wrap justify-center items-center gap-8 mb-12"
-        >
-          {features.map((feature, index) => (
-            <motion.div
-              key={index}
-              className="flex items-center gap-3 text-white/90"
-              initial={{ opacity: 0, x: -20 }}
-              animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
-              transition={{ duration: 0.5, delay: 0.6 + index * 0.1 }}
-              whileHover={{ scale: 1.05 }}
-            >
-              <motion.div
+                whileHover={{ scale: 1.05 }}
                 animate={{
-                  scale: [1, 1.2, 1],
-                  rotate: [0, 360],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  delay: index * 0.5,
-                  ease: "easeInOut",
-                }}
-              >
-                <feature.icon className="w-5 h-5" />
-              </motion.div>
-              <span className="font-medium">{feature.text}</span>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* Social proof */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
-          className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8"
-        >
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="space-y-2"
-            >
-              <motion.div
-                className="text-3xl font-bold text-white"
-                animate={{ scale: [1, 1.1, 1] }}
-                transition={{ duration: 2, repeat: Infinity, delay: 0 }}
-              >
-                10,000+
-              </motion.div>
-              <p className="text-white/80">Active Creators</p>
-              <div className="flex justify-center -space-x-2">
-                {[...Array(5)].map((_, i) => (
-                  <motion.div
-                    key={i}
-                    className="w-8 h-8 bg-gradient-to-r from-pink-400 to-purple-400 rounded-full border-2 border-white/50"
-                    animate={{
-                      y: [0, -5, 0],
-                      scale: [1, 1.1, 1],
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      delay: i * 0.2,
-                      ease: "easeInOut",
-                    }}
-                  />
-                ))}
-              </div>
-            </motion.div>
-
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="space-y-2"
-            >
-              <motion.div
-                className="text-3xl font-bold text-white"
-                animate={{ scale: [1, 1.1, 1] }}
-                transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
-              >
-                1M+
-              </motion.div>
-              <p className="text-white/80">Real Interactions</p>
-              <motion.div
-                className="flex justify-center gap-1"
-                animate={{
-                  scale: [1, 1.1, 1],
+                  y: [0, -5, 0],
                 }}
                 transition={{
                   duration: 2,
                   repeat: Infinity,
-                  delay: 1,
+                  ease: "easeInOut",
                 }}
               >
-                <span className="text-2xl">❤️</span>
-                <span className="text-2xl">💬</span>
-                <span className="text-2xl">👁️</span>
+                <Badge
+                  size="lg"
+                  variant="filled"
+                  color="white"
+                  leftSection={<IconSparkles size={16} />}
+                  style={{
+                    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                    color: 'white',
+                    backdropFilter: 'blur(8px)',
+                    border: '1px solid rgba(255, 255, 255, 0.3)'
+                  }}
+                >
+                  Start Your Journey
+                </Badge>
               </motion.div>
-            </motion.div>
-
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="space-y-2"
-            >
-              <motion.div
-                className="text-3xl font-bold text-white"
-                animate={{ scale: [1, 1.1, 1] }}
-                transition={{ duration: 2, repeat: Infinity, delay: 1 }}
+              
+              <Title
+                order={2}
+                size="4rem"
+                ta="center"
+                c="white"
+                style={{ fontWeight: 700 }}
               >
-                98%
-              </motion.div>
-              <p className="text-white/80">Success Rate</p>
+                {t('title')}
+              </Title>
+              
+              <Text
+                size="xl"
+                ta="center"
+                c="white"
+                opacity={0.9}
+                maw={800}
+                style={{ lineHeight: 1.6 }}
+              >
+                {t('subtitle')}
+              </Text>
+            </Stack>
+          </motion.div>
+
+          {/* CTA Button */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
+            <motion.div
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <Button
+                size="xl"
+                onClick={handleGetStarted}
+                variant="filled"
+                color="white"
+                rightSection={
+                  <motion.div
+                    animate={{ x: [0, 5, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                  >
+                    <IconArrowRight size={24} />
+                  </motion.div>
+                }
+                style={{
+                  color: '#8b5cf6',
+                  fontSize: '1.25rem',
+                  fontWeight: 700,
+                  padding: '1.25rem 2.5rem',
+                  boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)',
+                  transition: 'all 0.3s ease'
+                }}
+              >
+                {t('button')}
+              </Button>
+            </motion.div>
+          </motion.div>
+
+          {/* Features list */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+          >
+            <Group justify="center" gap="xl">
+              {features.map((feature, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+                  transition={{ duration: 0.5, delay: 0.6 + index * 0.1 }}
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <Flex align="center" gap="sm">
+                    <motion.div
+                      animate={{
+                        scale: [1, 1.2, 1],
+                        rotate: [0, 360],
+                      }}
+                      transition={{
+                        duration: 3,
+                        repeat: Infinity,
+                        delay: index * 0.5,
+                        ease: "easeInOut",
+                      }}
+                    >
+                      <ThemeIcon
+                        size="sm"
+                        color="white"
+                        variant="filled"
+                        style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)' }}
+                      >
+                        <feature.icon size={16} />
+                      </ThemeIcon>
+                    </motion.div>
+                    <Text c="white" fw={500} opacity={0.9}>
+                      {feature.text}
+                    </Text>
+                  </Flex>
+                </motion.div>
+              ))}
+            </Group>
+          </motion.div>
+
+          {/* Social proof */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.6, delay: 0.8 }}
+          >
+            <Paper
+              radius="xl"
+              p="xl"
+              maw={800}
+              style={{
+                background: 'rgba(255, 255, 255, 0.1)',
+                backdropFilter: 'blur(16px)',
+                border: '1px solid rgba(255, 255, 255, 0.2)'
+              }}
+            >
+              <SimpleGrid cols={{ base: 1, md: 3 }} spacing="xl">
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  style={{ textAlign: 'center' }}
+                >
+                  <Stack gap="sm">
+                    <motion.div
+                      animate={{ scale: [1, 1.1, 1] }}
+                      transition={{ duration: 2, repeat: Infinity, delay: 0 }}
+                    >
+                      <Title order={3} size="3rem" c="white">
+                        10,000+
+                      </Title>
+                    </motion.div>
+                    <Text c="white" opacity={0.8}>Active Creators</Text>
+                    <Group justify="center" gap={-8}>
+                      {[...Array(5)].map((_, i) => (
+                        <motion.div
+                          key={i}
+                          animate={{
+                            y: [0, -5, 0],
+                            scale: [1, 1.1, 1],
+                          }}
+                          transition={{
+                            duration: 2,
+                            repeat: Infinity,
+                            delay: i * 0.2,
+                            ease: "easeInOut",
+                          }}
+                        >
+                          <Avatar
+                            size="sm"
+                            radius="xl"
+                            style={{
+                              background: `linear-gradient(45deg, ${['#ec4899', '#8b5cf6', '#3b82f6', '#10b981', '#f59e0b'][i]}, ${['#ef4444', '#ec4899', '#8b5cf6', '#3b82f6', '#10b981'][i]})`,
+                              border: '2px solid rgba(255, 255, 255, 0.5)'
+                            }}
+                          />
+                        </motion.div>
+                      ))}
+                    </Group>
+                  </Stack>
+                </motion.div>
+
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  style={{ textAlign: 'center' }}
+                >
+                  <Stack gap="sm">
+                    <motion.div
+                      animate={{ scale: [1, 1.1, 1] }}
+                      transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+                    >
+                      <Title order={3} size="3rem" c="white">
+                        1M+
+                      </Title>
+                    </motion.div>
+                    <Text c="white" opacity={0.8}>Real Interactions</Text>
+                    <motion.div
+                      style={{ fontSize: '2rem' }}
+                      animate={{
+                        scale: [1, 1.1, 1],
+                      }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        delay: 1,
+                      }}
+                    >
+                      ❤️💬👁️
+                    </motion.div>
+                  </Stack>
+                </motion.div>
+
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  style={{ textAlign: 'center' }}
+                >
+                  <Stack gap="sm">
+                    <motion.div
+                      animate={{ scale: [1, 1.1, 1] }}
+                      transition={{ duration: 2, repeat: Infinity, delay: 1 }}
+                    >
+                      <Title order={3} size="3rem" c="white">
+                        98%
+                      </Title>
+                    </motion.div>
+                    <Text c="white" opacity={0.8}>Success Rate</Text>
+                    <motion.div
+                      animate={{
+                        rotate: [0, 360],
+                      }}
+                      transition={{
+                        duration: 4,
+                        repeat: Infinity,
+                        ease: "linear",
+                      }}
+                    >
+                      <ThemeIcon size="lg" color="white" variant="filled" style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)' }}>
+                        <IconTrendingUp size={32} />
+                      </ThemeIcon>
+                    </motion.div>
+                  </Stack>
+                </motion.div>
+              </SimpleGrid>
+            </Paper>
+          </motion.div>
+
+          {/* Final encouragement */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.6, delay: 1 }}
+          >
+            <Stack align="center" gap="lg">
+              <Text c="white" opacity={0.8} size="lg" ta="center">
+                Join thousands of creators who are already growing organically with TikGrow
+              </Text>
+              
               <motion.div
-                className="flex justify-center"
                 animate={{
-                  rotate: [0, 360],
+                  y: [0, -5, 0],
                 }}
                 transition={{
-                  duration: 4,
+                  duration: 2,
                   repeat: Infinity,
-                  ease: "linear",
+                  ease: "easeInOut",
                 }}
               >
-                <TrendingUp className="w-8 h-8 text-white" />
+                <ThemeIcon size="md" color="white" variant="filled" style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)' }}>
+                  <IconSparkles size={24} />
+                </ThemeIcon>
               </motion.div>
-            </motion.div>
-          </div>
-        </motion.div>
-
-        {/* Final encouragement */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.6, delay: 1 }}
-          className="mt-12 text-center"
-        >
-          <p className="text-white/80 text-lg">
-            Join thousands of creators who are already growing organically with TikGrow
-          </p>
-          
-          <motion.div
-            className="flex justify-center mt-6"
-            animate={{
-              y: [0, -5, 0],
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          >
-            <Sparkles className="w-6 h-6 text-white/60" />
+            </Stack>
           </motion.div>
-        </motion.div>
-      </div>
+        </Stack>
+      </Container>
 
       {/* Bottom wave decoration */}
-      <div className="absolute bottom-0 left-0 w-full">
+      <Box style={{ position: 'absolute', bottom: 0, left: 0, width: '100%' }}>
         <svg 
           viewBox="0 0 1200 120" 
           preserveAspectRatio="none" 
-          className="relative block w-full h-16"
+          style={{ display: 'block', width: '100%', height: '4rem' }}
         >
           <motion.path
             d="M0,60 C150,120 350,0 600,60 C850,120 1050,0 1200,60 L1200,120 L0,120 Z"
@@ -335,8 +469,8 @@ const CTASection = () => {
             }}
           />
         </svg>
-      </div>
-    </section>
+      </Box>
+    </Box>
   );
 };
 

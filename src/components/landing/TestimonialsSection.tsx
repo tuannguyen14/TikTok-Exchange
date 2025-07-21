@@ -4,14 +4,33 @@ import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
 import { useInView } from 'framer-motion';
 import { useRef } from 'react';
-import { Star, Quote, TrendingUp } from 'lucide-react';
+import {
+  Container,
+  Title,
+  Text,
+  Grid,
+  Paper,
+  Group,
+  Box,
+  ThemeIcon,
+  Stack,
+  Badge,
+  Avatar,
+  Rating,
+  Flex
+} from '@mantine/core';
+import {
+  IconStar,
+  IconQuote,
+  IconTrendingUp
+} from '@tabler/icons-react';
 
-const TestimonialCard = ({ 
-  name, 
-  username, 
-  content, 
-  rating, 
-  index 
+const TestimonialCard = ({
+  name,
+  username,
+  content,
+  rating,
+  index
 }: {
   name: string;
   username: string;
@@ -27,94 +46,141 @@ const TestimonialCard = ({
       ref={ref}
       initial={{ opacity: 0, y: 50, scale: 0.9 }}
       animate={isInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 50, scale: 0.9 }}
-      transition={{ 
-        duration: 0.6, 
+      transition={{
+        duration: 0.6,
         delay: index * 0.2,
         type: "spring",
         stiffness: 100
       }}
-      className="group"
     >
-      <motion.div
-        whileHover={{ y: -8, scale: 1.02 }}
-        className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700 relative overflow-hidden h-full"
-      >
-        {/* Quote icon */}
-        <motion.div
-          className="absolute top-6 right-6 opacity-10 group-hover:opacity-20 transition-opacity"
-          whileHover={{ rotate: 15, scale: 1.2 }}
+      <motion.div whileHover={{ y: -8, scale: 1.02 }}>
+        <Paper
+          radius="xl"
+          p="xl"
+          style={{
+            background: 'white',
+            boxShadow: '0 15px 50px rgba(0, 0, 0, 0.1)',
+            border: '1px solid rgba(0, 0, 0, 0.05)',
+            height: '100%',
+            position: 'relative',
+            overflow: 'hidden',
+            transition: 'all 0.3s ease'
+          }}
         >
-          <Quote className="w-12 h-12 text-pink-500" />
-        </motion.div>
-
-        {/* Avatar */}
-        <div className="flex items-center mb-6">
+          {/* Quote icon */}
           <motion.div
-            className="w-14 h-14 bg-gradient-to-r from-pink-400 to-purple-400 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg"
-            whileHover={{ scale: 1.1, rotate: 5 }}
+            style={{
+              position: 'absolute',
+              top: 24,
+              right: 24,
+              opacity: 0.1
+            }}
+            whileHover={{ rotate: 15, scale: 1.2, opacity: 0.2 }}
           >
-            {name.charAt(0)}
+            <IconQuote size={48} color="#db2777" />
           </motion.div>
-          <div className="ml-4">
-            <h4 className="font-semibold text-gray-900 dark:text-white">{name}</h4>
-            <p className="text-pink-600 dark:text-pink-400 text-sm font-medium">{username}</p>
-          </div>
-        </div>
 
-        {/* Rating */}
-        <div className="flex gap-1 mb-4">
-          {[...Array(rating)].map((_, i) => (
+          <Stack gap="lg" style={{ position: 'relative', zIndex: 1 }}>
+            {/* Avatar and user info */}
+            <Group>
+              <motion.div
+                whileHover={{ scale: 1.1, rotate: 5 }}
+              >
+                <Avatar
+                  size={56}
+                  radius="xl"
+                  style={{
+                    background: 'linear-gradient(45deg, #ec4899, #8b5cf6)',
+                    color: 'white',
+                    fontWeight: 700,
+                    fontSize: '1.25rem',
+                    boxShadow: '0 8px 25px rgba(236, 72, 153, 0.3)'
+                  }}
+                >
+                  {name.charAt(0)}
+                </Avatar>
+              </motion.div>
+
+              <Stack gap={4}>
+                <Text fw={600} c="dark" size="lg">{name}</Text>
+                <Text c="pink.6" size="sm" fw={500}>{username}</Text>
+              </Stack>
+            </Group>
+
+            {/* Rating */}
             <motion.div
-              key={i}
               initial={{ opacity: 0, scale: 0 }}
               animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0 }}
-              transition={{ 
-                duration: 0.3, 
-                delay: index * 0.2 + i * 0.1 + 0.5,
-                type: "spring",
-                stiffness: 500
-              }}
+              transition={{ duration: 0.4, delay: index * 0.2 + 0.5 }}
             >
-              <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+              <Rating value={rating} readOnly color="yellow" />
             </motion.div>
-          ))}
-        </div>
 
-        {/* Content */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={isInView ? { opacity: 1 } : { opacity: 0 }}
-          transition={{ duration: 0.6, delay: index * 0.2 + 0.3 }}
-          className="text-gray-600 dark:text-gray-300 leading-relaxed italic"
-        >
-          &quot;{content}&quot;
-        </motion.p>
-
-        {/* Decorative elements */}
-        <div className="absolute bottom-4 left-4 flex gap-1">
-          {[...Array(3)].map((_, i) => (
+            {/* Content */}
             <motion.div
-              key={i}
-              className="w-1 h-1 bg-gradient-to-r from-pink-400 to-purple-400 rounded-full"
-              animate={{ 
-                scale: [1, 1.5, 1],
-                opacity: [0.5, 1, 0.5]
-              }}
-              transition={{ 
-                duration: 2,
-                repeat: Infinity,
-                delay: i * 0.3,
-                ease: "easeInOut"
-              }}
-            />
-          ))}
-        </div>
+              initial={{ opacity: 0 }}
+              animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+              transition={{ duration: 0.6, delay: index * 0.2 + 0.3 }}
+            >
+              <Text
+                c="dimmed"
+                size="md"
+                style={{
+                  lineHeight: 1.6,
+                  fontStyle: 'italic'
+                }}
+              >
+                &quot;{content}&quot;
+              </Text>
+            </motion.div>
+          </Stack>
 
-        {/* Hover effect overlay */}
-        <motion.div
-          className="absolute inset-0 bg-gradient-to-r from-pink-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"
-          whileHover={{ opacity: 1 }}
-        />
+          {/* Decorative elements */}
+          <Box
+            style={{
+              position: 'absolute',
+              bottom: 16,
+              left: 16,
+              display: 'flex',
+              gap: 4
+            }}
+          >
+            {[...Array(3)].map((_, i) => (
+              <motion.div
+                key={i}
+                style={{
+                  width: 4,
+                  height: 4,
+                  background: 'linear-gradient(45deg, #ec4899, #8b5cf6)',
+                  borderRadius: '50%',
+                  opacity: 0.5
+                }}
+                animate={{
+                  scale: [1, 1.5, 1],
+                  opacity: [0.5, 1, 0.5]
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  delay: i * 0.3,
+                  ease: "easeInOut"
+                }}
+              />
+            ))}
+          </Box>
+
+          {/* Hover effect overlay */}
+          <motion.div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.05), rgba(139, 92, 246, 0.05))',
+              opacity: 0,
+              borderRadius: '12px'
+            }}
+            whileHover={{ opacity: 1 }}
+          />
+        </Paper>
       </motion.div>
     </motion.div>
   );
@@ -130,34 +196,58 @@ const TestimonialsSection = () => {
       name: t('items.testimonial1.name'),
       username: t('items.testimonial1.username'),
       content: t('items.testimonial1.content'),
-      rating: 5 // Fixed rating as number
+      rating: 5
     },
     {
       name: t('items.testimonial2.name'),
       username: t('items.testimonial2.username'),
       content: t('items.testimonial2.content'),
-      rating: 5 // Fixed rating as number
+      rating: 5
     },
     {
       name: t('items.testimonial3.name'),
       username: t('items.testimonial3.username'),
       content: t('items.testimonial3.content'),
-      rating: 5 // Fixed rating as number
+      rating: 5
     }
   ];
 
   return (
-    <section 
+    <Box
+      component="section"
       ref={containerRef}
-      className="py-24 bg-white dark:bg-gray-900 relative overflow-hidden"
+      py={96}
+      style={{
+        background: 'white',
+        position: 'relative',
+        overflow: 'hidden'
+      }}
     >
       {/* Background decorations */}
-      <div className="absolute inset-0">
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-pink-50/50 via-purple-50/50 to-blue-50/50 dark:from-pink-900/10 dark:via-purple-900/10 dark:to-blue-900/10" />
-        
+      <Box style={{ position: 'absolute', inset: 0 }}>
+        <Box
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.02) 0%, rgba(139, 92, 246, 0.02) 50%, rgba(59, 130, 246, 0.02) 100%)'
+          }}
+        />
+
         {/* Floating testimonial bubbles */}
         <motion.div
-          className="absolute top-20 left-10 w-20 h-20 bg-gradient-to-r from-pink-500/10 to-purple-500/10 rounded-full blur-xl"
+          style={{
+            position: 'absolute',
+            top: '5rem',
+            left: '2.5rem',
+            width: '5rem',
+            height: '5rem',
+            background: 'linear-gradient(45deg, rgba(236, 72, 153, 0.1), rgba(139, 92, 246, 0.1))',
+            borderRadius: '50%',
+            filter: 'blur(3rem)'
+          }}
           animate={{
             y: [0, -30, 0],
             x: [0, 20, 0],
@@ -169,9 +259,18 @@ const TestimonialsSection = () => {
             ease: "easeInOut",
           }}
         />
-        
+
         <motion.div
-          className="absolute bottom-20 right-20 w-16 h-16 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-full blur-xl"
+          style={{
+            position: 'absolute',
+            bottom: '5rem',
+            right: '5rem',
+            width: '4rem',
+            height: '4rem',
+            background: 'linear-gradient(45deg, rgba(59, 130, 246, 0.1), rgba(6, 182, 212, 0.1))',
+            borderRadius: '50%',
+            filter: 'blur(3rem)'
+          }}
           animate={{
             y: [0, 40, 0],
             x: [0, -30, 0],
@@ -184,117 +283,170 @@ const TestimonialsSection = () => {
             delay: 2,
           }}
         />
-      </div>
+      </Box>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <Container size="xl" style={{ position: 'relative', zIndex: 10 }}>
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
         >
-          <motion.div
-            className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-yellow-500/10 to-orange-500/10 backdrop-blur-sm border border-yellow-500/20 rounded-full text-sm font-medium text-yellow-600 dark:text-yellow-400 mb-6"
-            whileHover={{ scale: 1.05 }}
-          >
-            <Star className="w-4 h-4 fill-current" />
-            Testimonials
-          </motion.div>
-          
-          <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-            <span className="bg-gradient-to-r from-gray-900 via-yellow-600 to-orange-600 dark:from-white dark:via-yellow-400 dark:to-orange-400 bg-clip-text text-transparent">
+          <Stack align="center" gap="xl" mb={64}>
+            <Badge
+              size="lg"
+              variant="gradient"
+              gradient={{ from: 'yellow', to: 'orange' }}
+              leftSection={<IconStar size={16} />}
+              style={{
+                backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                color: '#d97706',
+                backdropFilter: 'blur(8px)',
+                border: '1px solid rgba(245, 158, 11, 0.2)'
+              }}
+            >
+              Testimonials
+            </Badge>
+
+            <Title
+              order={2}
+              size="3rem"
+              ta="center"
+              style={{
+                background: 'linear-gradient(135deg, #1f2937, #d97706, #ea580c)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                fontWeight: 700
+              }}
+            >
               {t('title')}
-            </span>
-          </h2>
-          
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            {t('subtitle')}
-          </p>
+            </Title>
+
+            <Text
+              size="xl"
+              ta="center"
+              c="dimmed"
+              maw={800}
+              style={{ lineHeight: 1.6 }}
+            >
+              {t('subtitle')}
+            </Text>
+          </Stack>
         </motion.div>
 
         {/* Testimonials grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+        <Grid gutter="xl" mb={64}>
           {testimonials.map((testimonial, index) => (
-            <TestimonialCard
-              key={index}
-              name={testimonial.name}
-              username={testimonial.username}
-              content={testimonial.content}
-              rating={testimonial.rating}
-              index={index}
-            />
+            <Grid.Col key={index} span={{ base: 12, lg: 4 }}>
+              <TestimonialCard
+                name={testimonial.name}
+                username={testimonial.username}
+                content={testimonial.content}
+                rating={testimonial.rating}
+                index={index}
+              />
+            </Grid.Col>
           ))}
-        </div>
+        </Grid>
 
         {/* Stats section */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.6, delay: 0.8 }}
-          className="text-center"
         >
-          <div className="bg-gradient-to-r from-pink-500/10 to-purple-500/10 backdrop-blur-sm border border-pink-500/20 rounded-2xl p-8 max-w-4xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <motion.div
-                className="text-center"
-                whileHover={{ scale: 1.05 }}
-              >
+          <Paper
+            radius="xl"
+            p="xl"
+            maw={900}
+            mx="auto"
+            style={{
+              background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(139, 92, 246, 0.1))',
+              backdropFilter: 'blur(16px)',
+              border: '1px solid rgba(236, 72, 153, 0.2)'
+            }}
+          >
+            <Grid gutter="xl">
+              <Grid.Col span={{ base: 12, md: 4 }}>
                 <motion.div
-                  className="text-3xl font-bold text-pink-600 dark:text-pink-400 mb-2"
-                  animate={{ scale: [1, 1.1, 1] }}
-                  transition={{ duration: 2, repeat: Infinity, delay: 0 }}
+                  whileHover={{ scale: 1.05 }}
+                  style={{ textAlign: 'center' }}
                 >
-                  4.9/5
-                </motion.div>
-                <div className="flex justify-center gap-1 mb-2">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                  ))}
-                </div>
-                <p className="text-gray-600 dark:text-gray-300 text-sm">Average Rating</p>
-              </motion.div>
+                  <Stack gap="sm">
+                    <motion.div
+                      animate={{ scale: [1, 1.1, 1] }}
+                      transition={{ duration: 2, repeat: Infinity, delay: 0 }}
+                    >
+                      <Title order={2} size="3rem" c="pink.6">
+                        4.9/5
+                      </Title>
+                    </motion.div>
 
-              <motion.div
-                className="text-center"
-                whileHover={{ scale: 1.05 }}
-              >
-                <motion.div
-                  className="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2"
-                  animate={{ scale: [1, 1.1, 1] }}
-                  transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
-                >
-                  10,000+
-                </motion.div>
-                <div className="flex justify-center mb-2">
-                  <TrendingUp className="w-5 h-5 text-purple-500" />
-                </div>
-                <p className="text-gray-600 dark:text-gray-300 text-sm">Happy Creators</p>
-              </motion.div>
+                    <Group justify="center" gap={2}>
+                      {[...Array(5)].map((_, i) => (
+                        <IconStar key={i} size={16} fill="#fbbf24" color="#fbbf24" />
+                      ))}
+                    </Group>
 
-              <motion.div
-                className="text-center"
-                whileHover={{ scale: 1.05 }}
-              >
-                <motion.div
-                  className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2"
-                  animate={{ scale: [1, 1.1, 1] }}
-                  transition={{ duration: 2, repeat: Infinity, delay: 1 }}
-                >
-                  98%
+                    <Text c="dimmed" size="sm">Average Rating</Text>
+                  </Stack>
                 </motion.div>
-                <div className="flex justify-center mb-2">
-                  <motion.div
-                    animate={{ rotate: [0, 360] }}
-                    transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-                  >
-                    <Star className="w-5 h-5 text-blue-500" />
-                  </motion.div>
-                </div>
-                <p className="text-gray-600 dark:text-gray-300 text-sm">Success Rate</p>
-              </motion.div>
-            </div>
-          </div>
+              </Grid.Col>
+
+              <Grid.Col span={{ base: 12, md: 4 }}>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  style={{ textAlign: 'center' }}
+                >
+                  <Stack gap="sm">
+                    <motion.div
+                      animate={{ scale: [1, 1.1, 1] }}
+                      transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+                    >
+                      <Title order={2} size="3rem" c="purple.6">
+                        10,000+
+                      </Title>
+                    </motion.div>
+
+                    <Group justify="center">
+                      <IconTrendingUp size={20} color="#8b5cf6" />
+                    </Group>
+
+                    <Text c="dimmed" size="sm">Happy Creators</Text>
+                  </Stack>
+                </motion.div>
+              </Grid.Col>
+
+              <Grid.Col span={{ base: 12, md: 4 }}>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  style={{ textAlign: 'center' }}
+                >
+                  <Stack gap="sm">
+                    <motion.div
+                      animate={{ scale: [1, 1.1, 1] }}
+                      transition={{ duration: 2, repeat: Infinity, delay: 1 }}
+                    >
+                      <Title order={2} size="3rem" c="blue.6">
+                        98%
+                      </Title>
+                    </motion.div>
+
+                    <Group justify="center">
+                      <motion.div
+                        animate={{ rotate: [0, 360] }}
+                        transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                      >
+                        <IconStar size={20} color="#3b82f6" />
+                      </motion.div>
+                    </Group>
+
+                    <Text c="dimmed" size="sm">Success Rate</Text>
+                  </Stack>
+                </motion.div>
+              </Grid.Col>
+            </Grid>
+          </Paper>
         </motion.div>
 
         {/* Trust badges */}
@@ -302,23 +454,43 @@ const TestimonialsSection = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           transition={{ duration: 0.6, delay: 1 }}
-          className="flex flex-wrap justify-center items-center gap-8 mt-12 text-sm text-gray-500 dark:text-gray-400"
+          style={{ marginTop: '3rem' }}
         >
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-            <span>Trusted by creators worldwide</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
-            <span>Safe & secure platform</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse" />
-            <span>Real organic growth</span>
-          </div>
+          <Group justify="center" gap="xl">
+            <Flex align="center" gap="xs">
+              <Box
+                w={8}
+                h={8}
+                bg="green"
+                style={{ borderRadius: '50%' }}
+                className="animate-pulse"
+              />
+              <Text size="sm" c="dimmed">Trusted by creators worldwide</Text>
+            </Flex>
+            <Flex align="center" gap="xs">
+              <Box
+                w={8}
+                h={8}
+                bg="blue"
+                style={{ borderRadius: '50%' }}
+                className="animate-pulse"
+              />
+              <Text size="sm" c="dimmed">Safe & secure platform</Text>
+            </Flex>
+            <Flex align="center" gap="xs">
+              <Box
+                w={8}
+                h={8}
+                bg="purple"
+                style={{ borderRadius: '50%' }}
+                className="animate-pulse"
+              />
+              <Text size="sm" c="dimmed">Real organic growth</Text>
+            </Flex>
+          </Group>
         </motion.div>
-      </div>
-    </section>
+      </Container>
+    </Box>
   );
 };
 

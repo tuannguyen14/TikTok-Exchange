@@ -4,7 +4,27 @@ import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
 import { useInView } from 'framer-motion';
 import { useRef } from 'react';
-import { Eye, Heart, MessageCircle, UserPlus, Coins, ArrowUpDown } from 'lucide-react';
+import {
+  Container,
+  Title,
+  Text,
+  Grid,
+  Paper,
+  Group,
+  Box,
+  ThemeIcon,
+  Stack,
+  Badge,
+  SimpleGrid
+} from '@mantine/core';
+import { 
+  IconEye, 
+  IconHeart, 
+  IconMessageCircle, 
+  IconUserPlus, 
+  IconCoins, 
+  IconArrowsUpDown 
+} from '@tabler/icons-react';
 
 const ActionCard = ({ 
   icon: Icon, 
@@ -19,7 +39,7 @@ const ActionCard = ({
   credits: string;
   emoji: string;
   index: number;
-  gradient: string;
+  gradient: { from: string; to: string };
 }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
@@ -35,74 +55,121 @@ const ActionCard = ({
         type: "spring",
         stiffness: 200
       }}
-      className="group relative"
     >
-      <motion.div
-        whileHover={{ y: -5, scale: 1.02 }}
-        className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 relative overflow-hidden"
-      >
-        {/* Background gradient on hover */}
-        <motion.div
-          className={`absolute inset-0 bg-gradient-to-r ${gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}
-          whileHover={{ opacity: 0.05 }}
-        />
-
-        {/* Icon and emoji */}
-        <div className="flex items-center justify-between mb-4">
+      <motion.div whileHover={{ y: -5, scale: 1.02 }}>
+        <Paper
+          radius="xl"
+          p="lg"
+          style={{
+            background: 'white',
+            boxShadow: '0 10px 40px rgba(0, 0, 0, 0.1)',
+            border: '1px solid rgba(0, 0, 0, 0.05)',
+            position: 'relative',
+            overflow: 'hidden',
+            transition: 'all 0.3s ease'
+          }}
+        >
+          {/* Background gradient on hover */}
           <motion.div
-            className={`w-12 h-12 rounded-xl bg-gradient-to-r ${gradient} p-3 shadow-md`}
-            whileHover={{ rotate: 15, scale: 1.1 }}
-            transition={{ type: "spring", stiffness: 300 }}
-          >
-            <Icon className="w-full h-full text-white" />
-          </motion.div>
-          
-          <motion.div
-            className="text-2xl"
-            animate={{ 
-              scale: [1, 1.2, 1],
-              rotate: [0, 10, -10, 0]
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background: `linear-gradient(135deg, ${gradient.from}08, ${gradient.to}08)`,
+              opacity: 0,
+              borderRadius: '12px'
             }}
-            transition={{ 
-              duration: 3,
-              repeat: Infinity,
-              delay: index * 0.5,
-              ease: "easeInOut"
+            whileHover={{ opacity: 1 }}
+          />
+
+          <Stack gap="md" style={{ position: 'relative', zIndex: 1 }}>
+            {/* Icon and emoji */}
+            <Group justify="space-between">
+              <motion.div
+                whileHover={{ rotate: 15, scale: 1.1 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
+                <ThemeIcon
+                  size={48}
+                  radius="lg"
+                  variant="gradient"
+                  gradient={gradient}
+                  style={{ boxShadow: '0 8px 25px rgba(0, 0, 0, 0.15)' }}
+                >
+                  <Icon size={24} />
+                </ThemeIcon>
+              </motion.div>
+              
+              <motion.div
+                style={{ fontSize: '2rem' }}
+                animate={{ 
+                  scale: [1, 1.2, 1],
+                  rotate: [0, 10, -10, 0]
+                }}
+                transition={{ 
+                  duration: 3,
+                  repeat: Infinity,
+                  delay: index * 0.5,
+                  ease: "easeInOut"
+                }}
+              >
+                {emoji}
+              </motion.div>
+            </Group>
+
+            {/* Action */}
+            <Title order={4} size="lg" c="dark">
+              {action}
+            </Title>
+
+            {/* Credits */}
+            <Title
+              order={3}
+              size="2rem"
+              style={{
+                background: `linear-gradient(135deg, ${gradient.from}, ${gradient.to})`,
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                fontWeight: 700
+              }}
+            >
+              {credits}
+            </Title>
+          </Stack>
+
+          {/* Decorative elements */}
+          <Box
+            style={{
+              position: 'absolute',
+              bottom: 16,
+              right: 16,
+              display: 'flex',
+              gap: 4
             }}
           >
-            {emoji}
-          </motion.div>
-        </div>
-
-        {/* Action */}
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-          {action}
-        </h3>
-
-        {/* Credits */}
-        <div className={`text-2xl font-bold bg-gradient-to-r ${gradient} bg-clip-text text-transparent`}>
-          {credits}
-        </div>
-
-        {/* Decorative element */}
-        <div className="absolute bottom-4 right-4 flex gap-1">
-          {[...Array(2)].map((_, i) => (
-            <motion.div
-              key={i}
-              className={`w-1 h-1 bg-gradient-to-r ${gradient} rounded-full opacity-60`}
-              animate={{ 
-                scale: [1, 1.5, 1],
-                opacity: [0.6, 1, 0.6]
-              }}
-              transition={{ 
-                duration: 2,
-                repeat: Infinity,
-                delay: i * 0.3,
-                ease: "easeInOut"
-              }}
-            />
-          ))}
-        </div>
+            {[...Array(2)].map((_, i) => (
+              <motion.div
+                key={i}
+                style={{
+                  width: 4,
+                  height: 4,
+                  background: `linear-gradient(135deg, ${gradient.from}, ${gradient.to})`,
+                  borderRadius: '50%',
+                  opacity: 0.6
+                }}
+                animate={{ 
+                  scale: [1, 1.5, 1],
+                  opacity: [0.6, 1, 0.6]
+                }}
+                transition={{ 
+                  duration: 2,
+                  repeat: Infinity,
+                  delay: i * 0.3,
+                  ease: "easeInOut"
+                }}
+              />
+            ))}
+          </Box>
+        </Paper>
       </motion.div>
     </motion.div>
   );
@@ -115,44 +182,59 @@ const PricingSection = () => {
 
   const earnActions = [
     {
-      icon: Eye,
+      icon: IconEye,
       action: t('earnSection.actions.view.action'),
       credits: t('earnSection.actions.view.credits'),
       emoji: t('earnSection.actions.view.icon'),
-      gradient: 'from-blue-500 to-cyan-500'
+      gradient: { from: '#3b82f6', to: '#06b6d4' }
     },
     {
-      icon: Heart,
+      icon: IconHeart,
       action: t('earnSection.actions.like.action'),
       credits: t('earnSection.actions.like.credits'),
       emoji: t('earnSection.actions.like.icon'),
-      gradient: 'from-pink-500 to-red-500'
+      gradient: { from: '#ec4899', to: '#ef4444' }
     },
     {
-      icon: MessageCircle,
+      icon: IconMessageCircle,
       action: t('earnSection.actions.comment.action'),
       credits: t('earnSection.actions.comment.credits'),
       emoji: t('earnSection.actions.comment.icon'),
-      gradient: 'from-purple-500 to-pink-500'
+      gradient: { from: '#8b5cf6', to: '#ec4899' }
     },
     {
-      icon: UserPlus,
+      icon: IconUserPlus,
       action: t('earnSection.actions.follow.action'),
       credits: t('earnSection.actions.follow.credits'),
       emoji: t('earnSection.actions.follow.icon'),
-      gradient: 'from-green-500 to-emerald-500'
+      gradient: { from: '#10b981', to: '#059669' }
     }
   ];
 
   return (
-    <section 
+    <Box
+      component="section"
       ref={containerRef}
-      className="py-24 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 relative overflow-hidden"
+      py={96}
+      style={{
+        background: 'linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%)',
+        position: 'relative',
+        overflow: 'hidden'
+      }}
     >
       {/* Background decorations */}
-      <div className="absolute inset-0">
+      <Box style={{ position: 'absolute', inset: 0 }}>
         <motion.div
-          className="absolute top-20 left-1/4 w-64 h-64 bg-gradient-to-r from-pink-500/5 to-purple-500/5 rounded-full blur-3xl"
+          style={{
+            position: 'absolute',
+            top: '5rem',
+            left: '25%',
+            width: '16rem',
+            height: '16rem',
+            background: 'linear-gradient(45deg, rgba(236, 72, 153, 0.05), rgba(139, 92, 246, 0.05))',
+            borderRadius: '50%',
+            filter: 'blur(3rem)'
+          }}
           animate={{
             scale: [1, 1.2, 1],
             x: [0, 50, 0],
@@ -166,7 +248,16 @@ const PricingSection = () => {
         />
         
         <motion.div
-          className="absolute bottom-20 right-1/4 w-48 h-48 bg-gradient-to-r from-blue-500/5 to-cyan-500/5 rounded-full blur-3xl"
+          style={{
+            position: 'absolute',
+            bottom: '5rem',
+            right: '25%',
+            width: '12rem',
+            height: '12rem',
+            background: 'linear-gradient(45deg, rgba(59, 130, 246, 0.05), rgba(6, 182, 212, 0.05))',
+            borderRadius: '50%',
+            filter: 'blur(3rem)'
+          }}
           animate={{
             scale: [1, 1.3, 1],
             x: [0, -40, 0],
@@ -179,171 +270,288 @@ const PricingSection = () => {
             delay: 2,
           }}
         />
-      </div>
+      </Box>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <Container size="xl" style={{ position: 'relative', zIndex: 10 }}>
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
         >
-          <motion.div
-            className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500/10 to-emerald-500/10 backdrop-blur-sm border border-green-500/20 rounded-full text-sm font-medium text-green-600 dark:text-green-400 mb-6"
-            whileHover={{ scale: 1.05 }}
-          >
-            <Coins className="w-4 h-4" />
-            Transparent Pricing
-          </motion.div>
-          
-          <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-            <span className="bg-gradient-to-r from-gray-900 via-green-600 to-blue-600 dark:from-white dark:via-green-400 dark:to-blue-400 bg-clip-text text-transparent">
+          <Stack align="center" gap="xl" mb={64}>
+            <Badge
+              size="lg"
+              variant="gradient"
+              gradient={{ from: 'green', to: 'teal' }}
+              leftSection={<IconCoins size={16} />}
+              style={{
+                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                color: '#059669',
+                backdropFilter: 'blur(8px)',
+                border: '1px solid rgba(16, 185, 129, 0.2)'
+              }}
+            >
+              Transparent Pricing
+            </Badge>
+            
+            <Title
+              order={2}
+              size="3rem"
+              ta="center"
+              style={{
+                background: 'linear-gradient(135deg, #1f2937, #059669, #3b82f6)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                fontWeight: 700
+              }}
+            >
               {t('title')}
-            </span>
-          </h2>
-          
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            {t('subtitle')}
-          </p>
+            </Title>
+            
+            <Text
+              size="xl"
+              ta="center"
+              c="dimmed"
+              maw={800}
+              style={{ lineHeight: 1.6 }}
+            >
+              {t('subtitle')}
+            </Text>
+          </Stack>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
+        <Grid gutter="xl">
           {/* Earn Credits Section */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <div className="text-center mb-12">
-              <motion.div
-                className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg"
-                whileHover={{ scale: 1.1, rotate: 5 }}
-              >
-                <ArrowUpDown className="w-8 h-8 text-white" />
-              </motion.div>
-              
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-                {t('earnSection.title')}
-              </h3>
-              <p className="text-gray-600 dark:text-gray-300">
-                {t('earnSection.subtitle')}
-              </p>
-            </div>
+          <Grid.Col span={{ base: 12, lg: 6 }}>
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <Stack gap="xl">
+                                    <Stack align="center" gap="lg">
+                  <motion.div
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                  >
+                    <ThemeIcon
+                      size={64}
+                      radius="xl"
+                      variant="gradient"
+                      gradient={{ from: 'green', to: 'teal' }}
+                      style={{ boxShadow: '0 15px 35px rgba(16, 185, 129, 0.3)' }}
+                    >
+                      <IconArrowsUpDown size={32} />
+                    </ThemeIcon>
+                  </motion.div>
+                  
+                  <Stack align="center" gap="sm">
+                    <Title order={3} size="2rem" ta="center" c="dark">
+                      {t('earnSection.title')}
+                    </Title>
+                    <Text ta="center" c="dimmed" size="lg">
+                      {t('earnSection.subtitle')}
+                    </Text>
+                  </Stack>
+                </Stack>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {earnActions.map((action, index) => (
-                <ActionCard
-                  key={index}
-                  icon={action.icon}
-                  action={action.action}
-                  credits={action.credits}
-                  emoji={action.emoji}
-                  index={index}
-                  gradient={action.gradient}
-                />
-              ))}
-            </div>
-          </motion.div>
+                <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
+                  {earnActions.map((action, index) => (
+                    <ActionCard
+                      key={index}
+                      icon={action.icon}
+                      action={action.action}
+                      credits={action.credits}
+                      emoji={action.emoji}
+                      index={index}
+                      gradient={action.gradient}
+                    />
+                  ))}
+                </SimpleGrid>
+              </Stack>
+            </motion.div>
+          </Grid.Col>
 
           {/* Spend Credits Section */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 50 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-          >
-            <div className="text-center mb-12">
-              <motion.div
-                className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg"
-                whileHover={{ scale: 1.1, rotate: -5 }}
-              >
-                <Coins className="w-8 h-8 text-white" />
-              </motion.div>
-              
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-                {t('spendSection.title')}
-              </h3>
-              <p className="text-gray-600 dark:text-gray-300">
-                {t('spendSection.subtitle')}
-              </p>
-            </div>
-
+          <Grid.Col span={{ base: 12, lg: 6 }}>
             <motion.div
-              className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-100 dark:border-gray-700"
-              whileHover={{ y: -5 }}
+              initial={{ opacity: 0, x: 50 }}
+              animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 50 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
             >
-              <div className="text-center space-y-6">
-                <motion.div
-                  className="w-24 h-24 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto"
-                  animate={{
-                    rotate: [0, 360],
-                    scale: [1, 1.1, 1],
-                  }}
-                  transition={{
-                    duration: 4,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                >
-                  <Coins className="w-12 h-12 text-white" />
+              <Stack gap="xl">
+                <Stack align="center" gap="lg">
+                  <motion.div
+                    whileHover={{ scale: 1.1, rotate: -5 }}
+                  >
+                    <ThemeIcon
+                      size={64}
+                      radius="xl"
+                      variant="gradient"
+                      gradient={{ from: 'purple', to: 'pink' }}
+                      style={{ boxShadow: '0 15px 35px rgba(139, 92, 246, 0.3)' }}
+                    >
+                      <IconCoins size={32} />
+                    </ThemeIcon>
+                  </motion.div>
+                  
+                  <Stack align="center" gap="sm">
+                    <Title order={3} size="2rem" ta="center" c="dark">
+                      {t('spendSection.title')}
+                    </Title>
+                    <Text ta="center" c="dimmed" size="lg">
+                      {t('spendSection.subtitle')}
+                    </Text>
+                  </Stack>
+                </Stack>
+
+                <motion.div whileHover={{ y: -5 }}>
+                  <Paper
+                    radius="xl"
+                    p="xl"
+                    style={{
+                      background: 'white',
+                      boxShadow: '0 15px 50px rgba(0, 0, 0, 0.1)',
+                      border: '1px solid rgba(0, 0, 0, 0.05)'
+                    }}
+                  >
+                    <Stack align="center" gap="lg">
+                      <motion.div
+                        animate={{
+                          rotate: [0, 360],
+                          scale: [1, 1.1, 1],
+                        }}
+                        transition={{
+                          duration: 4,
+                          repeat: Infinity,
+                          ease: "easeInOut",
+                        }}
+                      >
+                        <ThemeIcon
+                          size={96}
+                          radius="xl"
+                          variant="gradient"
+                          gradient={{ from: 'purple', to: 'pink' }}
+                        >
+                          <IconCoins size={48} />
+                        </ThemeIcon>
+                      </motion.div>
+
+                      <Stack align="center" gap="md">
+                        <Title order={4} size="xl" ta="center" c="dark">
+                          Use Your Earned Credits
+                        </Title>
+
+                        <Text ta="center" c="dimmed" size="md">
+                          {t('spendSection.note')}
+                        </Text>
+                      </Stack>
+
+                      <SimpleGrid cols={2} spacing="md" w="100%">
+                        <Paper
+                          radius="lg"
+                          p="md"
+                          style={{
+                            background: '#f8fafc',
+                            textAlign: 'center'
+                          }}
+                        >
+                          <Stack gap="xs">
+                            <Text size="2rem">👁️</Text>
+                            <Text fw={500} c="dark">Views</Text>
+                            <Text c="dimmed" size="sm">1 credit each</Text>
+                          </Stack>
+                        </Paper>
+                        
+                        <Paper
+                          radius="lg"
+                          p="md"
+                          style={{
+                            background: '#f8fafc',
+                            textAlign: 'center'
+                          }}
+                        >
+                          <Stack gap="xs">
+                            <Text size="2rem">❤️</Text>
+                            <Text fw={500} c="dark">Likes</Text>
+                            <Text c="dimmed" size="sm">2 credits each</Text>
+                          </Stack>
+                        </Paper>
+                        
+                        <Paper
+                          radius="lg"
+                          p="md"
+                          style={{
+                            background: '#f8fafc',
+                            textAlign: 'center'
+                          }}
+                        >
+                          <Stack gap="xs">
+                            <Text size="2rem">💬</Text>
+                            <Text fw={500} c="dark">Comments</Text>
+                            <Text c="dimmed" size="sm">3 credits each</Text>
+                          </Stack>
+                        </Paper>
+                        
+                        <Paper
+                          radius="lg"
+                          p="md"
+                          style={{
+                            background: '#f8fafc',
+                            textAlign: 'center'
+                          }}
+                        >
+                          <Stack gap="xs">
+                            <Text size="2rem">👥</Text>
+                            <Text fw={500} c="dark">Follows</Text>
+                            <Text c="dimmed" size="sm">5 credits each</Text>
+                          </Stack>
+                        </Paper>
+                      </SimpleGrid>
+                    </Stack>
+                  </Paper>
                 </motion.div>
-
-                <h4 className="text-xl font-semibold text-gray-900 dark:text-white">
-                  Use Your Earned Credits
-                </h4>
-
-                <p className="text-gray-600 dark:text-gray-300">
-                  {t('spendSection.note')}
-                </p>
-
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-4">
-                    <div className="text-2xl mb-2">👁️</div>
-                    <div className="font-medium text-gray-900 dark:text-white">Views</div>
-                    <div className="text-gray-600 dark:text-gray-300">1 credit each</div>
-                  </div>
-                  <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-4">
-                    <div className="text-2xl mb-2">❤️</div>
-                    <div className="font-medium text-gray-900 dark:text-white">Likes</div>
-                    <div className="text-gray-600 dark:text-gray-300">2 credits each</div>
-                  </div>
-                  <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-4">
-                    <div className="text-2xl mb-2">💬</div>
-                    <div className="font-medium text-gray-900 dark:text-white">Comments</div>
-                    <div className="text-gray-600 dark:text-gray-300">3 credits each</div>
-                  </div>
-                  <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-4">
-                    <div className="text-2xl mb-2">👥</div>
-                    <div className="font-medium text-gray-900 dark:text-white">Follows</div>
-                    <div className="text-gray-600 dark:text-gray-300">5 credits each</div>
-                  </div>
-                </div>
-              </div>
+              </Stack>
             </motion.div>
-          </motion.div>
-        </div>
+          </Grid.Col>
+        </Grid>
 
         {/* Bottom note */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.6, delay: 0.8 }}
-          className="text-center mt-16"
+          style={{ marginTop: '4rem' }}
         >
-          <div className="inline-flex items-center gap-4 px-6 py-4 bg-gradient-to-r from-green-500/10 to-emerald-500/10 backdrop-blur-sm border border-green-500/20 rounded-2xl">
-            <motion.div
-              animate={{ scale: [1, 1.2, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
+          <Group justify="center">
+            <Paper
+              radius="xl"
+              p="lg"
+              style={{
+                background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1))',
+                backdropFilter: 'blur(16px)',
+                border: '1px solid rgba(16, 185, 129, 0.2)'
+              }}
             >
-              <Coins className="w-6 h-6 text-green-500" />
-            </motion.div>
-            <span className="text-green-700 dark:text-green-300 font-medium">
-              100% Free to Use • No Hidden Fees • Fair Exchange System
-            </span>
-          </div>
+              <Group gap="md">
+                <motion.div
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
+                  <ThemeIcon size="md" color="green" variant="filled">
+                    <IconCoins size={20} />
+                  </ThemeIcon>
+                </motion.div>
+                
+                <Text c="green.7" fw={500} size="lg">
+                  100% Free to Use • No Hidden Fees • Fair Exchange System
+                </Text>
+              </Group>
+            </Paper>
+          </Group>
         </motion.div>
-      </div>
-    </section>
+      </Container>
+    </Box>
   );
 };
 
