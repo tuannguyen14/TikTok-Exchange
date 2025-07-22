@@ -3,7 +3,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Container, Stack, Alert, Box, SegmentedControl, Group, Text } from '@mantine/core';
+import { Container, Stack, Alert, Box, SegmentedControl, Group } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 import { useExchangeCampaigns, useUserActions } from '@/hooks/useExchange';

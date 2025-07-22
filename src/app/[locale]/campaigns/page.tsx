@@ -2,7 +2,7 @@
 // src/app/[locale]/campaigns/page.tsx
 import { Suspense } from 'react';
 import { getTranslations } from 'next-intl/server';
-import { Container, Title, Text, Stack } from '@mantine/core';
+import { Container, Stack } from '@mantine/core';
 import CampaignsClient from './components/CampaignsClient';
 import CampaignsPageSkeleton from './components/CampaignsPageSkeleton';
 

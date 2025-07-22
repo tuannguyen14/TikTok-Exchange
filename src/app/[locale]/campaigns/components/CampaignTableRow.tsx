@@ -9,7 +9,6 @@ import {
   IconPlayerPlay,
   IconPlayerPause,
   IconEye,
-  IconEdit,
   IconTrash,
   IconHeart,
   IconMessageCircle

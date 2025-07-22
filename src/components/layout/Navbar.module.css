@@ -3,7 +3,7 @@
 
 /* .header {
     background:
-        url('../../../public/background/navbar-pattern.jpg'),
+        url('../../../public/background/chrismas-pattern.jpg'),
         rgba(255, 255, 255, 0.95);
     background-size: 350px 350px;
     background-repeat: repeat;
@@ -17,13 +17,13 @@
 
 [data-mantine-color-scheme="dark"] .header {
     background:
-        url('../../../public/background/navbar-pattern.jpg'),
+        url('../../../public/background/chrismas-pattern.jpg'),
         rgba(26, 27, 30, 0.95);
     background-repeat: repeat;
     background-size: auto;
 } */
 
-.header {
+/* .header {
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-4));
@@ -31,11 +31,11 @@
     top: 0;
     z-index: 1000;
     width: 100%;
-}
+} */
 
-[data-mantine-color-scheme="dark"] .header {
+/* [data-mantine-color-scheme="dark"] .header {
     background: rgba(26, 27, 30, 0.95);
-}
+} */
 
 .logoButton {
     padding: var(--mantine-spacing-xs);

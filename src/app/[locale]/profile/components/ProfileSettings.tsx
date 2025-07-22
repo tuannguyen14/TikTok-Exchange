@@ -10,12 +10,26 @@ import {
     Button,
     Stack,
     Divider,
+    Box,
+    Badge,
+    Transition,
+    Paper,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { IconSettings, IconDeviceFloppy } from '@tabler/icons-react';
+import {
+    IconSettings,
+    IconDeviceFloppy,
+    IconBell,
+    IconMail,
+    IconTrophy,
+    IconSpeakerphone,
+    IconCheck,
+    IconSparkles
+} from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 import { Profile, NotificationSettings } from '@/types/profile';
 import { useProfile } from '@/hooks/useProfile';
+import classes from './ProfileSettings.module.css';
 
 interface ProfileSettingsProps {
     profile: Profile;
@@ -50,6 +64,7 @@ export default function ProfileSettings({ profile, onUpdate }: ProfileSettingsPr
                 title: t('common.success'),
                 message: t('messages.updateSuccess'),
                 color: 'green',
+                icon: <IconCheck size="1rem" />,
             });
             onUpdate();
         } catch (error) {
@@ -65,68 +80,160 @@ export default function ProfileSettings({ profile, onUpdate }: ProfileSettingsPr
 
     const hasChanges = JSON.stringify(settings) !== JSON.stringify(profile.notification_settings);
 
+    const settingsOptions = [
+        {
+            key: 'email' as keyof NotificationSettings,
+            icon: IconMail,
+            color: '#FE2C55',
+            title: t('notifications.email'),
+            description: t('notifications.emailDescription'),
+            badge: 'Important',
+            badgeColor: 'red',
+        },
+        {
+            key: 'push' as keyof NotificationSettings,
+            icon: IconBell,
+            color: '#25F4EE',
+            title: t('notifications.push'),
+            description: t('notifications.pushDescription'),
+            badge: 'Real-time',
+            badgeColor: 'blue',
+        },
+        {
+            key: 'campaigns' as keyof NotificationSettings,
+            icon: IconSpeakerphone,
+            color: '#764ba2',
+            title: t('notifications.campaigns'),
+            description: t('notifications.campaignsDescription'),
+            badge: 'Updates',
+            badgeColor: 'violet',
+        },
+        {
+            key: 'rewards' as keyof NotificationSettings,
+            icon: IconTrophy,
+            color: '#00C5DC',
+            title: t('notifications.rewards'),
+            description: t('notifications.rewardsDescription'),
+            badge: 'Exciting',
+            badgeColor: 'green',
+        },
+    ];
+
     return (
-        <Card padding="lg" radius="md" withBorder>
-            <Stack gap="md">
+        <Card padding={0} radius="xl" className={classes.settingsCard}>
+            {/* Header */}
+            <Box className={classes.cardHeader}>
                 <Group>
-                    <IconSettings size={24} color="#666" />
-                    <Text fw={600} size="lg">
+                    <Box className={classes.settingsIcon}>
+                        <IconSettings size={24} />
+                    </Box>
+                    <Text fw={700} size="xl" c="white">
                         {t('sections.settings')}
                     </Text>
+                    <Badge
+                        variant="light"
+                        color="white"
+                        size="lg"
+                        className={classes.headerBadge}
+                    >
+                        <IconSparkles size={14} />
+                    </Badge>
                 </Group>
+            </Box>
 
-                <Divider />
-
-                <Stack gap="md">
-                    <Text fw={500} size="md">
-                        {t('notifications.email')}
+            {/* Content */}
+            <Box p="xl">
+                <Stack gap="lg">
+                    <Text size="md" c="dimmed" mb="xs">
+                        {/* {t('settings.description')} */}
                     </Text>
 
-                    <Switch
-                        label={t('notifications.email')}
-                        description={t('notifications.emailDescription')}
-                        checked={settings.email}
-                        onChange={(event) => handleSettingChange('email', event.currentTarget.checked)}
-                    />
-
-                    <Switch
-                        label={t('notifications.push')}
-                        description={t('notifications.pushDescription')}
-                        checked={settings.push}
-                        onChange={(event) => handleSettingChange('push', event.currentTarget.checked)}
-                    />
-
-                    <Switch
-                        label={t('notifications.campaigns')}
-                        description={t('notifications.campaignsDescription')}
-                        checked={settings.campaigns}
-                        onChange={(event) => handleSettingChange('campaigns', event.currentTarget.checked)}
-                    />
-
-                    <Switch
-                        label={t('notifications.rewards')}
-                        description={t('notifications.rewardsDescription')}
-                        checked={settings.rewards}
-                        onChange={(event) => handleSettingChange('rewards', event.currentTarget.checked)}
-                    />
-                </Stack>
-
-                {hasChanges && (
-                    <>
-                        <Divider />
-                        <Group justify="flex-end">
-                            <Button
-                                leftSection={<IconDeviceFloppy size="1rem" />}
-                                loading={loading}
-                                onClick={handleSave}
-                                color="#FE2C55"
+                    <Stack gap="md">
+                        {settingsOptions.map((option, index) => (
+                            <Paper
+                                key={option.key}
+                                className={classes.settingItem}
+                                p="lg"
+                                radius="lg"
+                                style={{ animationDelay: `${index * 0.1}s` }}
                             >
-                                {t('actions.save')}
-                            </Button>
-                        </Group>
-                    </>
-                )}
-            </Stack>
+                                <Group justify="space-between" align="flex-start">
+                                    <Group align="flex-start" style={{ flex: 1 }}>
+                                        <Box
+                                            className={classes.iconBox}
+                                            style={{ backgroundColor: `${option.color}20` }}
+                                        >
+                                            <option.icon size={24} color={option.color} />
+                                        </Box>
+                                        <Box style={{ flex: 1 }}>
+                                            <Group gap="xs" mb={4}>
+                                                <Text fw={600} size="md">
+                                                    {option.title}
+                                                </Text>
+                                                <Badge
+                                                    size="sm"
+                                                    variant="light"
+                                                    color={option.badgeColor}
+                                                    className={classes.settingBadge}
+                                                >
+                                                    {option.badge}
+                                                </Badge>
+                                            </Group>
+                                            <Text size="sm" c="dimmed">
+                                                {option.description}
+                                            </Text>
+                                        </Box>
+                                    </Group>
+                                    <Switch
+                                        size="lg"
+                                        color={option.color}
+                                        checked={settings[option.key]}
+                                        onChange={(event) => handleSettingChange(option.key, event.currentTarget.checked)}
+                                        classNames={{
+                                            track: classes.switchTrack,
+                                            thumb: classes.switchThumb,
+                                        }}
+                                    />
+                                </Group>
+                            </Paper>
+                        ))}
+                    </Stack>
+
+                    {/* Save Button */}
+                    <Transition
+                        mounted={hasChanges}
+                        transition="slide-up"
+                        duration={400}
+                        timingFunction="ease"
+                    >
+                        {(styles) => (
+                            <Box style={styles}>
+                                <Divider my="lg" />
+                                <Group justify="space-between" align="center">
+                                    <Group gap="xs">
+                                        <Box className={classes.changesIndicator}>
+                                            <IconSparkles size={16} />
+                                        </Box>
+                                        <Text size="sm" c="dimmed" fw={500}>
+                                            You have unsaved changes
+                                        </Text>
+                                    </Group>
+                                    <Button
+                                        leftSection={<IconDeviceFloppy size="1.2rem" />}
+                                        loading={loading}
+                                        onClick={handleSave}
+                                        size="lg"
+                                        radius="md"
+                                        className={classes.saveButton}
+                                    >
+                                        {t('actions.save')}
+                                    </Button>
+                                </Group>
+                            </Box>
+                        )}
+                    </Transition>
+                </Stack>
+            </Box>
         </Card>
     );
 }

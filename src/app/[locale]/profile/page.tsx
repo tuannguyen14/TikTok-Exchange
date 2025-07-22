@@ -1,14 +1,14 @@
 // src/app/[locale]/profile/page.tsx
 'use client';
 
-import { Container, Stack, Title, Text, Loader, Alert, Group, ActionIcon } from '@mantine/core';
-import { IconAlertCircle, IconRefresh } from '@tabler/icons-react';
+import { Container, Stack, Title, Text, Loader, Alert, Group, Box, Paper, BackgroundImage, Avatar, Badge, Center } from '@mantine/core';
+import { IconAlertCircle, IconSparkles, IconTrendingUp } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 import { useProfile } from '@/hooks/useProfile';
 import ProfileStats from './components/ProfileStats';
 import TikTokConnection from './components/TikTokConnection';
 import ProfileSettings from './components/ProfileSettings';
-
+import classes from './Profile.module.css';
 
 export default function ProfilePage() {
     const t = useTranslations('Profile');
@@ -23,14 +23,16 @@ export default function ProfilePage() {
 
     if (loading) {
         return (
-            <Container size="lg" py="xl">
+            <Box className={classes.loadingContainer}>
                 <Stack align="center" gap="lg">
-                    <Loader size="lg" color="#FE2C55" />
-                    <Text size="lg" c="dimmed">
+                    <div className={classes.loaderWrapper}>
+                        <Loader size="xl" color="#FE2C55" />
+                    </div>
+                    <Text size="lg" c="dimmed" className={classes.loadingText}>
                         {t('messages.loading')}
                     </Text>
                 </Stack>
-            </Container>
+            </Box>
         );
     }
 
@@ -38,9 +40,12 @@ export default function ProfilePage() {
         return (
             <Container size="lg" py="xl">
                 <Alert
-                    icon={<IconAlertCircle size="1rem" />}
+                    icon={<IconAlertCircle size="1.5rem" />}
                     title={t('common.error')}
                     color="red"
+                    radius="md"
+                    variant="filled"
+                    className={classes.errorAlert}
                 >
                     {error || t('messages.updateError')}
                 </Alert>
@@ -49,55 +54,107 @@ export default function ProfilePage() {
     }
 
     return (
-        <Container size="lg" py="xl">
-            <Stack gap="xl">
-                {/* Header */}
-                <Group justify="space-between">
-                    <div>
-                        <Title order={1} size="h1" fw={700} c="#FE2C55">
-                            {t('title')}
+        <Box className={classes.pageWrapper}>
+            {/* Hero Section with Gradient Background */}
+            <Box className={classes.heroSection}>
+                <Container size="lg">
+                    <Stack gap={0} align="center" className={classes.heroContent}>
+                        {/* Avatar with Glow Effect */}
+                        <Box className={classes.avatarContainer}>
+                            <Avatar
+                                src={tiktokAvatar}
+                                size={120}
+                                radius="xl"
+                                className={classes.profileAvatar}
+                            >
+                                {profile.email.charAt(0).toUpperCase()}
+                            </Avatar>
+                            {profile.tiktok_username && (
+                                <Badge 
+                                    className={classes.verifiedBadge}
+                                    size="lg"
+                                    radius="xl"
+                                    variant="gradient"
+                                    gradient={{ from: '#FE2C55', to: '#25F4EE' }}
+                                >
+                                    <IconSparkles size={14} /> TikTok Connected
+                                </Badge>
+                            )}
+                        </Box>
+
+                        {/* User Info */}
+                        <Title order={1} className={classes.userName}>
+                            {profile.tiktok_username ? `@${profile.tiktok_username}` : profile.email.split('@')[0]}
                         </Title>
-                        <Text size="lg" c="dimmed" mt="xs">
-                            {t('subtitle')}
+                        <Text size="lg" c="dimmed" className={classes.userEmail}>
+                            {profile.email}
                         </Text>
-                    </div>
-                    <ActionIcon
-                        variant="light"
-                        color="#FE2C55"
-                        size="lg"
-                        onClick={refreshProfile}
-                        loading={loading}
-                    >
-                        <IconRefresh size="1.2rem" />
-                    </ActionIcon>
-                </Group>
 
-                {/* Account Information */}
-                <div>
-                    <Title order={2} size="h3" fw={600} mb="md">
-                        {t('sections.account')}
-                    </Title>
-                    <ProfileStats profile={profile} />
-                </div>
+                        {/* Quick Stats */}
+                        <Group gap="xl" className={classes.quickStats}>
+                            <Box className={classes.statItem}>
+                                <Text size="2rem" fw={700} className={classes.statNumber}>
+                                    {profile.credits.toLocaleString()}
+                                </Text>
+                                <Text size="sm" c="dimmed">Credits</Text>
+                            </Box>
+                            <Box className={classes.statDivider} />
+                            <Box className={classes.statItem}>
+                                <Text size="2rem" fw={700} className={classes.statNumber}>
+                                    {profile.total_earned.toLocaleString()}
+                                </Text>
+                                <Text size="sm" c="dimmed">Earned</Text>
+                            </Box>
+                            <Box className={classes.statDivider} />
+                            <Box className={classes.statItem}>
+                                <Group gap={4} align="center">
+                                    <IconTrendingUp size={24} className={classes.trendIcon} />
+                                    <Text size="2rem" fw={700} className={classes.statNumber}>
+                                        {((profile.total_earned / (profile.total_spent || 1)) * 100).toFixed(0)}%
+                                    </Text>
+                                </Group>
+                                <Text size="sm" c="dimmed">ROI</Text>
+                            </Box>
+                        </Group>
+                    </Stack>
+                </Container>
+            </Box>
 
-                {/* TikTok Connection */}
-                <div>
-                    <TikTokConnection
-                        profile={profile}
-                        tiktokAvatar={tiktokAvatar}
-                        fetchingAvatar={fetchingAvatar}
-                        onUpdate={refreshProfile}
-                    />
-                </div>
+            {/* Main Content */}
+            <Container size="lg" className={classes.mainContent}>
+                <Stack gap="2rem">
+                    {/* Detailed Stats Section */}
+                    <Paper className={classes.sectionCard}>
+                        <Group mb="lg" className={classes.sectionHeader}>
+                            <Box className={classes.sectionIcon}>
+                                <IconSparkles size={20} />
+                            </Box>
+                            <Text fw={600} size="xl" className={classes.sectionTitle}>
+                                {t('sections.account')}
+                            </Text>
+                        </Group>
+                        <ProfileStats profile={profile} />
+                    </Paper>
 
-                {/* Settings */}
-                <div>
-                    <ProfileSettings
-                        profile={profile}
-                        onUpdate={refreshProfile}
-                    />
-                </div>
-            </Stack>
-        </Container>
+                    {/* TikTok Connection Section */}
+                    <Box className={classes.tiktokSection}>
+                        <TikTokConnection
+                            profile={profile}
+                            tiktokAvatar={tiktokAvatar}
+                            fetchingAvatar={fetchingAvatar}
+                            onUpdate={refreshProfile}
+                        />
+                    </Box>
+
+                    {/* Settings Section */}
+                    <Box className={classes.settingsSection}>
+                        <ProfileSettings
+                            profile={profile}
+                            onUpdate={refreshProfile}
+                        />
+                    </Box>
+                </Stack>
+            </Container>
+        </Box>
     );
 }

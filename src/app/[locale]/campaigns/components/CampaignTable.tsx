@@ -2,7 +2,7 @@
 'use client';
 
 import { memo, useMemo } from 'react';
-import { Paper, Table, Stack, Group, Pagination } from '@mantine/core';
+import { Paper, Table, Stack, Group, Pagination, Box, Text } from '@mantine/core';
 import { Campaign } from '@/lib/api/campaigns';
 import CampaignTableRow from './CampaignTableRow';
 import CampaignEmptyState from './CampaignEmptyState';
@@ -47,19 +47,23 @@ interface CampaignTableProps {
   dateLocale: any;
 }
 
-// Memoized table header
+// Enhanced table header with modern design
 const TableHeader = memo(({ translations }: { 
   translations: CampaignTableProps['translations']['table'] 
 }) => {
   const headerStyle = {
-    fontWeight: 600,
-    color: 'var(--mantine-color-gray-8)',
-    borderBottom: '2px solid var(--mantine-color-gray-2)'
+    fontWeight: 700,
+    color: 'var(--mantine-color-gray-7)',
+    borderBottom: 'none',
+    fontSize: '13px',
+    textTransform: 'uppercase' as const,
+    letterSpacing: '0.5px',
+    padding: '16px',
   };
 
   return (
-    <Table.Thead style={{ backgroundColor: 'var(--mantine-color-gray-0)' }}>
-      <Table.Tr>
+    <Table.Thead>
+      <Table.Tr style={{ borderBottom: '2px solid var(--mantine-color-gray-2)' }}>
         <Table.Th style={headerStyle}>{translations.type}</Table.Th>
         <Table.Th style={headerStyle}>{translations.target}</Table.Th>
         <Table.Th style={headerStyle}>{translations.interaction}</Table.Th>
@@ -74,7 +78,7 @@ const TableHeader = memo(({ translations }: {
 });
 TableHeader.displayName = 'TableHeader';
 
-// Memoized pagination component
+// Enhanced pagination component with modern design
 const TablePagination = memo(({ 
   pagination, 
   onPageChange 
@@ -85,15 +89,45 @@ const TablePagination = memo(({
   if (pagination.totalPages <= 1) return null;
 
   return (
-    <Group justify="center" p="lg" style={{ backgroundColor: 'var(--mantine-color-gray-0)' }}>
-      <Pagination
-        value={pagination.page}
-        onChange={onPageChange}
-        total={pagination.totalPages}
-        size="sm"
-        radius="md"
-      />
-    </Group>
+    <Box
+      style={{
+        borderTop: '1px solid var(--mantine-color-gray-2)',
+        padding: '20px',
+        background: 'linear-gradient(to bottom, transparent, var(--mantine-color-gray-0))'
+      }}
+    >
+      <Group justify="space-between" align="center">
+        <Text size="sm" c="gray.6" fw={500}>
+          Hiển thị {((pagination.page - 1) * pagination.limit) + 1} - {Math.min(pagination.page * pagination.limit, pagination.total)} trong tổng số {pagination.total} chiến dịch
+        </Text>
+        
+        <Pagination
+          value={pagination.page}
+          onChange={onPageChange}
+          total={pagination.totalPages}
+          size="md"
+          radius="xl"
+          withEdges
+          styles={{
+            control: {
+              border: '1px solid var(--mantine-color-gray-3)',
+              transition: 'all 200ms ease',
+              '&[data-active]': {
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                border: 'none',
+                color: 'white',
+                boxShadow: '0 2px 8px rgba(102, 126, 234, 0.3)'
+              },
+              '&:not([data-active]):hover': {
+                backgroundColor: 'var(--mantine-color-gray-1)',
+                transform: 'translateY(-1px)',
+                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)'
+              }
+            }
+          }}
+        />
+      </Group>
+    </Box>
   );
 });
 TablePagination.displayName = 'TablePagination';
@@ -120,10 +154,14 @@ const CampaignTable = memo(({
   if (campaigns.length === 0) {
     return (
       <Paper 
-        shadow="xs" 
-        radius="md" 
+        shadow="sm" 
+        radius="lg" 
         withBorder
-        style={{ overflow: 'hidden' }}
+        style={{ 
+          overflow: 'hidden',
+          borderColor: 'var(--mantine-color-gray-2)',
+          background: 'white'
+        }}
       >
         <CampaignEmptyState 
           onCreateCampaign={onCreateCampaign}
@@ -135,25 +173,29 @@ const CampaignTable = memo(({
 
   return (
     <Paper 
-      shadow="xs" 
-      radius="md" 
+      shadow="sm" 
+      radius="lg" 
       withBorder
-      style={{ overflow: 'hidden' }}
+      style={{ 
+        overflow: 'hidden',
+        borderColor: 'var(--mantine-color-gray-2)',
+        background: 'white'
+      }}
     >
       <Stack gap={0}>
-        <Table.ScrollContainer minWidth={800}>
+        <Table.ScrollContainer minWidth={900}>
           <Table 
-            striped 
-            highlightOnHover
+            verticalSpacing="sm"
+            horizontalSpacing="md"
             style={{
               borderCollapse: 'separate',
-              borderSpacing: 0
+              borderSpacing: 0,
             }}
           >
             <TableHeader translations={translations.table} />
             
             <Table.Tbody>
-              {campaigns.map((campaign) => (
+              {campaigns.map((campaign, index) => (
                 <CampaignTableRow
                   key={campaign.id}
                   campaign={campaign}

@@ -20,12 +20,12 @@ import {
   Flex,
   Avatar
 } from '@mantine/core';
-import { 
-  IconArrowRight, 
-  IconSparkles, 
-  IconShield, 
-  IconTrendingUp, 
-  IconCheck 
+import {
+  IconArrowRight,
+  IconSparkles,
+  IconShield,
+  IconTrendingUp,
+  IconCheck
 } from '@tabler/icons-react';
 
 const CTASection = () => {
@@ -75,7 +75,7 @@ const CTASection = () => {
             opacity: 0.1
           }}
         />
-        
+
         {/* Floating elements */}
         <motion.div
           style={{
@@ -99,7 +99,7 @@ const CTASection = () => {
             ease: "easeInOut",
           }}
         />
-        
+
         <motion.div
           style={{
             position: 'absolute',
@@ -123,7 +123,7 @@ const CTASection = () => {
             delay: 2,
           }}
         />
-        
+
         <motion.div
           style={{
             position: 'absolute',
@@ -183,7 +183,7 @@ const CTASection = () => {
                   Start Your Journey
                 </Badge>
               </motion.div>
-              
+
               <Title
                 order={2}
                 size="4rem"
@@ -193,7 +193,7 @@ const CTASection = () => {
               >
                 {t('title')}
               </Title>
-              
+
               <Text
                 size="xl"
                 ta="center"
@@ -424,7 +424,7 @@ const CTASection = () => {
               <Text c="white" opacity={0.8} size="lg" ta="center">
                 Join thousands of creators who are already growing organically with TikGrow
               </Text>
-              
+
               <motion.div
                 animate={{
                   y: [0, -5, 0],
@@ -446,9 +446,9 @@ const CTASection = () => {
 
       {/* Bottom wave decoration */}
       <Box style={{ position: 'absolute', bottom: 0, left: 0, width: '100%' }}>
-        <svg 
-          viewBox="0 0 1200 120" 
-          preserveAspectRatio="none" 
+        <svg
+          viewBox="0 0 1200 120"
+          preserveAspectRatio="none"
           style={{ display: 'block', width: '100%', height: '4rem' }}
         >
           <motion.path

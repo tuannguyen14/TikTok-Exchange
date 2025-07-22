@@ -649,6 +649,29 @@
       "error": "Error"
     }
   },
+  "Footer": {
+    "brand": {
+      "title": "TikTok Exchange",
+      "description": "Leading TikTok interaction exchange platform. Boost views, likes, comments and followers naturally."
+    },
+    "links": {
+      "title": "Quick Links",
+      "terms": "Terms of Service",
+      "privacy": "Privacy Policy",
+      "guide": "User Guide",
+      "support": "Contact Support"
+    },
+    "contact": {
+      "title": "Contact",
+      "email": "support@tiktokexchange.com"
+    },
+    "bottom": {
+      "copyright": "© 2025 TikTok Exchange. Made with",
+      "forCreators": "for creators",
+      "version": "v1.0.0",
+      "languages": "Vietnamese / English"
+    }
+  },
   "Auth": {
     "login": {
       "title": "Sign In",

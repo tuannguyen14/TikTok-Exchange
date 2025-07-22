@@ -1,13 +1,14 @@
 'use client';
 
 import { useState, useCallback, useMemo, memo } from 'react';
-import { Stack, Loader, Alert } from '@mantine/core';
+import { Stack, Loader, Alert, Title, Text, Group, Box } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { vi, enUS } from 'date-fns/locale';
 import { useCampaigns } from '@/hooks/useCampaigns';
 import { Campaign } from '@/lib/api/campaigns';
 import { useRouter } from 'next/navigation';
+import { IconRocket } from '@tabler/icons-react';
 
 // Component imports
 import CampaignStatsCards from './CampaignStatsCards';
@@ -77,6 +78,74 @@ interface CampaignsClientProps {
   serverTranslations: ServerTranslations;
 }
 
+// Enhanced page header component
+const PageHeader = memo(({ title, description }: { title: string; description: string }) => (
+  <Box
+    style={{
+      background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%)',
+      borderRadius: 'var(--mantine-radius-lg)',
+      padding: '32px',
+      marginBottom: '24px',
+      border: '1px solid var(--mantine-color-violet-1)',
+      position: 'relative',
+      overflow: 'hidden'
+    }}
+  >
+    {/* Background decoration */}
+    <Box
+      style={{
+        position: 'absolute',
+        top: '-50%',
+        right: '-10%',
+        width: '300px',
+        height: '300px',
+        borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%)',
+        filter: 'blur(60px)',
+        pointerEvents: 'none'
+      }}
+    />
+
+    <Group align="center" gap="lg" style={{ position: 'relative', zIndex: 1 }}>
+      <Box
+        style={{
+          width: '56px',
+          height: '56px',
+          borderRadius: '16px',
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: '0 8px 16px rgba(102, 126, 234, 0.3)'
+        }}
+      >
+        <IconRocket size={28} color="white" stroke={2} />
+      </Box>
+
+      <div style={{ flex: 1 }}>
+        <Title
+          order={1}
+          size="h2"
+          fw={800}
+          style={{
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            backgroundClip: 'text',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            marginBottom: '4px'
+          }}
+        >
+          {title}
+        </Title>
+        <Text size="md" c="gray.6" fw={500}>
+          {description}
+        </Text>
+      </div>
+    </Group>
+  </Box>
+));
+PageHeader.displayName = 'PageHeader';
+
 // Memoized error component
 const ErrorAlert = memo(({ error, onClear }: { error: string; onClear: () => void }) => (
   <Alert
@@ -84,8 +153,13 @@ const ErrorAlert = memo(({ error, onClear }: { error: string; onClear: () => voi
     title="Lỗi"
     onClose={onClear}
     withCloseButton
+    radius="md"
     styles={{
-      title: { fontWeight: 600 },
+      root: {
+        borderColor: 'var(--mantine-color-red-2)',
+        backgroundColor: 'var(--mantine-color-red-0)'
+      },
+      title: { fontWeight: 700 },
       message: { color: 'var(--mantine-color-red-7)' }
     }}
   >
@@ -98,7 +172,23 @@ ErrorAlert.displayName = 'ErrorAlert';
 // Memoized loading component
 const LoadingState = memo(() => (
   <Stack align="center" justify="center" style={{ minHeight: 400 }}>
-    <Loader size="lg" />
+    <Box style={{ position: 'relative' }}>
+      <Loader size="xl" color="violet" />
+      <Box
+        style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '120px',
+          height: '120px',
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%)',
+          filter: 'blur(20px)',
+          pointerEvents: 'none'
+        }}
+      />
+    </Box>
   </Stack>
 ));
 
@@ -239,6 +329,12 @@ export default function CampaignsClient({ locale, serverTranslations }: Campaign
 
   return (
     <Stack gap="xl">
+      {/* Page Header */}
+      <PageHeader
+        title={serverTranslations.title}
+        description={serverTranslations.description}
+      />
+
       {/* Stats Cards - Only render if stats exist */}
       {stats && (
         <CampaignStatsCards
