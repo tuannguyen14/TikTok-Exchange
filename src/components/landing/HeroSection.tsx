@@ -18,15 +18,13 @@ import {
   ActionIcon,
   Flex,
   ThemeIcon,
-  Anchor
 } from '@mantine/core';
 import {
   IconArrowRight,
   IconPlayerPlay,
   IconSparkles,
   IconTrendingUp,
-  IconUsers,
-  IconChevronDown
+  IconUsers
 } from '@tabler/icons-react';
 
 const HeroSection = () => {
