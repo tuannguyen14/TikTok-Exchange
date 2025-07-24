@@ -45,7 +45,7 @@ const HeroSection = () => {
     <Box
       component="section"
       style={{
-        minHeight: '100vh',
+        minHeight: '90vh',
         background: 'linear-gradient(135deg, #fef7ff 0%, #f3e8ff 50%, #dbeafe 100%)',
         position: 'relative',
         overflow: 'hidden',
@@ -66,7 +66,7 @@ const HeroSection = () => {
             background: 'linear-gradient(45deg, #ec4899, #ef4444)',
             borderRadius: '50%',
             opacity: 0.2,
-            filter: 'blur(2rem)'
+            filter: 'blur(2rem)',
           }}
           animate={{
             y: [0, -20, 0],
@@ -89,7 +89,7 @@ const HeroSection = () => {
             background: 'linear-gradient(45deg, #3b82f6, #06b6d4)',
             borderRadius: '50%',
             opacity: 0.2,
-            filter: 'blur(2rem)'
+            filter: 'blur(2rem)',
           }}
           animate={{
             y: [0, 20, 0],
@@ -104,7 +104,7 @@ const HeroSection = () => {
         />
       </Box>
 
-      <Container size="xl" style={{ position: 'relative', zIndex: 10 }}>
+      <Container size="xl" style={{ position: 'relative', zIndex: 10, marginBottom: '10rem' }}>
         <Center>
           <Stack align="center" gap="xl">
             {/* Badge */}
@@ -118,12 +118,6 @@ const HeroSection = () => {
                 variant="gradient"
                 gradient={{ from: 'pink', to: 'purple' }}
                 leftSection={<IconSparkles size={16} />}
-                style={{
-                  backgroundColor: 'rgba(236, 72, 153, 0.1)',
-                  color: '#db2777',
-                  backdropFilter: 'blur(8px)',
-                  border: '1px solid rgba(236, 72, 153, 0.2)'
-                }}
               >
                 100% Organic Growth Platform
               </Badge>
@@ -272,7 +266,7 @@ const HeroSection = () => {
         </Center>
 
         {/* Video/Demo section */}
-        <motion.div
+        {/* <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 1 }}
@@ -335,7 +329,7 @@ const HeroSection = () => {
                     </Center>
                   )}
 
-                  {/* Browser controls */}
+                
                   <Group
                     gap="xs"
                     style={{
@@ -352,7 +346,7 @@ const HeroSection = () => {
               </Paper>
             </Paper>
           </Center>
-        </motion.div>
+        </motion.div> */}
       </Container>
 
       {/* Scroll indicator */}
@@ -373,7 +367,7 @@ const HeroSection = () => {
             border: '2px solid #9ca3af',
             borderRadius: '12px',
             display: 'flex',
-            justifyContent: 'center'
+            justifyContent: 'center',
           }}
         >
           <motion.div

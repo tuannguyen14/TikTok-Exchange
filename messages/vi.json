@@ -4,232 +4,232 @@
     "tiktokConnected": "Kết nối tài khoản TikTok thành công!",
     "errorUpdating": "Cập nhật hồ sơ thất bại",
     "errorConnecting": "Kết nối tài khoản TikTok thất bại",
-    "errorVerifying": "Xác thực hồ sơ TikTok thất bại",
+    "errorVerifying": "Xác minh hồ sơ TikTok thất bại",
     "errorLoading": "Tải dữ liệu hồ sơ thất bại",
     "enterUsername": "Vui lòng nhập tên người dùng TikTok"
   },
   "HomePage": {
-    "title": "Trang chủ",
-    "description": "Chào mừng bạn đến với website của chúng tôi"
+    "title": "Trang Chủ",
+    "description": "Chào mừng đến với trang web của chúng tôi"
   },
   "LandingPage": {
     "hero": {
-      "title": "Phát triển TikTok của bạn",
-      "subtitle": "Tăng trưởng tự nhiên",
-      "description": "Trao đổi tương tác thật với các creator khác. Kiếm credit bằng cách tương tác, sau đó sử dụng chúng để tăng tương tác cho video của bạn.",
-      "cta": "Bắt đầu phát triển ngay",
-      "ctaSecondary": "Tìm hiểu thêm",
+      "title": "Phát Triển TikTok",
+      "subtitle": "Tự Nhiên",
+      "description": "Trao đổi tương tác thực với các người sáng tạo khác. Kiếm tín dụng bằng cách tương tác với người khác, sau đó sử dụng chúng để thúc đẩy video của bạn.",
+      "cta": "Bắt Đầu Ngay",
+      "ctaSecondary": "Tìm Hiểu Thêm",
       "stats": {
-        "users": "10.000+",
-        "usersLabel": "Người dùng hoạt động",
-        "interactions": "1 triệu+",
-        "interactionsLabel": "Tương tác thật",
+        "users": "10,000+",
+        "usersLabel": "Người Dùng Hoạt Động",
+        "interactions": "1M+",
+        "interactionsLabel": "Tương Tác Thực",
         "growth": "300%",
-        "growthLabel": "Tăng trưởng trung bình"
+        "growthLabel": "Tăng Trưởng Trung Bình"
       }
     },
     "statsSection": {
-      "title": "Được tin tưởng bởi hàng ngàn creator",
-      "subtitle": "Tham gia cộng đồng TikTok ngày càng lớn mạnh cùng những người đang tăng trưởng thật và tự nhiên",
+      "title": "Được Tin Tưởng Bởi Hàng Nghìn Người Sáng Tạo",
+      "subtitle": "Tham gia cộng đồng người sáng tạo TikTok đang phát triển của chúng tôi, những người đang đạt được sự tăng trưởng thực sự và tự nhiên",
       "items": {
-        "noBots": "Không bot, không tài khoản ảo",
+        "noBots": "Không có bot hoặc tài khoản giả",
         "organic": "100% tương tác tự nhiên",
         "safe": "Nền tảng an toàn và bảo mật"
       }
     },
     "howItWorksSection": {
-      "title": "Sẵn sàng bắt đầu chưa?",
-      "subtitle": "Tham gia hàng ngàn creator đang phát triển TikTok của họ một cách tự nhiên",
-      "cta": "Bắt đầu phát triển ngay",
+      "title": "Sẵn Sàng Bắt Đầu?",
+      "subtitle": "Tham gia cùng hàng nghìn người sáng tạo đang phát triển sự hiện diện TikTok một cách tự nhiên",
+      "cta": "Bắt Đầu Ngay",
       "features": {
-        "freeToStart": "Bắt đầu miễn phí",
+        "freeToStart": "Miễn phí bắt đầu",
         "noCreditCard": "Không cần thẻ tín dụng",
-        "freeCredits": "Tặng credit miễn phí"
+        "freeCredits": "Tín dụng miễn phí"
       }
     },
     "features": {
-      "title": "Vì sao chọn TikGrow?",
-      "subtitle": "Cách thông minh nhất để phát triển TikTok",
+      "title": "Tại Sao Chọn TikGrow?",
+      "subtitle": "Cách thông minh nhất để phát triển sự hiện diện TikTok của bạn",
       "items": {
         "organic": {
-          "title": "Phát triển 100% tự nhiên",
-          "description": "Người dùng thật, tương tác thật. Không bot, không tài khoản ảo. Chỉ có tương tác thực sự từ cộng đồng TikTok."
+          "title": "Tăng Trưởng 100% Tự Nhiên",
+          "description": "Người dùng thực, tương tác thực. Không có bot, không có tài khoản giả. Chỉ tương tác chân thành từ cộng đồng TikTok."
         },
         "credits": {
-          "title": "Hệ thống credit công bằng",
-          "description": "Kiếm credit bằng cách tương tác với người khác. Dùng credit để tăng tương tác cho video của bạn. Đơn giản, minh bạch."
+          "title": "Hệ Thống Tín Dụng Công Bằng",
+          "description": "Kiếm tín dụng bằng cách tương tác với người khác. Sử dụng tín dụng để nhận tương tác trên video của bạn. Đơn giản, công bằng và minh bạch."
         },
         "safe": {
-          "title": "An toàn & Bảo mật",
-          "description": "Chúng tôi không bao giờ yêu cầu mật khẩu. Chỉ cần tên người dùng TikTok để xác thực. Tài khoản của bạn luôn an toàn."
+          "title": "An Toàn & Bảo Mật",
+          "description": "Chúng tôi không bao giờ yêu cầu mật khẩu của bạn. Chỉ cần tên người dùng TikTok để xác minh. Tài khoản của bạn luôn an toàn."
         },
         "community": {
-          "title": "Cộng đồng năng động",
-          "description": "Tham gia cộng đồng hàng ngàn creator cùng hỗ trợ nhau phát triển. Khám phá nội dung mới, kết nối những người cùng chí hướng."
+          "title": "Cộng Đồng Năng Động",
+          "description": "Tham gia cùng hàng nghìn người sáng tạo giúp nhau phát triển. Khám phá nội dung mới và kết nối với những người sáng tạo cùng chí hướng."
         }
       }
     },
     "howItWorks": {
-      "title": "Cách hoạt động",
-      "subtitle": "Phát triển chỉ với 3 bước đơn giản",
+      "title": "Cách Thức Hoạt Động",
+      "subtitle": "Bắt đầu phát triển chỉ với 3 bước đơn giản",
       "steps": {
         "step1": {
-          "title": "Đăng ký & Kết nối",
-          "description": "Tạo tài khoản và kết nối TikTok. Nhận ngay 50 credit miễn phí!"
+          "title": "Đăng Ký & Kết Nối",
+          "description": "Tạo tài khoản và kết nối tên người dùng TikTok của bạn. Nhận 50 tín dụng miễn phí để bắt đầu!"
         },
         "step2": {
-          "title": "Kiếm credit",
-          "description": "Xem, thích, bình luận, theo dõi các creator khác để kiếm credit. Vừa giúp người khác, vừa nhận thưởng!"
+          "title": "Kiếm Tín Dụng",
+          "description": "Xem, thích, bình luận và theo dõi nội dung của người sáng tạo khác để kiếm tín dụng. Giúp người khác phát triển trong khi kiếm tín dụng!"
         },
         "step3": {
-          "title": "Tăng tương tác cho video",
-          "description": "Dùng credit để nhận tương tác thật cho video. Chọn lượt xem, thích, bình luận hoặc theo dõi."
+          "title": "Thúc Đẩy Video Của Bạn",
+          "description": "Sử dụng tín dụng của bạn để nhận tương tác thực trên video của bạn. Chọn từ lượt xem, thích, bình luận hoặc theo dõi."
         }
       }
     },
     "pricing": {
-      "title": "Hệ thống credit đơn giản",
-      "subtitle": "Giá minh bạch, không phí ẩn",
+      "title": "Hệ Thống Tín Dụng Đơn Giản",
+      "subtitle": "Giá cả minh bạch không có phí ẩn",
       "earnSection": {
-        "title": "Kiếm credit",
-        "subtitle": "Nhận thưởng khi tương tác với người khác",
+        "title": "Kiếm Tín Dụng",
+        "subtitle": "Nhận phần thưởng khi tương tác với người khác",
         "actions": {
           "view": {
-            "action": "Xem video",
-            "credits": "+1 credit",
+            "action": "Xem Video",
+            "credits": "+1 Tín Dụng",
             "icon": "👁️"
           },
           "like": {
-            "action": "Thích video",
-            "credits": "+2 credit",
+            "action": "Thích Video",
+            "credits": "+2 Tín Dụng",
             "icon": "❤️"
           },
           "comment": {
-            "action": "Bình luận",
-            "credits": "+3 credit",
+            "action": "Bình Luận",
+            "credits": "+3 Tín Dụng",
             "icon": "💬"
           },
           "follow": {
-            "action": "Theo dõi creator",
-            "credits": "+5 credit",
+            "action": "Theo Dõi",
+            "credits": "+5 Tín Dụng",
             "icon": "👥"
           }
         }
       },
       "spendSection": {
-        "title": "Tiêu credit",
-        "subtitle": "Dùng credit để tăng tương tác cho nội dung",
-        "note": "Credit sẽ được sử dụng dựa trên loại tương tác bạn muốn nhận"
+        "title": "Sử Dụng Tín Dụng",
+        "subtitle": "Dùng tín dụng để thúc đẩy nội dung của bạn",
+        "note": "Tín dụng được sử dụng dựa trên các tương tác bạn muốn nhận"
       }
     },
     "testimonials": {
-      "title": "Người dùng nói gì?",
-      "subtitle": "Tham gia cùng hàng ngàn creator hài lòng",
+      "title": "Những Gì Người Sáng Tạo Nói",
+      "subtitle": "Tham gia cùng hàng nghìn người sáng tạo hài lòng",
       "items": {
         "testimonial1": {
           "name": "Sarah Johnson",
           "username": "@sarahcreates",
-          "content": "TikGrow giúp mình tăng từ 1K lên 50K follower chỉ trong 3 tháng! Tương tác hoàn toàn tự nhiên và thật.",
+          "content": "TikGrow đã giúp tôi tăng từ 1K lên 50K người theo dõi chỉ trong 3 tháng! Tương tác hoàn toàn tự nhiên và thực sự.",
           "rating": 5
         },
         "testimonial2": {
           "name": "Mike Chen",
           "username": "@mikeviral",
-          "content": "Cuối cùng cũng có nền tảng thực sự hiệu quả! Không bot, không tài khoản ảo. Chỉ người thật tương tác với nội dung thật.",
+          "content": "Cuối cùng, một nền tảng thực sự hiệu quả! Không có bot, không có tài khoản giả. Chỉ người dùng thực tương tác với nội dung thực.",
           "rating": 5
         },
         "testimonial3": {
           "name": "Emma Rodriguez",
           "username": "@emmatrends",
-          "content": "Hệ thống credit rất tuyệt! Mình vừa khám phá creator mới, vừa kiếm credit để tăng video của mình.",
+          "content": "Hệ thống tín dụng thật tuyệt vời! Tôi thích khám phá người sáng tạo mới trong khi kiếm tín dụng để thúc đẩy video của mình.",
           "rating": 5
         }
       }
     },
     "faq": {
-      "title": "Câu hỏi thường gặp",
-      "subtitle": "Mọi điều bạn cần biết về TikGrow",
+      "title": "Câu Hỏi Thường Gặp",
+      "subtitle": "Mọi thứ bạn cần biết về TikGrow",
       "items": {
         "safe": {
           "question": "TikGrow có an toàn không?",
-          "answer": "Có! Chúng tôi không bao giờ yêu cầu mật khẩu hay truy cập tài khoản của bạn. Chỉ cần tên người dùng TikTok để xác thực. Tất cả tương tác đều từ người thật."
+          "answer": "Có! Chúng tôi không bao giờ yêu cầu mật khẩu hoặc truy cập tài khoản của bạn. Chúng tôi chỉ cần tên người dùng TikTok để xác minh. Tất cả tương tác đều từ người dùng thực."
         },
         "howCredits": {
-          "question": "Credit hoạt động như thế nào?",
-          "answer": "Bạn kiếm credit bằng cách tương tác với các creator khác. Sau đó dùng credit để nhận tương tác cho video của mình. Đây là hệ thống trao đổi công bằng."
+          "question": "Tín dụng hoạt động như thế nào?",
+          "answer": "Bạn kiếm tín dụng bằng cách tương tác với nội dung của người sáng tạo khác. Sau đó sử dụng tín dụng đó để nhận tương tác trên video của bạn. Đây là hệ thống trao đổi công bằng."
         },
         "realUsers": {
-          "question": "Các tương tác có phải từ người thật không?",
-          "answer": "Hoàn toàn! Tất cả tương tác đều từ người dùng TikTok thật trong cộng đồng của chúng tôi. Không bot, không tài khoản ảo."
+          "question": "Tương tác có từ người dùng thực không?",
+          "answer": "Chắc chắn! Tất cả tương tác đến từ người dùng TikTok thực là thành viên của cộng đồng chúng tôi. Không có bot, không có tài khoản giả."
         },
         "results": {
-          "question": "Bao lâu sẽ thấy kết quả?",
-          "answer": "Phần lớn chiến dịch nhận được tương tác chỉ trong vài phút. Bạn sẽ thấy tương tác thật từ cộng đồng năng động của chúng tôi ngay lập tức."
+          "question": "Tôi sẽ thấy kết quả nhanh như thế nào?",
+          "answer": "Hầu hết các chiến dịch bắt đầu nhận tương tác trong vòng vài phút. Bạn sẽ thấy tương tác thực từ cộng đồng năng động của chúng tôi ngay lập tức."
         },
         "pricing": {
-          "question": "Chi phí sử dụng là bao nhiêu?",
-          "answer": "TikGrow hoàn toàn miễn phí! Bạn kiếm credit bằng cách tương tác với người khác và dùng credit cho chiến dịch của mình. Không phí ẩn hay đăng ký."
+          "question": "Chi phí như thế nào?",
+          "answer": "TikGrow miễn phí sử dụng! Bạn kiếm tín dụng bằng cách tương tác với người khác và sử dụng chúng cho chiến dịch của bạn. Không có phí ẩn hoặc đăng ký."
         }
       }
     },
     "cta": {
-      "title": "Sẵn sàng phát triển TikTok?",
-      "subtitle": "Tham gia hàng ngàn creator đang phát triển cùng TikGrow",
-      "button": "Bắt đầu phát triển ngay hôm nay",
+      "title": "Sẵn Sàng Phát Triển TikTok?",
+      "subtitle": "Tham gia cùng hàng nghìn người sáng tạo đang phát triển với TikGrow",
+      "button": "Bắt Đầu Ngay Hôm Nay",
       "features": {
-        "free": "Bắt đầu miễn phí",
+        "free": "Miễn phí bắt đầu",
         "noPassword": "Không cần mật khẩu",
-        "organic": "Tăng trưởng 100% tự nhiên"
+        "organic": "100% tăng trưởng tự nhiên"
       }
     }
   },
   "Navigation": {
-    "dashboard": "Bảng điều khiển",
-    "exchange": "Trao đổi",
-    "myCampaigns": "Chiến dịch của tôi",
-    "profile": "Hồ sơ",
-    "settings": "Cài đặt",
-    "credits": "Credit",
-    "logout": "Đăng xuất",
+    "dashboard": "Bảng Điều Khiển",
+    "exchange": "Trao Đổi",
+    "myCampaigns": "Chiến Dịch Của Tôi",
+    "profile": "Hồ Sơ",
+    "settings": "Cài Đặt",
+    "credits": "Tín Dụng",
+    "logout": "Đăng Xuất",
     "guest": "Khách",
-    "home": "Trang chủ",
-    "features": "Tính năng",
-    "howItWorks": "Cách hoạt động",
-    "pricing": "Giá",
-    "login": "Đăng nhập",
-    "signUp": "Đăng ký"
+    "home": "Trang Chủ",
+    "features": "Tính Năng",
+    "howItWorks": "Cách Hoạt Động",
+    "pricing": "Giá Cả",
+    "login": "Đăng Nhập",
+    "signUp": "Đăng Ký"
   },
   "Dashboard": {
-    "title": "Bảng điều khiển",
+    "title": "Bảng Điều Khiển",
     "welcome": "Chào mừng trở lại",
-    "createCampaign": "Tạo chiến dịch",
-    "analytics": "Phân tích",
+    "createCampaign": "Tạo Chiến Dịch",
+    "analytics": "Phân Tích",
     "greeting": {
       "morning": "Chào buổi sáng",
       "afternoon": "Chào buổi chiều",
       "evening": "Chào buổi tối"
     },
     "linkTikTok": {
-      "title": "Liên kết TikTok của bạn",
-      "description": "Kết nối tên người dùng TikTok để bắt đầu tạo chiến dịch và kiếm credit",
-      "button": "Liên kết TikTok",
-      "security": "Chúng tôi chỉ cần tên người dùng TikTok để xác thực. Không bao giờ yêu cầu mật khẩu hay truy cập tài khoản.",
+      "title": "Kết Nối Tài Khoản TikTok",
+      "description": "Kết nối tên người dùng TikTok để bắt đầu tạo chiến dịch và kiếm tín dụng",
+      "button": "Kết Nối TikTok",
+      "security": "Chúng tôi chỉ cần tên người dùng TikTok để xác minh. Chúng tôi không bao giờ yêu cầu mật khẩu hoặc truy cập tài khoản của bạn.",
       "benefits": {
         "boost": {
-          "title": "Tăng tương tác",
-          "description": "Nhận tương tác thật cho video TikTok"
+          "title": "Thúc Đẩy Tương Tác",
+          "description": "Nhận tương tác thực trên video TikTok của bạn"
         },
         "earn": {
-          "title": "Kiếm credit",
-          "description": "Tương tác với người khác để kiếm credit"
+          "title": "Kiếm Tín Dụng",
+          "description": "Tương tác với người khác để kiếm tín dụng"
         },
         "grow": {
-          "title": "Phát triển cộng đồng",
-          "description": "Kết nối với các creator TikTok khác"
+          "title": "Phát Triển Cộng Đồng",
+          "description": "Kết nối với người sáng tạo TikTok khác"
         }
       },
       "credits": {
-        "title": "Cách credit hoạt động",
+        "title": "Cách Tín Dụng Hoạt Động",
         "view": "👁️ Xem +1",
         "like": "❤️ Thích +2",
         "comment": "💬 Bình luận +3",
@@ -237,111 +237,111 @@
       }
     },
     "stats": {
-      "totalCredits": "Tổng credit",
-      "activeCampaigns": "Chiến dịch đang hoạt động",
-      "totalActions": "Tổng lượt tương tác",
-      "creditsSpent": "Credit đã dùng",
+      "totalCredits": "Tổng Tín Dụng",
+      "activeCampaigns": "Chiến Dịch Đang Hoạt Động",
+      "totalActions": "Tổng Hành Động",
+      "creditsSpent": "Tín Dụng Đã Sử Dụng",
       "earned": "đã kiếm",
-      "completed": "đã hoàn thành",
-      "allTime": "Tổng cộng",
+      "completed": "hoàn thành",
+      "allTime": "Mọi lúc",
       "totalInvestment": "Tổng đầu tư"
     },
     "campaigns": {
-      "title": "Chiến dịch gần đây",
-      "viewAll": "Xem tất cả",
+      "title": "Chiến Dịch Gần Đây",
+      "viewAll": "Xem Tất Cả",
       "noCampaigns": "Chưa có chiến dịch",
-      "createFirst": "Tạo chiến dịch đầu tiên",
+      "createFirst": "Tạo chiến dịch đầu tiên của bạn",
       "status": {
         "active": "Đang hoạt động",
         "paused": "Tạm dừng",
-        "completed": "Đã hoàn thành"
+        "completed": "Hoàn thành"
       }
     },
     "quickActions": {
-      "title": "Tác vụ nhanh",
-      "startEarning": "Bắt đầu kiếm credit",
-      "createCampaign": "Tạo chiến dịch mới",
-      "viewProfile": "Xem hồ sơ"
+      "title": "Hành Động Nhanh",
+      "startEarning": "Bắt Đầu Kiếm Tín Dụng",
+      "createCampaign": "Tạo Chiến Dịch Mới",
+      "viewProfile": "Xem Hồ Sơ"
     },
     "activity": {
-      "title": "Hoạt động gần đây",
-      "noActivity": "Chưa có hoạt động gần đây",
-      "receivedAction": "Nhận được {action}",
-      "creditsEarned": "+{credits} credit đã kiếm"
+      "title": "Hoạt Động Gần Đây",
+      "noActivity": "Không có hoạt động gần đây",
+      "receivedAction": "Đã nhận {action}",
+      "creditsEarned": "+{credits} tín dụng đã kiếm"
     }
   },
   "Campaigns": {
     "meta": {
-      "title": "Chiến dịch của tôi - TikGrow",
-      "description": "Quản lý các chiến dịch TikTok và theo dõi hiệu quả"
+      "title": "Chiến Dịch Của Tôi - TikGrow",
+      "description": "Quản lý chiến dịch tương tác TikTok và theo dõi hiệu suất"
     },
-    "title": "Chiến dịch của tôi",
-    "description": "Tạo và quản lý các chiến dịch TikTok để tăng tương tác cho nội dung",
+    "title": "Chiến Dịch Của Tôi",
+    "description": "Tạo và quản lý chiến dịch tương tác TikTok để thúc đẩy nội dung của bạn",
     "stats": {
-      "total": "Tổng số chiến dịch",
-      "active": "Chiến dịch đang hoạt động",
-      "completed": "Đã hoàn thành",
-      "paused": "Tạm dừng",
-      "creditsSpent": "Credit đã tiêu",
-      "actionsReceived": "Lượt tương tác nhận được"
+      "total": "Tổng Chiến Dịch",
+      "active": "Chiến Dịch Đang Hoạt Động",
+      "completed": "Hoàn Thành",
+      "paused": "Tạm Dừng",
+      "creditsSpent": "Tín Dụng Đã Sử Dụng",
+      "actionsReceived": "Hành Động Đã Nhận"
     },
     "tabs": {
-      "all": "Tất cả chiến dịch",
-      "video": "Chiến dịch video",
-      "follow": "Chiến dịch theo dõi"
+      "all": "Tất Cả Chiến Dịch",
+      "video": "Chiến Dịch Video",
+      "follow": "Chiến Dịch Theo Dõi"
     },
     "table": {
       "type": "Loại",
-      "target": "Mục tiêu",
-      "interaction": "Tương tác",
-      "progress": "Tiến độ",
-      "creditsPerAction": "Credit/mỗi lượt",
-      "status": "Trạng thái",
-      "created": "Ngày tạo",
-      "actions": "Tác vụ"
+      "target": "Mục Tiêu",
+      "interaction": "Tương Tác",
+      "progress": "Tiến Trình",
+      "creditsPerAction": "Tín Dụng/Hành Động",
+      "status": "Trạng Thái",
+      "created": "Đã Tạo",
+      "actions": "Hành Động"
     },
     "status": {
       "active": "Đang hoạt động",
       "paused": "Tạm dừng",
-      "completed": "Đã hoàn thành",
-      "expired": "Đã hết hạn"
+      "completed": "Hoàn thành",
+      "expired": "Hết hạn"
     },
     "actions": {
       "pause": "Tạm dừng",
       "resume": "Tiếp tục",
       "edit": "Chỉnh sửa",
       "delete": "Xóa",
-      "view": "Xem chi tiết"
+      "view": "Xem Chi Tiết"
     },
     "buttons": {
-      "createCampaign": "Tạo chiến dịch",
-      "filter": "Lọc",
-      "refresh": "Làm mới"
+      "createCampaign": "Tạo Chiến Dịch",
+      "filter": "Bộ Lọc",
+      "refresh": "Làm Mới"
     },
     "empty": {
       "title": "Chưa có chiến dịch",
-      "description": "Hãy bắt đầu bằng cách tạo chiến dịch đầu tiên để tăng tương tác TikTok",
-      "action": "Tạo chiến dịch"
+      "description": "Bắt đầu bằng cách tạo chiến dịch đầu tiên để thúc đẩy tương tác TikTok của bạn",
+      "action": "Tạo Chiến Dịch"
     },
     "deleteConfirm": {
-      "title": "Xóa chiến dịch",
-      "description": "Bạn có chắc chắn muốn xóa chiến dịch này? Hành động này không thể hoàn tác và credit còn lại sẽ được hoàn lại.",
-      "confirm": "Xóa chiến dịch",
+      "title": "Xóa Chiến Dịch",
+      "description": "Bạn có chắc chắn muốn xóa chiến dịch này? Hành động này không thể hoàn tác và tín dụng còn lại sẽ được hoàn trả.",
+      "confirm": "Xóa Chiến Dịch",
       "cancel": "Hủy"
     }
   },
   "CreateCampaign": {
-    "title": "Tạo chiến dịch mới",
-    "subtitle": "Tăng độ phủ TikTok với cộng đồng của chúng tôi",
+    "title": "Tạo Chiến Dịch Mới",
+    "subtitle": "Thúc đẩy sự hiện diện TikTok của bạn với cộng đồng chúng tôi",
     "steps": {
-      "selectType": "Chọn loại",
-      "configure": "Cấu hình",
-      "review": "Xem lại"
+      "selectType": "Chọn Loại",
+      "configure": "Cấu Hình",
+      "review": "Xem Lại"
     },
     "campaignTypes": {
       "video": {
-        "title": "Chiến dịch video",
-        "description": "Nhận lượt thích, xem hoặc bình luận cho video TikTok",
+        "title": "Chiến Dịch Video",
+        "description": "Nhận lượt thích, xem hoặc bình luận trên video TikTok của bạn",
         "interactions": {
           "view": "Lượt xem",
           "like": "Lượt thích",
@@ -349,259 +349,393 @@
         }
       },
       "follow": {
-        "title": "Chiến dịch theo dõi",
-        "description": "Nhận follower cho tài khoản TikTok"
+        "title": "Chiến Dịch Theo Dõi",
+        "description": "Nhận người theo dõi cho tài khoản TikTok của bạn"
       }
     },
     "form": {
-      "videoUrl": "URL video TikTok",
+      "videoUrl": "URL Video TikTok",
       "videoUrlPlaceholder": "https://vt.tiktok.com/... hoặc https://www.tiktok.com/@username/video/...",
-      "interactionType": "Chọn loại tương tác",
-      "creditsPerAction": "Credit mỗi lượt",
-      "targetCount": "Số lượng mục tiêu",
-      "totalCost": "Tổng chi phí",
-      "verifyVideo": "Xác minh video",
-      "videoVerification": "Xác minh video",
-      "confirm": "Xác nhận thông tin",
+      "interactionType": "Chọn Loại Tương Tác",
+      "creditsPerAction": "Tín Dụng Mỗi Hành Động",
+      "targetCount": "Số Lượng Mục Tiêu",
+      "totalCost": "Tổng Chi Phí",
+      "verifyVideo": "Xác Minh Video",
+      "videoVerification": "Xác Minh Video",
+      "confirm": "Xác Nhận Chi Tiết",
       "verifying": "Đang xác minh",
       "success": "Xác minh video thành công!",
-      "creator": "Người sáng tạo",
-      "ready": "Hoàn hảo! Video này đã sẵn sàng cho chiến dịch của bạn. Tiếp tục để cấu hình các cài đặt.",
-      "durationDays": "Thời gian chiến dịch",
-      "selectDuration": "Chọn thời gian",
-      "quickBoost": "Tăng tốc nhanh",
+      "creator": "Người Sáng Tạo",
+      "ready": "Hoàn hảo! Video này đã sẵn sàng cho chiến dịch của bạn. Tiếp tục để cấu hình cài đặt.",
+      "durationDays": "Thời Gian Chiến Dịch",
+      "selectDuration": "Chọn Thời Gian",
+      "quickBoost": "Thúc đẩy nhanh",
       "shortCampaign": "Chiến dịch ngắn",
       "standard": "Tiêu chuẩn",
       "extended": "Mở rộng",
-      "maximumReach": "Tối đa tiếp cận",
+      "maximumReach": "Tiếp cận tối đa",
       "currentBalance": "Số dư hiện tại",
       "balanceAfterCampaign": "Số dư sau chiến dịch",
-      "insufficientCredits": "Không đủ credit",
-      "insufficientCreditsDesc": "Bạn cần thêm {amount} credit để tạo chiến dịch này.",
-      "topUpCredits": "Nạp thêm credit",
-      "targetInfo": "Số lượt {type} bạn muốn nhận cho video",
-      "followersTargetInfo": "Số lượng follower mới mong muốn cho tài khoản TikTok",
-      "targetCountPlaceholder": "Nhập số lượng mục tiêu (VD: 1000)",
-      "creditsPerFollow": "credit mỗi lượt theo dõi",
+      "insufficientCredits": "Không Đủ Tín Dụng",
+      "insufficientCreditsDesc": "Bạn cần thêm {amount} tín dụng để tạo chiến dịch này.",
+      "topUpCredits": "Nạp Thêm Tín Dụng",
+      "targetInfo": "Mục tiêu {type} bạn muốn nhận cho video của bạn",
+      "followersTargetInfo": "Số lượng người theo dõi mới mục tiêu cho tài khoản TikTok của bạn",
+      "targetCountPlaceholder": "Nhập số lượng mục tiêu (ví dụ: 1000)",
+      "creditsPerFollow": "tín dụng mỗi lượt theo dõi",
       "loadingCampaign": "Đang tải trình tạo chiến dịch..."
     },
     "buttons": {
-      "next": "Tiếp",
-      "back": "Quay lại",
-      "verify": "Xác minh",
-      "create": "Tạo chiến dịch",
+      "next": "Tiếp Theo",
+      "back": "Quay Lại",
+      "verify": "Xác Minh",
+      "create": "Tạo Chiến Dịch",
       "cancel": "Hủy",
       "creating": "Đang tạo chiến dịch..."
     },
     "messages": {
       "invalidUrl": "Vui lòng nhập URL TikTok hợp lệ",
-      "verificationFailed": "Xác minh video thất bại. Kiểm tra lại URL và thử lại.",
-      "insufficientCredits": "Không đủ credit. Vui lòng nạp thêm.",
+      "verificationFailed": "Xác minh video thất bại. Vui lòng kiểm tra URL và thử lại.",
+      "insufficientCredits": "Không đủ tín dụng. Vui lòng nạp thêm vào tài khoản.",
       "success": "Tạo chiến dịch thành công!"
     },
     "review": {
-      "title": "Xem lại chiến dịch",
-      "subtitle": "Vui lòng xem lại mọi chi tiết trước khi khởi tạo. Chiến dịch của bạn sẽ bắt đầu ngay sau khi tạo.",
-      "campaignOverview": "Tổng quan chiến dịch",
-      "videoEngagementCampaign": "Chiến dịch tăng tương tác video",
-      "followerGrowthCampaign": "Chiến dịch tăng follower",
-      "boostVideoWith": "Tăng video bằng {type} từ người dùng TikTok thật",
-      "growFollowing": "Tăng follower TikTok với người thật",
-      "targetVideo": "Video mục tiêu",
-      "targetAccount": "Tài khoản mục tiêu",
-      "videoId": "ID video",
-      "currentStats": "Thống kê hiện tại",
-      "followers": "Follower",
-      "following": "Đang theo dõi",
-      "likes": "Lượt thích",
-      "comments": "Bình luận",
-      "shares": "Chia sẻ",
-      "views": "Lượt xem",
-      "targetInteraction": "Tương tác mục tiêu",
-      "creditsPerAction": "Credit mỗi {action}",
-      "accountDescription": "Tài khoản TikTok của bạn sẽ nhận thêm follower mới",
-      "creditsPerFollow": "Credit mỗi lượt theo dõi",
-      "costBreakdown": "Chi tiết chi phí",
-      "calculationDetails": "Chi tiết tính toán",
-      "targetGoal": "Mục tiêu",
-      "duration": "Thời gian",
-      "daysToComplete": "Ngày hoàn thành chiến dịch",
-      "creditsToReceive": "Số lượt {type} sẽ nhận",
-      "followersToReceive": "số follower sẽ nhận",
-      "currentBalance": "Số dư hiện tại",
-      "balanceAfter": "Số dư sau khi tạo",
-      "remainingCredits": "Credit còn lại sau chiến dịch",
-      "sufficientBalance": "✓ Số dư đủ",
-      "insufficientCreditsWarning": "⚠️ Không đủ credit",
-      "needMoreCredits": "Bạn cần thêm {amount} credit để khởi tạo chiến dịch này.",
-      "campaignTerms": "Điều khoản chiến dịch & Khởi chạy",
-      "importantTerms": "Điều quan trọng:",
-      "readyToLaunch": "Sẵn sàng khởi chạy!",
-      "campaignStartsImmediately": "Chiến dịch của bạn sẽ bắt đầu ngay và thu hút {type} từ cộng đồng.",
-      "expectedCompletion": "Thời gian dự kiến hoàn thành:",
-      "within24Hours": "Trong vòng 24 giờ",
-      "withinDays": "Trong {days} ngày",
-      "withinWeeks": "Trong {weeks} tuần",
+      "title": "Xem Lại Chiến Dịch",
+      "subtitle": "Vui lòng xem lại tất cả chi tiết chiến dịch trước khi khởi chạy. Chiến dịch của bạn sẽ bắt đầu ngay sau khi tạo.",
+      "campaignOverview": "Tổng Quan Chiến Dịch",
+      "videoEngagementCampaign": "Chiến Dịch Tương Tác Video",
+      "followerGrowthCampaign": "Chiến Dịch Tăng Trưởng Người Theo Dõi",
+      "boostVideoWith": "Thúc đẩy video của bạn với {type} từ người dùng TikTok thực",
+      "growFollowing": "Phát triển người theo dõi TikTok của bạn với người theo dõi xác thực",
+      "targetVideo": "Video Mục Tiêu",
+      "targetAccount": "Tài Khoản Mục Tiêu",
+      "videoId": "ID Video",
+      "currentStats": "Thống Kê Hiện Tại",
+      "followers": "Người Theo Dõi",
+      "following": "Đang Theo Dõi",
+      "likes": "Lượt Thích",
+      "comments": "Bình Luận",
+      "shares": "Chia Sẻ",
+      "views": "Lượt Xem",
+      "targetInteraction": "Tương Tác Mục Tiêu",
+      "creditsPerAction": "Tín Dụng Mỗi {action}",
+      "accountDescription": "Tài khoản TikTok của bạn sẽ nhận người theo dõi mới",
+      "creditsPerFollow": "Tín Dụng Mỗi Lượt Theo Dõi",
+      "costBreakdown": "Phân Tích Chi Phí",
+      "calculationDetails": "Chi Tiết Tính Toán",
+      "targetGoal": "Mục Tiêu",
+      "duration": "Thời Gian",
+      "daysToComplete": "Số ngày để hoàn thành chiến dịch",
+      "creditsToReceive": "{type} sẽ nhận",
+      "followersToReceive": "người theo dõi sẽ nhận",
+      "currentBalance": "Số Dư Hiện Tại",
+      "balanceAfter": "Số Dư Sau",
+      "remainingCredits": "Tín dụng còn lại sau chiến dịch",
+      "sufficientBalance": "✓ Đủ số dư",
+      "insufficientCreditsWarning": "⚠️ Không đủ tín dụng",
+      "needMoreCredits": "Bạn cần thêm {amount} tín dụng để khởi chạy chiến dịch này.",
+      "campaignTerms": "Điều Khoản Chiến Dịch & Khởi Chạy",
+      "importantTerms": "Điều Khoản Quan Trọng:",
+      "readyToLaunch": "Sẵn Sàng Khởi Chạy!",
+      "campaignStartsImmediately": "Chiến dịch của bạn sẽ bắt đầu ngay lập tức và bắt đầu thu hút {type} từ cộng đồng của chúng tôi.",
       "terms": {
-        "distributedToCommunity": "Chiến dịch sẽ được phân phối cho cộng đồng người dùng đã xác thực",
-        "creditsOnlyOnCompletion": "Credit chỉ bị trừ khi hành động đã hoàn tất",
-        "pauseAnytime": "Bạn có thể tạm dừng hoặc hủy chiến dịch bất kỳ lúc nào",
-        "unusedCreditsRefunded": "Credit chưa sử dụng sẽ được hoàn lại tự động",
-        "realUsers": "Tất cả tương tác đều từ người dùng TikTok thật, hoạt động",
-        "resultsVary": "Kết quả có thể khác nhau tùy chất lượng nội dung và mức độ tương tác"
+        "distributedToCommunity": "Chiến dịch sẽ được phân phối đến cộng đồng người dùng đã xác minh của chúng tôi",
+        "creditsOnlyOnCompletion": "Tín dụng chỉ bị trừ khi hành động được hoàn thành thành công",
+        "pauseAnytime": "Bạn có thể tạm dừng hoặc hủy chiến dịch bất cứ lúc nào",
+        "unusedCreditsRefunded": "Tín dụng chưa sử dụng sẽ được tự động hoàn trả vào tài khoản của bạn",
+        "realUsers": "Tất cả tương tác được thực hiện bởi người dùng TikTok thực, hoạt động",
+        "resultsVary": "Kết quả có thể thay đổi tùy thuộc vào chất lượng nội dung và mức độ tương tác của người dùng"
       }
     }
   },
-  "Profile": {
-    "title": "Hồ sơ",
-    "description": "Quản lý tài khoản và tích hợp TikTok",
-    "backToDashboard": "Quay lại bảng điều khiển",
-    "memberSince": "Thành viên từ",
-    "tiktokNotConnected": "Chưa liên kết TikTok",
+  "Exchange": {
+    "title": "Trao Đổi",
+    "subtitle": "Kiếm tín dụng bằng cách tương tác với người khác",
     "tabs": {
-      "overview": "Tổng quan",
-      "stats": "Thống kê",
-      "settings": "Cài đặt",
-      "history": "Lịch sử"
+      "videos": "Videos",
+      "follows": "Theo Dõi"
     },
-    "overview": {
-      "campaigns": "Chiến dịch",
-      "earned": "Đã kiếm",
-      "actions": "Tương tác",
-      "received": "Đã nhận",
-      "tiktokStats": "Thống kê TikTok",
-      "followers": "Follower",
-      "following": "Đang theo dõi",
-      "likes": "Lượt thích",
-      "videos": "Video",
-      "campaignProgress": "Tiến độ chiến dịch",
-      "completionRate": "Tỷ lệ hoàn thành",
-      "active": "Đang hoạt động",
-      "completed": "Đã hoàn thành"
-    },
-    "stats": {
-      "creditsOverview": "Tổng quan credit",
-      "currentBalance": "Số dư hiện tại",
-      "totalEarned": "Tổng đã kiếm",
-      "totalSpent": "Tổng đã tiêu",
-      "netCredits": "Credit ròng",
-      "activityOverview": "Tổng quan hoạt động",
-      "actionsPerformed": "Số lần đã tương tác",
-      "actionsReceived": "Số lượt nhận tương tác",
-      "totalCampaigns": "Tổng chiến dịch",
-      "successRate": "Tỷ lệ thành công",
-      "interactionBreakdown": "Chi tiết tương tác",
-      "views": "Lượt xem",
-      "likes": "Lượt thích",
-      "comments": "Bình luận",
-      "follows": "Lượt theo dõi",
-      "creditsEach": "{count} credit mỗi lượt"
-    },
-    "settings": {
-      "profileSettings": "Cài đặt hồ sơ",
-      "email": "Email",
-      "saveChanges": "Lưu thay đổi",
-      "cancel": "Hủy",
-      "tiktokIntegration": "Tích hợp TikTok",
-      "tiktokConnected": "Tài khoản TikTok @{username} đã được liên kết.",
-      "tiktokNotConnectedDesc": "Kết nối TikTok để bắt đầu tạo chiến dịch và kiếm credit.",
-      "connectTiktok": "Kết nối TikTok",
-      "changeTiktokUsername": "Đổi tên TikTok"
-    },
-    "history": {
-      "transactionHistory": "Lịch sử giao dịch",
-      "noTransactions": "Chưa có lịch sử giao dịch",
-      "startInteracting": "Bắt đầu tương tác để xem hoạt động ở đây",
-      "balance": "Số dư"
-    },
-    "tiktokForm": {
-      "connectTitle": "Kết nối TikTok",
-      "updateTitle": "Cập nhật tên TikTok",
-      "username": "Tên người dùng TikTok",
-      "usernamePlaceholder": "your_username",
-      "usernameHelp": "Nhập tên người dùng TikTok (không có ký tự @)",
-      "securityNote": "Chúng tôi chỉ cần tên người dùng để xác thực. Không truy cập tài khoản hoặc yêu cầu mật khẩu.",
-      "connect": "Kết nối",
-      "update": "Cập nhật",
-      "cancel": "Hủy"
+    "campaignTypes": {
+      "video": "Video",
+      "follow": "Theo Dõi"
     },
     "actions": {
-      "editProfile": "Chỉnh sửa hồ sơ",
-      "saveProfile": "Lưu hồ sơ",
-      "connectTiktok": "Kết nối TikTok",
-      "viewTiktokProfile": "Xem hồ sơ TikTok",
-      "copyEmail": "Sao chép email",
-      "copied": "Đã sao chép!"
+      "like": "Thích",
+      "view": "Xem",
+      "comment": "Bình Luận",
+      "follow": "Theo Dõi",
+      "claimCredits": "Nhận Tín Dụng",
+      "openTikTok": "Mở TikTok",
+      "processing": "Đang Xử Lý...",
+      "claimed": "Đã Nhận",
+      "completed": "Hoàn Thành"
+    },
+    "stats": {
+      "likes": "Lượt Thích",
+      "views": "Lượt Xem",
+      "comments": "Bình Luận",
+      "followers": "Người Theo Dõi",
+      "following": "Đang Theo Dõi"
+    },
+    "campaign": {
+      "creditsPerAction": "Tín dụng mỗi hành động",
+      "remaining": "Còn Lại",
+      "progress": "Tiến Trình",
+      "target": "Mục Tiêu",
+      "current": "Hiện Tại",
+      "status": "Trạng Thái"
     },
     "alerts": {
-      "profileUpdated": "Cập nhật hồ sơ thành công!",
-      "tiktokConnected": "Kết nối TikTok thành công!",
-      "errorUpdating": "Cập nhật hồ sơ thất bại",
-      "errorConnecting": "Kết nối TikTok thất bại",
-      "enterUsername": "Vui lòng nhập tên người dùng TikTok"
+      "connectTikTok": {
+        "title": "Kết Nối Tài Khoản TikTok",
+        "message": "Vui lòng kết nối tài khoản TikTok để tham gia chiến dịch"
+      },
+      "error": {
+        "title": "Lỗi Tải Chiến Dịch",
+        "message": "Không thể tải chiến dịch. Vui lòng thử lại."
+      }
+    },
+    "credits": {
+      "earn": "Kiếm Tín Dụng",
+      "remaining": "Còn Lại"
+    },
+    "progress": {
+      "label": "Tiến Trình"
+    },
+    "buttons": {
+      "skip": "Bỏ Qua",
+      "claim": "Nhận",
+      "processing": "Đang Xử Lý",
+      "completed": "Hoàn Thành",
+      "campaignCompleted": "Chiến Dịch Hoàn Thành",
+      "insufficientCredits": "Không Đủ Tín Dụng",
+      "refresh": "Làm Mới",
+      "noMoreCampaigns": "Không còn chiến dịch nào"
+    },
+    "notifications": {
+      "connectTikTok": {
+        "title": "Yêu Cầu Kết Nối TikTok",
+        "message": "Bạn cần kết nối tài khoản TikTok trước"
+      },
+      "success": {
+        "title": "Hành Động Hoàn Thành!",
+        "creditsEarned": "Tín dụng đã kiếm"
+      },
+      "error": {
+        "title": "Đã Xảy Ra Lỗi",
+        "actionNotDetected": "Không Phát Hiện Hành Động",
+        "tryAgain": "Vui lòng hoàn thành hành động và thử lại",
+        "somethingWrong": "Đã xảy ra lỗi"
+      }
+    },
+    "filters": {
+      "all": "Tất Cả",
+      "like": "Thích",
+      "follow": "Theo Dõi",
+      "active": "Đang Hoạt Động",
+      "completed": "Hoàn Thành",
+      "sortBy": "Sắp Xếp Theo",
+      "newest": "Mới Nhất",
+      "oldest": "Cũ Nhất",
+      "highestCredits": "Tín Dụng Cao Nhất",
+      "lowestCredits": "Tín Dụng Thấp Nhất"
+    },
+    "empty": {
+      "title": "Không Có Chiến Dịch",
+      "description": "Hiện không có chiến dịch phù hợp với bộ lọc của bạn. Các chiến dịch mới được thêm thường xuyên!",
+      "actionButton": "Làm Mới",
+      "features": {
+        "earnCredits": "Kiếm Tín Dụng",
+        "easyTasks": "Nhiệm Vụ Dễ Dàng",
+        "growTogether": "Cùng Phát Triển",
+        "community": "Cộng Đồng"
+      },
+      "checkBackSoon": "Các chiến dịch mới được thêm thường xuyên. Hãy kiểm tra lại sau!"
+    }
+  },
+  "Profile": {
+    "title": "Hồ Sơ",
+    "subtitle": "Quản lý tài khoản và kết nối TikTok",
+    "sections": {
+      "account": "Thông Tin Tài Khoản",
+      "tiktok": "Kết Nối TikTok",
+      "stats": "Thống Kê",
+      "settings": "Cài Đặt"
+    },
+    "fields": {
+      "email": "Email",
+      "credits": "Tín Dụng",
+      "totalEarned": "Tổng Kiếm Được",
+      "totalSpent": "Tổng Đã Chi",
+      "status": "Trạng Thái",
+      "lastActive": "Hoạt Động Lần Cuối",
+      "memberSince": "Thành Viên Từ",
+      "tiktokUsername": "Tên Người Dùng TikTok",
+      "followers": "Người Theo Dõi",
+      "following": "Đang Theo Dõi",
+      "likes": "Lượt Thích",
+      "videos": "Videos"
+    },
+    "actions": {
+      "connectTiktok": "Kết Nối TikTok",
+      "updateTiktok": "Cập Nhật TikTok",
+      "disconnectTiktok": "Ngắt Kết Nối TikTok",
+      "save": "Lưu Thay Đổi",
+      "cancel": "Hủy",
+      "refresh": "Làm Mới",
+      "preview": "Xem Trước Tài Khoản TikTok",
+      "confirm": "Xác Nhận Kết Nối"
+    },
+    "forms": {
+      "connectTiktok": {
+        "title": "Kết Nối Tài Khoản TikTok",
+        "description": "Nhập tên người dùng TikTok để kết nối tài khoản của bạn",
+        "placeholder": "Nhập tên người dùng TikTok (không có @)",
+        "helperText": "Ví dụ: username (không phải @username)"
+      },
+      "preview": {
+        "title": "Xem Trước Tài Khoản TikTok",
+        "description": "Vui lòng xác nhận đây có phải là tài khoản TikTok chính xác bạn muốn kết nối",
+        "confirmMessage": "Đây có phải là tài khoản chính xác bạn muốn kết nối?",
+        "verified": "Đã Xác Minh",
+        "followers": "Người Theo Dõi",
+        "following": "Đang Theo Dõi",
+        "likes": "Lượt Thích",
+        "videos": "Videos"
+      }
+    },
+    "notifications": {
+      "email": "Thông Báo Email",
+      "push": "Thông Báo Push",
+      "campaigns": "Cập Nhật Chiến Dịch",
+      "rewards": "Thông Báo Phần Thưởng",
+      "emailDescription": "Nhận thông báo email cho các cập nhật quan trọng",
+      "pushDescription": "Nhận thông báo push trong trình duyệt của bạn",
+      "campaignsDescription": "Nhận thông báo về trạng thái và cập nhật chiến dịch của bạn",
+      "rewardsDescription": "Nhận thông báo khi bạn kiếm được tín dụng từ hành động"
+    },
+    "messages": {
+      "loading": "Đang tải hồ sơ...",
+      "loadingTiktok": "Đang xác minh tài khoản TikTok...",
+      "previewLoading": "Đang tải hồ sơ TikTok...",
+      "connectSuccess": "Kết nối tài khoản TikTok thành công!",
+      "connectError": "Kết nối tài khoản TikTok thất bại. Vui lòng kiểm tra tên người dùng và thử lại.",
+      "updateSuccess": "Cập nhật hồ sơ thành công!",
+      "updateError": "Cập nhật hồ sơ thất bại. Vui lòng thử lại.",
+      "disconnectSuccess": "Ngắt kết nối tài khoản TikTok thành công!",
+      "disconnectError": "Ngắt kết nối tài khoản TikTok thất bại.",
+      "invalidUsername": "Tên người dùng TikTok không hợp lệ. Vui lòng nhập tên người dùng hợp lệ.",
+      "usernameExists": "Tên người dùng TikTok này đã được kết nối với tài khoản khác.",
+      "profileNotFound": "Không tìm thấy hồ sơ TikTok. Vui lòng kiểm tra tên người dùng và thử lại."
+    },
+    "status": {
+      "active": "Hoạt Động",
+      "banned": "Bị Cấm",
+      "pending": "Đang Chờ",
+      "inactive": "Không Hoạt Động",
+      "connected": "Đã Kết Nối"
+    },
+    "empty": {
+      "noTiktok": "Chưa kết nối tài khoản TikTok",
+      "noTiktokDescription": "Kết nối tài khoản TikTok của bạn để bắt đầu kiếm tín dụng và tạo chiến dịch."
+    },
+    "modals": {
+      "disconnect": {
+        "title": "Ngắt Kết Nối TikTok",
+        "message": "Bạn có chắc chắn muốn ngắt kết nối tài khoản TikTok? Bạn sẽ cần kết nối lại để tạo chiến dịch hoặc kiếm tín dụng."
+      }
+    },
+    "common": {
+      "success": "Thành Công",
+      "error": "Lỗi"
+    }
+  },
+  "Footer": {
+    "brand": {
+      "title": "TikTok Exchange",
+      "description": "Nền tảng trao đổi tương tác TikTok hàng đầu. Thúc đẩy lượt xem, thích, bình luận và người theo dõi một cách tự nhiên."
+    },
+    "links": {
+      "title": "Liên Kết Nhanh",
+      "terms": "Điều Khoản Dịch Vụ",
+      "privacy": "Chính Sách Bảo Mật",
+      "guide": "Hướng Dẫn Người Dùng",
+      "support": "Liên Hệ Hỗ Trợ"
+    },
+    "contact": {
+      "title": "Liên Hệ",
+      "email": "support@tiktokexchange.com"
+    },
+    "bottom": {
+      "copyright": "© 2025 TikTok Exchange. Được tạo bằng",
+      "forCreators": "dành cho người sáng tạo",
+      "version": "v1.0.0",
+      "languages": "Tiếng Việt / Tiếng Anh"
     }
   },
   "Auth": {
     "login": {
-      "title": "Đăng nhập",
-      "description": "Chào mừng quay lại TikGrow",
+      "title": "Đăng Nhập",
+      "description": "Chào mừng trở lại TikGrow",
       "email": "Email",
-      "password": "Mật khẩu",
-      "submit": "Đăng nhập",
+      "password": "Mật Khẩu",
+      "submit": "Đăng Nhập",
       "noAccount": "Chưa có tài khoản?",
       "signUp": "Đăng ký",
-      "forgotPassword": "Quên mật khẩu?"
+      "forgotPassword": "Quên mật khẩu?",
+      "success": "Đăng nhập thành công!"
     },
     "register": {
-      "title": "Tạo tài khoản",
+      "title": "Tạo Tài Khoản",
       "description": "Tham gia TikGrow và bắt đầu phát triển",
       "email": "Email",
-      "password": "Mật khẩu",
-      "confirmPassword": "Xác nhận mật khẩu",
-      "submit": "Tạo tài khoản",
+      "password": "Mật Khẩu",
+      "confirmPassword": "Xác Nhận Mật Khẩu",
+      "submit": "Tạo Tài Khoản",
       "hasAccount": "Đã có tài khoản?",
       "signIn": "Đăng nhập",
-      "terms": "Bằng việc tạo tài khoản, bạn đồng ý với Điều khoản dịch vụ",
+      "terms": "Bằng cách tạo tài khoản, bạn đồng ý với Điều Khoản Dịch Vụ của chúng tôi",
       "benefits": {
-        "0": "Đăng ký ngay và nhận:",
-        "1": "10 credit miễn phí khi bắt đầu",
-        "2": "Không giới hạn lượt tương tác video",
-        "3": "Tăng trưởng TikTok thật, hiệu quả"
-      }
+        "0": "Tham gia ngay và nhận:",
+        "1": "10 tín dụng miễn phí để bắt đầu",
+        "2": "Tương tác video không giới hạn",
+        "3": "Kết quả tăng trưởng TikTok thực sự"
+      },
+      "success": "Đăng ký thành công!"
     },
     "errors": {
       "invalidEmail": "Vui lòng nhập email hợp lệ",
-      "passwordTooShort": "Mật khẩu tối thiểu 6 ký tự",
+      "passwordTooShort": "Mật khẩu phải có ít nhất 6 ký tự",
       "passwordMismatch": "Mật khẩu không khớp",
-      "emailRequired": "Vui lòng nhập email",
-      "passwordRequired": "Vui lòng nhập mật khẩu"
+      "emailRequired": "Email là bắt buộc",
+      "passwordRequired": "Mật khẩu là bắt buộc"
     }
   },
   "Common": {
     "loading": "Đang tải...",
     "error": "Lỗi",
-    "success": "Thành công",
+    "success": "Thành Công",
     "save": "Lưu",
     "cancel": "Hủy",
-    "edit": "Chỉnh sửa",
+    "edit": "Chỉnh Sửa",
     "delete": "Xóa",
-    "confirm": "Xác nhận",
+    "confirm": "Xác Nhận",
     "close": "Đóng",
-    "back": "Quay lại",
-    "next": "Tiếp",
-    "previous": "Trước",
-    "viewAll": "Xem tất cả",
-    "showMore": "Xem thêm",
-    "showLess": "Thu gọn",
-    "search": "Tìm kiếm",
-    "filter": "Bộ lọc",
-    "sort": "Sắp xếp",
-    "refresh": "Làm mới",
-    "retry": "Thử lại",
-    "copy": "Sao chép",
-    "copied": "Đã sao chép!",
-    "share": "Chia sẻ",
-    "download": "Tải xuống",
-    "upload": "Tải lên"
+    "back": "Quay Lại",
+    "next": "Tiếp Theo",
+    "previous": "Trước Đó",
+    "viewAll": "Xem Tất Cả",
+    "showMore": "Hiển Thị Thêm",
+    "showLess": "Ẩn Bớt",
+    "search": "Tìm Kiếm",
+    "filter": "Bộ Lọc",
+    "sort": "Sắp Xếp",
+    "refresh": "Làm Mới",
+    "retry": "Thử Lại",
+    "copy": "Sao Chép",
+    "copied": "Đã Sao Chép!",
+    "share": "Chia Sẻ",
+    "download": "Tải Xuống",
+    "upload": "Tải Lên"
   }
 }
