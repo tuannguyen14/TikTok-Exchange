@@ -463,7 +463,7 @@ export default function TikTokConnection({
                         {tiktokStats && (
                             <Box>
                                 <Text fw={600} size="lg" mb="md" c="dimmed">
-                                    {t('sections.statistics')}
+                                    {t('sections.stats')}
                                 </Text>
                                 <SimpleGrid cols={{ base: 2, sm: 4 }} spacing="md">
                                     {[

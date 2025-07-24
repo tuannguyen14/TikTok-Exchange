@@ -181,7 +181,7 @@ type PostDetailResponse_API = ApiResponse<PostDetailResponse>;
 export class TikTokApiClient {
     private baseUrl: string;
 
-    constructor(baseUrl: string = '/api/tiktok') {
+    constructor(baseUrl: string = '/api/tiktok1') {
         this.baseUrl = baseUrl;
     }
 
@@ -277,6 +277,8 @@ export class TikTokApiClient {
                 action: 'getPostDetail',
                 videoId: videoId
             });
+
+            console.log("params: ", params.toString());
 
             const response = await fetch(`${this.baseUrl}?${params.toString()}`, {
                 method: 'GET',

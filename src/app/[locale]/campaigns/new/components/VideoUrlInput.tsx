@@ -44,42 +44,17 @@ export default function VideoUrlInput({
 
       if (result.success && result.data) {
         // Transform the new API response to match expected format
-        const postDetail = result.data.itemInfo?.itemStruct;
+        const postDetail = result.data;
         if (postDetail) {
           const transformedData = {
-            id: postDetail.id,
-            tiktokID: postDetail.author.uniqueId,
-            videoID: postDetail.id,
-            url: postDetail.video.zoomCover['720'] || postDetail.video.cover,
-            playCount: parseInt(postDetail.stats.playCount.toString()),
-            diggCount: parseInt(postDetail.stats.diggCount.toString()),
-            commentCount: postDetail.stats.commentCount,
-            shareCount: parseInt(postDetail.stats.shareCount.toString()),
-            collectCount: parseInt(postDetail.stats.collectCount.toString()),
-            author: {
-              uniqueId: postDetail.author.uniqueId,
-              nickname: postDetail.author.nickname,
-              avatarThumb: postDetail.author.avatarThumb,
-              verified: postDetail.author.verified
-            },
-            video: {
-              duration: postDetail.video.duration,
-              height: postDetail.video.height,
-              width: postDetail.video.width,
-              cover: postDetail.video.cover,
-              playAddr: postDetail.video.playAddr,
-              downloadAddr: postDetail.video.downloadAddr,
-              zoomCover: postDetail.video.zoomCover
-            },
-            music: {
-              id: postDetail.music.id,
-              title: postDetail.music.title,
-              authorName: postDetail.music.authorName,
-              duration: postDetail.music.duration,
-              original: postDetail.music.original
-            },
-            desc: postDetail.desc,
-            createTime: postDetail.createTime
+            collectCount: postDetail.collectCount,
+            commentCount: postDetail.commentCount,
+            diggCount: postDetail.diggCount,
+            playCount: postDetail.playCount,
+            shareCount: postDetail.shareCount,
+            tiktokID: postDetail.tiktokID,
+            url: postDetail.url,
+            videoID: postDetail.videoID
           };
 
           setVerificationResult(transformedData);

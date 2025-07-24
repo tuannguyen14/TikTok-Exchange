@@ -63,43 +63,14 @@ interface TikTokInfo {
         verified: boolean;
     };
     video_info?: {
-        id: string;
-        desc: string;
-        createTime: string;
-        author: {
-            uniqueId: string;
-            nickname: string;
-            avatarThumb: string;
-            verified: boolean;
-        };
-        stats: {
-            diggCount: number;
-            commentCount: number;
-            playCount: number;
-            shareCount: number;
-            collectCount: number;
-        };
-        video: {
-            duration: number;
-            height: number;
-            width: number;
-            cover: string;
-            playAddr: string;
-            downloadAddr: string;
-            zoomCover: {
-                '240': string;
-                '480': string;
-                '720': string;
-                '960': string;
-            };
-        };
-        music: {
-            id: string;
-            title: string;
-            authorName: string;
-            duration: number;
-            original: boolean;
-        };
+        collectCount: string
+        commentCount: number
+        diggCount: number
+        playCount: number
+        shareCount: number
+        tiktokID: string
+        url: string
+        videoID: string
     };
 }
 
@@ -149,48 +120,58 @@ export default function CampaignCard({
 
         setIsLoadingTikTokInfo(true);
         setTikTokInfoError(null);
-
         try {
             if (campaign.campaign_type === 'video' && campaign.tiktok_video_id) {
-                const postResponse = await tikTokApi.getPostDetail(campaign.tiktok_video_id);
+                const postResponse = await tikTokApi.getPostDetail(exchange.generateTikTokUrl(campaign));
 
                 if (postResponse.success && postResponse.data) {
-                    const postDetail = postResponse.data.itemInfo?.itemStruct;
+                    const postDetail = postResponse.data;
 
                     if (postDetail) {
+                        // const videoInfo = {
+                        //     id: postDetail.id,
+                        //     desc: postDetail.desc,
+                        //     createTime: postDetail.createTime,
+                        //     author: {
+                        //         uniqueId: postDetail.author.uniqueId,
+                        //         nickname: postDetail.author.nickname,
+                        //         avatarThumb: postDetail.author.avatarThumb,
+                        //         verified: postDetail.author.verified
+                        //     },
+                        //     stats: {
+                        //         diggCount: parseInt(postDetail.stats.diggCount.toString()),
+                        //         commentCount: postDetail.stats.commentCount,
+                        //         playCount: parseInt(postDetail.stats.playCount.toString()),
+                        //         shareCount: parseInt(postDetail.stats.shareCount.toString()),
+                        //         collectCount: parseInt(postDetail.stats.collectCount.toString())
+                        //     },
+                        //     video: {
+                        //         duration: postDetail.video.duration,
+                        //         height: postDetail.video.height,
+                        //         width: postDetail.video.width,
+                        //         cover: postDetail.video.cover,
+                        //         playAddr: postDetail.video.playAddr,
+                        //         downloadAddr: postDetail.video.downloadAddr,
+                        //         zoomCover: postDetail.video.zoomCover
+                        //     },
+                        //     music: {
+                        //         id: postDetail.music.id,
+                        //         title: postDetail.music.title,
+                        //         authorName: postDetail.music.authorName,
+                        //         duration: postDetail.music.duration,
+                        //         original: postDetail.music.original
+                        //     }
+                        // };
+
                         const videoInfo = {
-                            id: postDetail.id,
-                            desc: postDetail.desc,
-                            createTime: postDetail.createTime,
-                            author: {
-                                uniqueId: postDetail.author.uniqueId,
-                                nickname: postDetail.author.nickname,
-                                avatarThumb: postDetail.author.avatarThumb,
-                                verified: postDetail.author.verified
-                            },
-                            stats: {
-                                diggCount: parseInt(postDetail.stats.diggCount.toString()),
-                                commentCount: postDetail.stats.commentCount,
-                                playCount: parseInt(postDetail.stats.playCount.toString()),
-                                shareCount: parseInt(postDetail.stats.shareCount.toString()),
-                                collectCount: parseInt(postDetail.stats.collectCount.toString())
-                            },
-                            video: {
-                                duration: postDetail.video.duration,
-                                height: postDetail.video.height,
-                                width: postDetail.video.width,
-                                cover: postDetail.video.cover,
-                                playAddr: postDetail.video.playAddr,
-                                downloadAddr: postDetail.video.downloadAddr,
-                                zoomCover: postDetail.video.zoomCover
-                            },
-                            music: {
-                                id: postDetail.music.id,
-                                title: postDetail.music.title,
-                                authorName: postDetail.music.authorName,
-                                duration: postDetail.music.duration,
-                                original: postDetail.music.original
-                            }
+                            collectCount: postDetail.collectCount,
+                            commentCount: postDetail.commentCount,
+                            diggCount: postDetail.diggCount,
+                            playCount: postDetail.playCount,
+                            shareCount: postDetail.shareCount,
+                            tiktokID: postDetail.tiktokID,
+                            url: postDetail.url,
+                            videoID: postDetail.videoID
                         };
 
                         setTikTokInfo({ video_info: videoInfo });
@@ -285,28 +266,26 @@ export default function CampaignCard({
         if (campaign.campaign_type === 'video' && tikTokInfo.video_info) {
             const videoInfo = tikTokInfo.video_info;
             return {
-                title: videoInfo.author.nickname,
-                subtitle: `@${videoInfo.author.uniqueId}`,
-                avatar: videoInfo.video.zoomCover['720'] || videoInfo.video.cover,
-                description: videoInfo.desc,
-                verified: videoInfo.author.verified,
+                title: videoInfo.tiktokID,
+                subtitle: `@${videoInfo.tiktokID}`,
+                avatar: videoInfo.url,
                 stats: [
                     {
                         icon: <IconEye size={16} />,
                         label: t('stats.views'),
-                        value: tikTokApi.formatCount(videoInfo.stats.playCount),
+                        value: tikTokApi.formatCount(videoInfo.playCount),
                         color: 'blue'
                     },
                     {
                         icon: <IconHeart size={16} />,
                         label: t('stats.likes'),
-                        value: tikTokApi.formatCount(videoInfo.stats.diggCount),
+                        value: tikTokApi.formatCount(videoInfo.diggCount),
                         color: 'red'
                     },
                     {
                         icon: <IconMessageCircle size={16} />,
                         label: t('stats.comments'),
-                        value: tikTokApi.formatCount(videoInfo.stats.commentCount),
+                        value: tikTokApi.formatCount(videoInfo.commentCount),
                         color: 'teal'
                     }
                 ]
@@ -539,22 +518,6 @@ export default function CampaignCard({
                                 <Text size="sm" c="dimmed" ta="center" lineClamp={1}>
                                     {displayInfo.subtitle}
                                 </Text>
-
-                                {/* Description for video campaigns */}
-                                {displayInfo.description && (
-                                    <Text
-                                        size="xs"
-                                        c="dimmed"
-                                        ta="center"
-                                        lineClamp={2}
-                                        style={{
-                                            maxWidth: rem(280),
-                                            marginTop: rem(4)
-                                        }}
-                                    >
-                                        {displayInfo.description}
-                                    </Text>
-                                )}
 
                                 {displayInfo.isError && (
                                     <ActionIcon

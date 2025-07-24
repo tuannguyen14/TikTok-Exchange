@@ -509,7 +509,8 @@
       "completed": "Completed",
       "campaignCompleted": "Campaign Completed",
       "insufficientCredits": "Insufficient Credits",
-      "refresh": "Refresh"
+      "refresh": "Refresh",
+      "noMoreCampaigns": "No more campaigns available"
     },
     "notifications": {
       "connectTikTok": {

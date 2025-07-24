@@ -324,8 +324,8 @@ async function getVideoInfo(videoLink: string): Promise<[boolean, TikTokVideoInf
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const action = searchParams.get('action');
-    const id = searchParams.get('id');
-    const videoLink = searchParams.get('videoLink');
+    const id = searchParams.get('uniqueId');
+    const videoLink = searchParams.get('videoId');
 
     try {
         switch (action) {
@@ -349,7 +349,7 @@ export async function GET(request: Request) {
                     data: { followers, total, responseData }
                 });
 
-            case 'getVideoInfo':
+            case 'getPostDetail':
                 if (!videoLink) {
                     return Response.json({ error: 'Video link is required' }, { status: 400 });
                 }
