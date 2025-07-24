@@ -15,7 +15,13 @@ import {
     Box,
     Paper,
     ThemeIcon,
-    Skeleton
+    Skeleton,
+    Badge,
+    Divider,
+    ActionIcon,
+    Transition,
+    Tooltip,
+    rem
 } from '@mantine/core';
 import {
     IconHeart,
@@ -24,7 +30,13 @@ import {
     IconMessageCircle,
     IconCheck,
     IconArrowRight,
-    IconSparkles
+    IconSparkles,
+    IconBolt,
+    IconTarget,
+    IconTrendingUp,
+    IconRefresh,
+    IconChevronRight,
+    IconStar
 } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 import { Campaign, Action } from '@/lib/api/exchange';
@@ -140,7 +152,6 @@ export default function CampaignCard({
 
         try {
             if (campaign.campaign_type === 'video' && campaign.tiktok_video_id) {
-                // Fetch video post detail
                 const postResponse = await tikTokApi.getPostDetail(campaign.tiktok_video_id);
 
                 if (postResponse.success && postResponse.data) {
@@ -184,7 +195,6 @@ export default function CampaignCard({
 
                         setTikTokInfo({ video_info: videoInfo });
 
-                        // Set initial video info for like verification
                         if (campaign.interaction_type === 'like') {
                             setInitialVideoInfo(videoInfo);
                         }
@@ -195,7 +205,6 @@ export default function CampaignCard({
                     setTikTokInfoError(postResponse.error || 'Failed to fetch post info');
                 }
             } else if (campaign.campaign_type === 'follow') {
-                // Fetch user profile
                 const profileResponse = await tikTokApi.getProfile(campaign.target_tiktok_username);
 
                 if (profileResponse.success && profileResponse.data) {
@@ -232,6 +241,16 @@ export default function CampaignCard({
         }
     };
 
+    const getActionColor = () => {
+        switch (campaign.interaction_type || 'follow') {
+            case 'like': return 'red';
+            case 'view': return 'blue';
+            case 'comment': return 'teal';
+            case 'follow': return 'violet';
+            default: return 'violet';
+        }
+    };
+
     const getActionLabel = () => {
         switch (campaign.interaction_type || 'follow') {
             case 'like': return t('actions.like');
@@ -243,7 +262,6 @@ export default function CampaignCard({
     };
 
     const getDisplayInfo = () => {
-        // Show loading state while fetching TikTok info
         if (isLoadingTikTokInfo) {
             return {
                 title: campaign.target_tiktok_username || 'Loading...',
@@ -254,7 +272,6 @@ export default function CampaignCard({
             };
         }
 
-        // Show error state if failed to load
         if (tikTokInfoError) {
             return {
                 title: campaign.target_tiktok_username || 'Unknown',
@@ -268,19 +285,29 @@ export default function CampaignCard({
         if (campaign.campaign_type === 'video' && tikTokInfo.video_info) {
             const videoInfo = tikTokInfo.video_info;
             return {
-                title: `@${videoInfo.author.uniqueId}`,
-                subtitle: `${tikTokApi.formatCount(videoInfo.stats.playCount)} ${t('stats.views')}`,
+                title: videoInfo.author.nickname,
+                subtitle: `@${videoInfo.author.uniqueId}`,
                 avatar: videoInfo.video.zoomCover['720'] || videoInfo.video.cover,
+                description: videoInfo.desc,
+                verified: videoInfo.author.verified,
                 stats: [
+                    {
+                        icon: <IconEye size={16} />,
+                        label: t('stats.views'),
+                        value: tikTokApi.formatCount(videoInfo.stats.playCount),
+                        color: 'blue'
+                    },
                     {
                         icon: <IconHeart size={16} />,
                         label: t('stats.likes'),
-                        value: tikTokApi.formatCount(videoInfo.stats.diggCount)
+                        value: tikTokApi.formatCount(videoInfo.stats.diggCount),
+                        color: 'red'
                     },
                     {
                         icon: <IconMessageCircle size={16} />,
                         label: t('stats.comments'),
-                        value: tikTokApi.formatCount(videoInfo.stats.commentCount)
+                        value: tikTokApi.formatCount(videoInfo.stats.commentCount),
+                        color: 'teal'
                     }
                 ]
             };
@@ -290,16 +317,19 @@ export default function CampaignCard({
                 title: userInfo.nickname,
                 subtitle: `@${userInfo.uniqueId}`,
                 avatar: userInfo.avatarThumb,
+                verified: userInfo.verified,
                 stats: [
                     {
                         icon: <IconUsers size={16} />,
                         label: t('stats.followers'),
-                        value: tikTokApi.formatCount(userInfo.followerCount)
+                        value: tikTokApi.formatCount(userInfo.followerCount),
+                        color: 'violet'
                     },
                     {
-                        icon: <IconUsers size={16} />,
+                        icon: <IconTrendingUp size={16} />,
                         label: t('stats.following'),
-                        value: tikTokApi.formatCount(userInfo.followingCount)
+                        value: tikTokApi.formatCount(userInfo.followingCount),
+                        color: 'blue'
                     }
                 ]
             };
@@ -338,29 +368,25 @@ export default function CampaignCard({
             let result;
 
             if (campaign.campaign_type === 'follow') {
-                // Use the new follow verification method
                 result = await exchange.verifyFollowAction(
                     campaign.id,
                     campaign.target_tiktok_username!,
                     profile.tiktok_username
                 );
             } else if (campaign.campaign_type === 'video' && campaign.interaction_type === 'like') {
-                // Use the new like verification method with video ID
                 result = await exchange.verifyLikeAction(
                     campaign.id,
                     campaign,
                     campaign.tiktok_video_id!
                 );
             } else if (campaign.campaign_type === 'video' && campaign.interaction_type === 'comment') {
-                // Use comment verification method
                 result = await exchange.verifyCommentAction(
                     campaign.id,
                     campaign,
                     profile.tiktok_username,
-                    '' // Comment text - could be from user input
+                    ''
                 );
             } else {
-                // Fallback to generic action
                 result = await exchange.performAction({
                     campaignId: campaign.id,
                     actionType: actionType!,
@@ -382,7 +408,7 @@ export default function CampaignCard({
                 });
                 onActionComplete();
             } else {
-                setActionState('idle'); // Reset to allow retry
+                setActionState('idle');
                 notifications.show({
                     title: t('notifications.error.actionNotDetected'),
                     message: result.error || t('notifications.error.tryAgain'),
@@ -390,7 +416,7 @@ export default function CampaignCard({
                 });
             }
         } catch (error) {
-            setActionState('idle'); // Reset to allow retry
+            setActionState('idle');
             notifications.show({
                 title: t('notifications.error.title'),
                 message: error instanceof Error ? error.message : t('notifications.error.somethingWrong'),
@@ -403,146 +429,240 @@ export default function CampaignCard({
 
     return (
         <Card
-            shadow="md"
             radius="xl"
-            withBorder
             style={{
                 width: '100%',
-                maxWidth: '420px',
-                maxHeight: '90vh',
+                maxWidth: rem(380),
+                height: rem(600),
                 backgroundColor: 'white',
                 border: '1px solid #e9ecef',
+                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)',
                 overflow: 'hidden',
-                margin: '0 auto'
+                margin: '0 auto',
+                position: 'relative'
             }}
         >
+            {/* Action Badge */}
             <Box
-                p="lg"
                 style={{
-                    height: '100%',
-                    display: 'flex',
-                    flexDirection: 'column'
+                    position: 'absolute',
+                    top: rem(16),
+                    right: rem(16),
+                    zIndex: 10
                 }}
             >
-                {/* Main Content */}
-                <Stack gap="lg" align="center" style={{ flex: 1, overflow: 'auto' }}>
-                    {/* Avatar with Action Badge */}
+                <Badge
+                    size="lg"
+                    radius="xl"
+                    variant="gradient"
+                    gradient={{ from: getActionColor(), to: getActionColor(), deg: 45 }}
+                    leftSection={getActionIcon()}
+                    style={{
+                        boxShadow: `0 4px 12px rgba(0, 0, 0, 0.2)`,
+                        textTransform: 'none',
+                        fontWeight: 600
+                    }}
+                >
+                    {getActionLabel()}
+                </Badge>
+            </Box>
+
+            <Stack
+                p="xl"
+                gap="md"
+                style={{
+                    height: '100%',
+                    position: 'relative'
+                }}
+            >
+                {/* Avatar Section */}
+                <Stack gap="sm" align="center">
                     <Box style={{ position: 'relative' }}>
                         {displayInfo.isLoading ? (
-                            <Skeleton height={160} circle />
+                            <Skeleton height={120} circle />
                         ) : (
-                            <Avatar
-                                src={displayInfo.avatar}
-                                size={160}
-                                radius="xl"
-                                style={{
-                                    border: '3px solid #f8f9fa',
-                                    boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)'
-                                }}
-                            />
-                        )}
+                            <>
+                                <Avatar
+                                    src={displayInfo.avatar}
+                                    size={120}
+                                    radius="50%"
+                                    style={{
+                                        border: `4px solid ${getActionColor() === 'red' ? '#ff6b6b' : getActionColor() === 'violet' ? '#9775fa' : '#339af0'}`,
+                                        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.15)',
+                                        background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)'
+                                    }}
+                                />
 
-                        <ThemeIcon
-                            size="lg"
-                            radius="xl"
-                            variant="filled"
-                            color={campaign.interaction_type === 'like' ? 'red' : 'blue'}
-                            style={{
-                                position: 'absolute',
-                                bottom: -8,
-                                right: -8,
-                                border: '3px solid white',
-                                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
-                            }}
-                        >
-                            {getActionIcon()}
-                        </ThemeIcon>
+                                {/* Verification badge */}
+                                {displayInfo.verified && (
+                                    <ThemeIcon
+                                        size="sm"
+                                        radius="xl"
+                                        variant="filled"
+                                        color="blue"
+                                        style={{
+                                            position: 'absolute',
+                                            bottom: 4,
+                                            right: 4,
+                                            border: '2px solid white',
+                                            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)'
+                                        }}
+                                    >
+                                        <IconStar size={12} />
+                                    </ThemeIcon>
+                                )}
+                            </>
+                        )}
                     </Box>
 
                     {/* Title and Subtitle */}
-                    <Stack gap="xs" align="center">
+                    <Stack gap={4} align="center">
                         {displayInfo.isLoading ? (
                             <>
-                                <Skeleton height={20} width={200} />
-                                <Skeleton height={16} width={150} />
+                                <Skeleton height={20} width={180} />
+                                <Skeleton height={16} width={120} />
                             </>
                         ) : (
                             <>
-                                <Text size="lg" fw={700} c="dark" ta="center" lineClamp={2}>
+                                <Text
+                                    size="lg"
+                                    fw={700}
+                                    c="dark"
+                                    ta="center"
+                                    lineClamp={1}
+                                    style={{
+                                        maxWidth: '100%'
+                                    }}
+                                >
                                     {displayInfo.title}
                                 </Text>
                                 <Text size="sm" c="dimmed" ta="center" lineClamp={1}>
                                     {displayInfo.subtitle}
                                 </Text>
-                                {displayInfo.isError && (
-                                    <Button
+
+                                {/* Description for video campaigns */}
+                                {displayInfo.description && (
+                                    <Text
                                         size="xs"
+                                        c="dimmed"
+                                        ta="center"
+                                        lineClamp={2}
+                                        style={{
+                                            maxWidth: rem(280),
+                                            marginTop: rem(4)
+                                        }}
+                                    >
+                                        {displayInfo.description}
+                                    </Text>
+                                )}
+
+                                {displayInfo.isError && (
+                                    <ActionIcon
+                                        size="sm"
                                         variant="light"
                                         color="blue"
                                         onClick={fetchTikTokInfo}
                                         disabled={isLoadingTikTokInfo}
                                     >
-                                        {isLoadingTikTokInfo ? <Loader size={12} /> : 'Retry'}
-                                    </Button>
+                                        {isLoadingTikTokInfo ? <Loader size={12} /> : <IconRefresh size={12} />}
+                                    </ActionIcon>
                                 )}
                             </>
                         )}
                     </Stack>
+                </Stack>
 
-                    {/* Stats */}
-                    {displayInfo.stats.length > 0 && (
-                        <Group justify="center" gap="lg" w="100%">
-                            {displayInfo.isLoading ? (
-                                Array.from({ length: 2 }).map((_, index) => (
-                                    <Stack key={index} gap={4} align="center">
-                                        <Skeleton height={16} width={60} />
-                                        <Skeleton height={14} width={40} />
+                {/* Stats Grid */}
+                {displayInfo.stats.length > 0 && (
+                    <Group justify="center" gap="xs">
+                        {displayInfo.isLoading ? (
+                            Array.from({ length: 2 }).map((_, index) => (
+                                <Paper
+                                    key={index}
+                                    radius="md"
+                                    p="xs"
+                                    style={{
+                                        backgroundColor: '#f8f9fa',
+                                        border: '1px solid #e9ecef',
+                                        minWidth: rem(85)
+                                    }}
+                                >
+                                    <Stack gap={4} align="center">
+                                        <Skeleton height={14} width={50} />
+                                        <Skeleton height={12} width={30} />
                                     </Stack>
-                                ))
-                            ) : (
-                                displayInfo.stats.slice(0, 2).map((stat, index) => (
-                                    <Stack key={index} gap={4} align="center">
+                                </Paper>
+                            ))
+                        ) : (
+                            displayInfo.stats.slice(0, 3).map((stat, index) => (
+                                <Paper
+                                    key={index}
+                                    radius="md"
+                                    p="xs"
+                                    style={{
+                                        backgroundColor: '#f8f9fa',
+                                        border: '1px solid #e9ecef',
+                                        minWidth: rem(85),
+                                        flex: 1,
+                                        maxWidth: rem(100)
+                                    }}
+                                >
+                                    <Stack gap={2} align="center">
                                         <Group gap={4} justify="center">
-                                            {stat.icon}
-                                            <Text size="xs" c="dimmed">
-                                                {stat.label}
-                                            </Text>
+                                            <ThemeIcon
+                                                size="xs"
+                                                variant="light"
+                                                color={stat.color}
+                                            >
+                                                {stat.icon}
+                                            </ThemeIcon>
                                         </Group>
-                                        <Text fw={600} size="sm" c="dark">
+                                        <Text fw={600} size="xs" c="dark" ta="center">
                                             {stat.value}
                                         </Text>
+                                        <Text size="xs" c="dimmed" ta="center">
+                                            {stat.label}
+                                        </Text>
                                     </Stack>
-                                ))
-                            )}
-                        </Group>
-                    )}
+                                </Paper>
+                            ))
+                        )}
+                    </Group>
+                )}
 
+                <Divider style={{ margin: `${rem(8)} 0` }} />
+
+                {/* Credits and Progress Section */}
+                <Stack gap="sm">
                     {/* Credits Info */}
                     <Paper
-                        radius="xl"
+                        radius="lg"
                         p="md"
-                        w="100%"
                         style={{
-                            backgroundColor: '#f8f9fa',
-                            border: '1px solid #e9ecef'
+                            background: 'linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%)',
+                            border: '1px solid #ffd93d'
                         }}
                     >
                         <Group justify="space-between" align="center">
-                            <Stack gap={4}>
-                                <Text size="xs" c="dimmed">
-                                    {t('credits.earn')}
-                                </Text>
+                            <Stack gap={2}>
                                 <Group align="center" gap="xs">
-                                    <IconSparkles size={16} color="#f59e0b" />
-                                    <Text size="lg" fw={700} c="#f59e0b">
-                                        {exchange.formatCredits(campaign.credits_per_action)}
+                                    <IconSparkles size={18} color="#f59e0b" />
+                                    <Text size="sm" fw={600} c="#f59e0b">
+                                        {t('credits.earn')}
                                     </Text>
                                 </Group>
-                            </Stack>
-                            <Stack gap={4} align="end">
-                                <Text size="xs" c="dimmed">
-                                    {t('credits.remaining')}
+                                <Text size="xl" fw={800} c="#d97706">
+                                    {exchange.formatCredits(campaign.credits_per_action)}
                                 </Text>
+                            </Stack>
+
+                            <Stack gap={2} align="end">
+                                <Group align="center" gap="xs">
+                                    <IconTarget size={16} color="#6b7280" />
+                                    <Text size="xs" c="dimmed">
+                                        {t('credits.remaining')}
+                                    </Text>
+                                </Group>
                                 <Text size="sm" fw={600} c="dark">
                                     {exchange.formatCredits(campaign.remaining_credits)}
                                 </Text>
@@ -550,13 +670,13 @@ export default function CampaignCard({
                         </Group>
                     </Paper>
 
-                    {/* Progress */}
-                    <Box w="100%">
-                        <Group justify="space-between" mb="xs">
-                            <Text size="xs" c="dimmed">
+                    {/* Progress Bar */}
+                    <Box>
+                        <Group justify="space-between" mb={4}>
+                            <Text size="xs" c="dimmed" fw={500}>
                                 {t('progress.label')}
                             </Text>
-                            <Text size="xs" c="dimmed">
+                            <Text size="xs" c="dimmed" fw={600}>
                                 {campaign.current_count}/{campaign.target_count}
                             </Text>
                         </Group>
@@ -564,67 +684,96 @@ export default function CampaignCard({
                             value={progressPercentage}
                             size="lg"
                             radius="xl"
-                            color="blue"
+                            styles={{
+                                section: {
+                                    background: `linear-gradient(45deg, ${getActionColor() === 'red' ? '#ff6b6b' : getActionColor() === 'violet' ? '#9775fa' : '#339af0'}, ${getActionColor() === 'red' ? '#ee5a24' : getActionColor() === 'violet' ? '#7c3aed' : '#228be6'}) !important`
+                                }
+                            }}
                         />
                     </Box>
                 </Stack>
 
                 {/* Action Buttons */}
-                <Stack gap="sm" mt="md">
+                <Stack gap="xs" style={{ marginTop: 'auto' }}>
                     {hasPerformed || actionState === 'completed' ? (
-                        <Button
-                            size="lg"
-                            radius="xl"
-                            variant="filled"
-                            color="green"
-                            leftSection={<IconCheck size={18} />}
-                            disabled
-                            style={{ fontWeight: 600 }}
+                        <Transition
+                            mounted={actionState === 'completed'}
+                            transition="scale"
+                            duration={300}
                         >
-                            {t('buttons.completed')}
-                        </Button>
+                            {(styles) => (
+                                <Button
+                                    style={styles}
+                                    size="lg"
+                                    radius="xl"
+                                    variant="gradient"
+                                    gradient={{ from: 'green', to: 'teal' }}
+                                    leftSection={<IconCheck size={20} />}
+                                    disabled
+                                    styles={{
+                                        root: {
+                                            fontWeight: 600,
+                                            height: rem(50),
+                                            boxShadow: '0 4px 16px rgba(34, 197, 94, 0.3)'
+                                        }
+                                    }}
+                                >
+                                    {t('buttons.completed')}
+                                </Button>
+                            )}
+                        </Transition>
                     ) : !canPerform ? (
                         <Button
                             size="lg"
                             radius="xl"
-                            variant="filled"
+                            variant="light"
                             color="gray"
                             disabled
+                            styles={{
+                                root: {
+                                    height: rem(50),
+                                    fontWeight: 600
+                                }
+                            }}
                         >
                             {campaign.status !== 'active' ? t('buttons.campaignCompleted') : t('buttons.insufficientCredits')}
                         </Button>
                     ) : (
-                        <Group w="100%" gap="xs">
+                        <Group gap="xs">
                             {/* Skip Button */}
-                            <Button
-                                size="lg"
-                                radius="xl"
-                                variant="outline"
-                                color="gray"
-                                leftSection={<IconArrowRight size={18} />}
-                                onClick={onSkip}
-                                disabled={!hasMoreCampaigns}
-                                style={{
-                                    flex: 1,
-                                    fontWeight: 600,
-                                    borderColor: '#dee2e6'
-                                }}
-                            >
-                                {t('buttons.skip')}
-                            </Button>
+                            <Tooltip label={hasMoreCampaigns ? t('buttons.skip') : t('buttons.noMoreCampaigns')}>
+                                <ActionIcon
+                                    size={50}
+                                    radius="xl"
+                                    variant="light"
+                                    color="gray"
+                                    onClick={onSkip}
+                                    disabled={!hasMoreCampaigns}
+                                    style={{
+                                        border: '2px solid #dee2e6'
+                                    }}
+                                >
+                                    <IconChevronRight size={20} />
+                                </ActionIcon>
+                            </Tooltip>
 
-                            {/* Action/Claim Button */}
+                            {/* Main Action Button */}
                             {actionState === 'idle' ? (
                                 <Button
                                     size="lg"
                                     radius="xl"
-                                    variant="filled"
-                                    color={campaign.interaction_type === 'like' ? 'red' : 'blue'}
+                                    variant="gradient"
+                                    gradient={{
+                                        from: getActionColor() === 'red' ? 'red' : getActionColor() === 'violet' ? 'violet' : 'blue',
+                                        to: getActionColor() === 'red' ? 'pink' : getActionColor() === 'violet' ? 'grape' : 'cyan'
+                                    }}
                                     leftSection={getActionIcon()}
                                     onClick={handleActionClick}
                                     style={{
                                         flex: 1,
-                                        fontWeight: 600
+                                        height: rem(50),
+                                        fontWeight: 600,
+                                        boxShadow: `0 4px 16px ${getActionColor() === 'red' ? 'rgba(255, 107, 107, 0.3)' : getActionColor() === 'violet' ? 'rgba(151, 117, 250, 0.3)' : 'rgba(51, 154, 240, 0.3)'}`
                                     }}
                                 >
                                     {getActionLabel()}
@@ -633,14 +782,20 @@ export default function CampaignCard({
                                 <Button
                                     size="lg"
                                     radius="xl"
-                                    variant="filled"
-                                    color="green"
-                                    leftSection={exchange.verifyLoading ? <Loader size={18} /> : <IconSparkles size={18} />}
+                                    variant="gradient"
+                                    gradient={{ from: 'orange', to: 'yellow' }}
+                                    leftSection={
+                                        exchange.verifyLoading ?
+                                            <Loader size={20} color="white" /> :
+                                            <IconBolt size={20} />
+                                    }
                                     onClick={handleClaimCredits}
                                     disabled={exchange.verifyLoading}
                                     style={{
                                         flex: 1,
-                                        fontWeight: 600
+                                        height: rem(50),
+                                        fontWeight: 600,
+                                        boxShadow: '0 4px 16px rgba(251, 146, 60, 0.3)'
                                     }}
                                 >
                                     {exchange.verifyLoading ? t('buttons.processing') : t('buttons.claim')}
@@ -649,7 +804,7 @@ export default function CampaignCard({
                         </Group>
                     )}
                 </Stack>
-            </Box>
+            </Stack>
         </Card>
     );
 }
