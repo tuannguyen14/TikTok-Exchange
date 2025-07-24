@@ -229,7 +229,7 @@ export function useExchange() {
         };
       }
 
-      const postDetail = postResponse.data.itemInfo.itemStruct;
+      const postDetail = postResponse.data;
 
       // Note: Since we can't directly verify if user liked the video,
       // we'll perform the action based on successful post fetch
@@ -240,7 +240,7 @@ export function useExchange() {
           verified: true,
           videoId: videoId,
           targetUsername: campaign.target_tiktok_username,
-          postStats: postDetail.stats,
+          postStats: postDetail,
           verificationTime: new Date().toISOString(),
           verificationMethod: 'post_detail'
         }

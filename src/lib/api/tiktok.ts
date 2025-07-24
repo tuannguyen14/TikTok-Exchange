@@ -146,13 +146,14 @@ interface FollowsListResponse {
 }
 
 interface PostDetailResponse {
-    itemInfo: {
-        itemStruct: TikTokPostDetail;
-    };
-    shareMeta: {
-        desc: string;
-        title: string;
-    };
+    collectCount: any;
+    commentCount: number;
+    diggCount: number;
+    playCount: number;
+    shareCount: number;
+    tiktokID: string;
+    url: string;
+    videoID: string;
     statusCode: number;
     statusMsg: string;
 }

@@ -128,41 +128,6 @@ export default function CampaignCard({
                     const postDetail = postResponse.data;
 
                     if (postDetail) {
-                        // const videoInfo = {
-                        //     id: postDetail.id,
-                        //     desc: postDetail.desc,
-                        //     createTime: postDetail.createTime,
-                        //     author: {
-                        //         uniqueId: postDetail.author.uniqueId,
-                        //         nickname: postDetail.author.nickname,
-                        //         avatarThumb: postDetail.author.avatarThumb,
-                        //         verified: postDetail.author.verified
-                        //     },
-                        //     stats: {
-                        //         diggCount: parseInt(postDetail.stats.diggCount.toString()),
-                        //         commentCount: postDetail.stats.commentCount,
-                        //         playCount: parseInt(postDetail.stats.playCount.toString()),
-                        //         shareCount: parseInt(postDetail.stats.shareCount.toString()),
-                        //         collectCount: parseInt(postDetail.stats.collectCount.toString())
-                        //     },
-                        //     video: {
-                        //         duration: postDetail.video.duration,
-                        //         height: postDetail.video.height,
-                        //         width: postDetail.video.width,
-                        //         cover: postDetail.video.cover,
-                        //         playAddr: postDetail.video.playAddr,
-                        //         downloadAddr: postDetail.video.downloadAddr,
-                        //         zoomCover: postDetail.video.zoomCover
-                        //     },
-                        //     music: {
-                        //         id: postDetail.music.id,
-                        //         title: postDetail.music.title,
-                        //         authorName: postDetail.music.authorName,
-                        //         duration: postDetail.music.duration,
-                        //         original: postDetail.music.original
-                        //     }
-                        // };
-
                         const videoInfo = {
                             collectCount: postDetail.collectCount,
                             commentCount: postDetail.commentCount,
