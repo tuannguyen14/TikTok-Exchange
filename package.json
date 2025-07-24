@@ -16,8 +16,10 @@
     "@mantine/notifications": "^8.2.1",
     "@supabase/ssr": "^0.6.1",
     "@tabler/icons-react": "^3.34.1",
+    "@types/cheerio": "^0.22.35",
     "@vercel/analytics": "^1.5.0",
-    "axios": "^1.10.0",
+    "axios": "^1.11.0",
+    "cheerio": "^1.1.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
@@ -30,7 +32,8 @@
     "react-dom": "^19.1.0",
     "react-hot-toast": "^2.5.2",
     "sonner": "^2.0.6",
-    "tailwind-merge": "^3.3.1"
+    "tailwind-merge": "^3.3.1",
+    "xbogus": "^1.0.2"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
