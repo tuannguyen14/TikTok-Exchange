@@ -53,10 +53,10 @@ export default function LandingPage() {
 
   useEffect(() => {
     if (authLoading) return;
-    
+
     // If user is already logged in, redirect to dashboard
     if (user) {
-      router.push('/exchange');
+      router.push('/get-tiktok-followers-likes');
     }
   }, [user, authLoading, router]);
 

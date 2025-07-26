@@ -6,13 +6,13 @@ import { routing } from '@/i18n/routing'
 
 // Configuration constants
 const CONFIG = {
-  HOME_PATH: '/tiktok-exchange',
-  DEFAULT_AUTH_REDIRECT: '/exchange',
+  HOME_PATH: '/tiktok-exchange-followers-likes',
+  DEFAULT_AUTH_REDIRECT: '/get-tiktok-followers-likes',
 } as const
 
 // Routes that require authentication
 const PROTECTED_ROUTES = [
-  '/exchange',
+  // '/get-tiktok-followers-likes',
   '/campaigns',
   '/profile',
 ] as const

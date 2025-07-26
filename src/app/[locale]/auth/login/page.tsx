@@ -154,7 +154,7 @@ const LoginPage = () => {
             color: '#bbf7d0',
           },
         });
-        window.location.href = '/exchange';
+        window.location.href = '/get-tiktok-followers-likes';
       } else {
         setGeneralError(data.error || 'An error occurred');
       }

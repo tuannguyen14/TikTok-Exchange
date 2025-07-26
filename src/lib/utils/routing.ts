@@ -41,7 +41,7 @@ export function addLocaleToPathname(pathname: string, locale: string): string {
 export function isProtectedRoute(pathname: string): boolean {
   const protectedRoutes = [
     '/dashboard',
-    '/exchange', 
+    '/get-tiktok-followers-likes', 
     '/campaigns',
     '/profile',
   ]
@@ -111,7 +111,7 @@ export function getRedirectUrl(returnTo?: string, locale?: string): string {
   }
   
   // Default redirect to dashboard
-  return `/${defaultLocale}/exchange`
+  return `/${defaultLocale}/get-tiktok-followers-likes`
 }
 
 /**

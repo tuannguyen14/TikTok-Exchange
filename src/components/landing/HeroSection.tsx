@@ -249,16 +249,16 @@ const HeroSection = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.8 }}
             >
-              <Group justify="center" gap="xl">
-                <Flex align="center" gap="xs">
+              <Group justify="center" gap="sm">
+                <Flex align="center" gap="sm">
                   <IconUsers size={16} />
                   <Text size="sm" c="dimmed">No password required</Text>
                 </Flex>
-                <Flex align="center" gap="xs">
+                <Flex align="center" gap="sm">
                   <IconSparkles size={16} />
                   <Text size="sm" c="dimmed">100% Safe & Secure</Text>
                 </Flex>
-                <Flex align="center" gap="xs">
+                <Flex align="center" gap="sm">
                   <IconTrendingUp size={16} />
                   <Text size="sm" c="dimmed">Real organic growth</Text>
                 </Flex>
@@ -355,7 +355,7 @@ const HeroSection = () => {
       <motion.div
         style={{
           position: 'absolute',
-          bottom: '2rem',
+          bottom: '0.5rem',
           left: '50%',
           transform: 'translateX(-50%)'
         }}
