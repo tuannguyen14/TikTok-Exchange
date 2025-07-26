@@ -7,9 +7,10 @@ import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import Navbar from '@/components/layout/Navbar';
 import { AuthProvider } from '@/contexts/auth-context';
-import { Analytics } from '@vercel/analytics/react';
 import { MantineProvider } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -61,6 +62,7 @@ export default async function RootLayout({
                 <main>
                   {children}
                   <Analytics />
+                  <SpeedInsights />
                 </main>
               </div>
             </AuthProvider>
