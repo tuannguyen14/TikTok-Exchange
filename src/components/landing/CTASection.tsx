@@ -35,7 +35,7 @@ const CTASection = () => {
   const isInView = useInView(containerRef, { once: true, margin: "-100px" });
 
   const handleGetStarted = () => {
-    router.push('/auth/login');
+    router.push('/auth');
   };
 
   const features = [

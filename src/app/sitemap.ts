@@ -6,7 +6,8 @@ const pages = [
   'tiktok-exchange-followers-likes',
   'get-tiktok-followers-likes',
   'campaigns',
-  'profile'
+  'profile',
+  'auth',
 ]
 
 export default function sitemap(): MetadataRoute.Sitemap {

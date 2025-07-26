@@ -363,7 +363,7 @@ const HowItWorksSection = () => {
                         <IconArrowRight size={20} />
                       </motion.div>
                     }
-                    onClick={() => window.location.href = '/auth/login'}
+                    onClick={() => window.location.href = '/auth'}
                     style={{
                       boxShadow: '0 15px 35px rgba(236, 72, 153, 0.4)',
                       transition: 'all 0.3s ease'

@@ -9,8 +9,8 @@ interface OverlayLoadingProps {
   overlayOpacity?: number;
 }
 
-const OverlayLoading: React.FC<OverlayLoadingProps> = ({ 
-  isVisible, 
+const OverlayLoading: React.FC<OverlayLoadingProps> = ({
+  isVisible,
   overlayOpacity = 0.7
 }) => {
   if (!isVisible) return null;
@@ -18,7 +18,7 @@ const OverlayLoading: React.FC<OverlayLoadingProps> = ({
   return (
     <div
       className="fixed inset-0 flex flex-col items-center justify-center z-50 transition-all duration-300"
-      style={{ 
+      style={{
         backgroundColor: `rgba(0, 0, 0, ${overlayOpacity})`,
         backdropFilter: 'blur(2px)'
       }}

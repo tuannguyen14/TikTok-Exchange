@@ -3,7 +3,6 @@
 import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 import {
   Container,
   Title,
@@ -14,8 +13,6 @@ import {
   Badge,
   Box,
   Center,
-  Paper,
-  ActionIcon,
   Flex,
   ThemeIcon,
 } from '@mantine/core';
@@ -30,10 +27,9 @@ import {
 const HeroSection = () => {
   const t = useTranslations('LandingPage.hero');
   const router = useRouter();
-  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
   const handleGetStarted = () => {
-    router.push('/auth/login');
+    router.push('/auth');
   };
 
   const handleLearnMore = () => {
@@ -266,89 +262,6 @@ const HeroSection = () => {
             </motion.div>
           </Stack>
         </Center>
-
-        {/* Video/Demo section */}
-        {/* <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 1 }}
-          style={{ marginTop: '4rem' }}
-        >
-          <Center>
-            <Paper
-              radius="xl"
-              p="xs"
-              style={{
-                background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(139, 92, 246, 0.1))',
-                border: '1px solid rgba(236, 72, 153, 0.2)',
-                backdropFilter: 'blur(8px)',
-                maxWidth: '900px',
-                width: '100%'
-              }}
-            >
-              <Paper
-                radius="lg"
-                style={{
-                  background: 'white',
-                  overflow: 'hidden',
-                  boxShadow: '0 25px 50px rgba(0, 0, 0, 0.15)'
-                }}
-              >
-                <Box
-                  style={{
-                    aspectRatio: '16/9',
-                    background: 'linear-gradient(135deg, #fce7f3, #e0e7ff)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    position: 'relative'
-                  }}
-                >
-                  {!isVideoPlaying ? (
-                    <motion.div
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <ActionIcon
-                        size={80}
-                        radius="xl"
-                        variant="filled"
-                        color="white"
-                        onClick={() => setIsVideoPlaying(true)}
-                        style={{
-                          boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)',
-                          transition: 'all 0.3s ease'
-                        }}
-                      >
-                        <IconPlayerPlay size={32} color="#db2777" />
-                      </ActionIcon>
-                    </motion.div>
-                  ) : (
-                    <Center p="xl">
-                      <Text c="dimmed" ta="center">
-                        Demo video would play here
-                      </Text>
-                    </Center>
-                  )}
-
-                
-                  <Group
-                    gap="xs"
-                    style={{
-                      position: 'absolute',
-                      top: '1rem',
-                      left: '1rem'
-                    }}
-                  >
-                    <Box w={12} h={12} bg="red" style={{ borderRadius: '50%' }} />
-                    <Box w={12} h={12} bg="yellow" style={{ borderRadius: '50%' }} />
-                    <Box w={12} h={12} bg="green" style={{ borderRadius: '50%' }} />
-                  </Group>
-                </Box>
-              </Paper>
-            </Paper>
-          </Center>
-        </motion.div> */}
       </Container>
 
       {/* Scroll indicator */}

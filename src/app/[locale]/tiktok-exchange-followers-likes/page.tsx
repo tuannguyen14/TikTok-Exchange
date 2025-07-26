@@ -1,14 +1,12 @@
 'use client';
 
-import { useAuth } from '@/contexts/auth-context';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { Box, LoadingOverlay } from '@mantine/core';
+import { Box } from '@mantine/core';
+import LoadingOverlay from '@/components/ui/loading/loading-overlay';
 
 // Lazy load components for better performance
 const HeroSection = dynamic(() => import('@/components/landing/HeroSection'), {
-  loading: () => <LoadingOverlay visible />,
+  loading: () => <LoadingOverlay isVisible />,
   ssr: true
 });
 
@@ -48,39 +46,6 @@ const CTASection = dynamic(() => import('@/components/landing/CTASection'), {
 });
 
 export default function LandingPage() {
-  const { user, loading: authLoading } = useAuth();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (authLoading) return;
-
-    // If user is already logged in, redirect to dashboard
-    if (user) {
-      router.push('/get-tiktok-followers-likes');
-    }
-  }, [user, authLoading, router]);
-
-  // Show loading while checking auth
-  if (authLoading) {
-    return (
-      <Box
-        style={{
-          minHeight: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}
-      >
-        <LoadingOverlay visible />
-      </Box>
-    );
-  }
-
-  // Don't render landing page if user is authenticated
-  if (user) {
-    return null;
-  }
-
   return (
     <Box
       style={{

@@ -1,7 +1,7 @@
 // src/app/[locale]/profile/page.tsx
 'use client';
 
-import { Container, Stack, Title, Text, Loader, Alert, Group, Box, Paper, BackgroundImage, Avatar, Badge, Center } from '@mantine/core';
+import { Container, Stack, Title, Text, Loader, Alert, Group, Box, Paper, Avatar } from '@mantine/core';
 import { IconAlertCircle, IconSparkles, IconTrendingUp } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 import { useProfile } from '@/hooks/useProfile';

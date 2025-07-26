@@ -31,12 +31,12 @@ export const routing = defineRouting({
       vi: '/profile'
     },
     '/auth/login': {
-      en: '/auth/login',
-      vi: '/auth/login'
+      en: '/auth',
+      vi: '/auth'
     },
     '/auth/register': {
-      en: '/auth/login',
-      vi: '/auth/login'
+      en: '/auth',
+      vi: '/auth'
     }
   }
 });

@@ -215,7 +215,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       setState(prev => ({ ...prev, loading: true, error: null }));
 
-      const { data, error, success } = await apiCall<{ user: User; profile: Profile }>('/api/auth/login', {
+      const { data, error, success } = await apiCall<{ user: User; profile: Profile }>('/api/auth', {
         method: 'POST',
         body: JSON.stringify({ email, password }),
       });

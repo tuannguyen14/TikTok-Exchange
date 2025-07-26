@@ -19,8 +19,7 @@ const PROTECTED_ROUTES = [
 
 // Routes that should redirect authenticated users (login/register pages)
 const AUTH_ROUTES = [
-  '/auth/login',
-  '/auth/register',
+  '/auth'
 ] as const
 
 // Routes and patterns that should be excluded from middleware processing
@@ -198,7 +197,7 @@ async function handleAuthenticationFlow(
 
     // Redirect unauthenticated users from protected routes
     if (isProtected && !isAuthenticated) {
-      const loginUrl = createLocalizedUrl(request, '/auth/login', currentLocale)
+      const loginUrl = createLocalizedUrl(request, '/auth', currentLocale)
 
       // Add return URL for post-login redirect
       const returnPath = pathname + (request.nextUrl.search || '')
@@ -215,7 +214,7 @@ async function handleAuthenticationFlow(
     // On auth error, redirect protected routes to login
     if (isProtectedRoute(pathname)) {
       const currentLocale = extractLocale(pathname) || routing.defaultLocale
-      const loginUrl = createLocalizedUrl(request, '/auth/login', currentLocale)
+      const loginUrl = createLocalizedUrl(request, '/auth', currentLocale)
 
       const returnPath = pathname + (request.nextUrl.search || '')
       loginUrl.searchParams.set('returnTo', encodeURIComponent(returnPath))

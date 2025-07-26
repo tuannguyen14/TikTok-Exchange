@@ -206,7 +206,7 @@ const AuthButtons = memo(({ locale, t, isMobile = false, onClick }: {
           variant="outline"
           leftSection={<IconLogin size={16} stroke={1.5} />}
           component={Link}
-          href={`/${locale}/auth/login`}
+          href={`/${locale}/auth`}
           fullWidth
           onClick={onClick}
           fw={600}
@@ -218,7 +218,7 @@ const AuthButtons = memo(({ locale, t, isMobile = false, onClick }: {
           gradient={{ from: '#FE2C55', to: '#FF4081' }}
           leftSection={<IconUserPlus size={16} stroke={1.5} />}
           component={Link}
-          href={`/${locale}/auth/login`}
+          href={`/${locale}/auth`}
           fullWidth
           onClick={onClick}
           fw={600}
@@ -235,7 +235,7 @@ const AuthButtons = memo(({ locale, t, isMobile = false, onClick }: {
         variant="subtle"
         leftSection={<IconLogin size={16} stroke={1.5} />}
         component={Link}
-        href={`/${locale}/auth/login`}
+        href={`/${locale}/auth`}
         size="sm"
         fw={600}
       >
@@ -246,7 +246,7 @@ const AuthButtons = memo(({ locale, t, isMobile = false, onClick }: {
         gradient={{ from: '#FE2C55', to: '#FF4081' }}
         leftSection={<IconUserPlus size={16} stroke={1.5} />}
         component={Link}
-        href={`/${locale}/auth/login`}
+        href={`/${locale}/auth`}
         size="sm"
         fw={600}
       >
@@ -313,7 +313,7 @@ export default function Navbar() {
     const { error } = await signOut()
     if (!error) {
       clearAvatarCache()
-      router.push(`/${locale}/auth/login`)
+      router.push(`/${locale}/auth`)
     }
   }, [signOut, clearAvatarCache, router, locale])
 
@@ -495,7 +495,7 @@ export default function Navbar() {
                       variant="outline"
                       leftSection={<IconLogin size={16} stroke={1.5} />}
                       component={Link}
-                      href={`/${locale}/auth/login`}
+                      href={`/${locale}/auth`}
                       fullWidth
                       onClick={closeMobileMenu}
                       fw={600}
@@ -507,7 +507,7 @@ export default function Navbar() {
                       gradient={{ from: '#FE2C55', to: '#FF4081' }}
                       leftSection={<IconUserPlus size={16} stroke={1.5} />}
                       component={Link}
-                      href={`/${locale}/auth/login`}
+                      href={`/${locale}/auth`}
                       fullWidth
                       onClick={closeMobileMenu}
                       fw={600}
