@@ -24,12 +24,12 @@ interface CampaignHeaderActionsProps {
 }
 
 // Memoized refresh button with enhanced design
-const RefreshButton = memo(({ 
-  loading, 
-  onRefresh 
-}: { 
-  loading: boolean; 
-  onRefresh: () => void; 
+const RefreshButton = memo(({
+  loading,
+  onRefresh
+}: {
+  loading: boolean;
+  onRefresh: () => void;
 }) => (
   <ActionIcon
     variant="light"
@@ -37,7 +37,7 @@ const RefreshButton = memo(({
     loading={loading}
     size={42}
     radius="xl"
-    style={{ 
+    style={{
       transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1)',
       backgroundColor: 'var(--mantine-color-gray-0)',
       border: '1px solid var(--mantine-color-gray-2)'
@@ -69,7 +69,7 @@ const FilterButton = memo(() => (
     variant="light"
     size={42}
     radius="xl"
-    style={{ 
+    style={{
       transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1)',
       backgroundColor: 'var(--mantine-color-gray-0)',
       border: '1px solid var(--mantine-color-gray-2)'
@@ -92,12 +92,12 @@ const FilterButton = memo(() => (
 FilterButton.displayName = 'FilterButton';
 
 // Memoized create button with enhanced design
-const CreateButton = memo(({ 
-  onCreateCampaign, 
-  text 
-}: { 
-  onCreateCampaign: () => void; 
-  text: string; 
+const CreateButton = memo(({
+  onCreateCampaign,
+  text
+}: {
+  onCreateCampaign: () => void;
+  text: string;
 }) => (
   <Button
     leftSection={<IconPlus size={18} stroke={2} />}
@@ -136,35 +136,35 @@ const CampaignHeaderActions = memo(({
   onCreateCampaign,
   translations
 }: CampaignHeaderActionsProps) => {
-  
+
   // Memoize segmented control data with icons
   const segmentedData = useMemo(() => [
-    { 
+    {
       label: (
         <Group gap={6} wrap="nowrap">
           <IconGridDots size={16} />
           <Text size="sm" fw={600}>{translations.tabs.all}</Text>
         </Group>
-      ), 
-      value: 'all' 
+      ),
+      value: 'all'
     },
-    { 
+    {
       label: (
         <Group gap={6} wrap="nowrap">
           <IconVideo size={16} />
           <Text size="sm" fw={600}>{translations.tabs.video}</Text>
         </Group>
-      ), 
-      value: 'video' 
+      ),
+      value: 'video'
     },
-    { 
+    {
       label: (
         <Group gap={6} wrap="nowrap">
           <IconUserPlus size={16} />
           <Text size="sm" fw={600}>{translations.tabs.follow}</Text>
         </Group>
-      ), 
-      value: 'follow' 
+      ),
+      value: 'follow'
     },
   ], [translations.tabs]);
 
@@ -191,13 +191,13 @@ const CampaignHeaderActions = memo(({
             label: {
               padding: '8px 16px',
               transition: 'all 200ms ease',
-              '&[data-active]': {
+              '&[dataActive="true"]': {
                 color: 'white',
                 '& svg': {
                   color: 'white'
                 }
               },
-              '&:not([data-active])': {
+              '&:not([dataActive="true"])': {
                 '&:hover': {
                   color: 'var(--mantine-color-violet-6)'
                 }
@@ -205,15 +205,15 @@ const CampaignHeaderActions = memo(({
             }
           }}
         />
-        
+
         <Group gap="sm">
           <FilterButton />
-          <RefreshButton 
-            loading={loading} 
-            onRefresh={onRefresh} 
+          <RefreshButton
+            loading={loading}
+            onRefresh={onRefresh}
           />
-          
-          <CreateButton 
+
+          <CreateButton
             onCreateCampaign={onCreateCampaign}
             text={translations.buttons.createCampaign}
           />

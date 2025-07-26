@@ -1,10 +1,37 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import {
+  TextInput,
+  Button,
+  Alert,
+  Card,
+  Group,
+  Stack,
+  Text,
+  Avatar,
+  Badge,
+  Paper,
+  Image,
+  ActionIcon,
+  Box,
+  Flex,
+  Center,
+  SimpleGrid
+} from '@mantine/core';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LinkIcon, CheckCircleIcon, ExclamationCircleIcon, EyeIcon, PlayIcon, HeartIcon, ChatBubbleLeftIcon, ShareIcon } from '@heroicons/react/24/outline';
+import {
+  IconLink,
+  IconCheck,
+  IconAlertCircle,
+  IconEye,
+  IconPlayerPlay,
+  IconHeart,
+  IconMessageCircle,
+  IconShare,
+  IconCheckbox
+} from '@tabler/icons-react';
 import { useTikTokApi } from '@/hooks/useTikTok';
-import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import { validateTikTokURL } from '@/lib/utils/validate-video-url';
 
 interface VideoUrlInputProps {
@@ -40,10 +67,10 @@ export default function VideoUrlInput({
     }
 
     try {
-      const result = await getPostDetail(validateResult.videoId);
+      const url = `https://www.tiktok.com/@${validateResult.username}/video/${validateResult.videoId}`;
+      const result = await getPostDetail(url);
 
       if (result.success && result.data) {
-        // Transform the new API response to match expected format
         const postDetail = result.data;
         if (postDetail) {
           const transformedData = {
@@ -97,58 +124,69 @@ export default function VideoUrlInput({
   };
 
   return (
-    <div className="space-y-6">
-      {/* Enhanced URL Input */}
-      <div className="space-y-3">
-        <label className="block text-base font-semibold text-gray-900">
+    <Stack gap="xl">
+      {/* URL Input Section */}
+      <Stack gap="md">
+        <Text size="lg" fw={600} c="dark">
           {translations.form.videoUrl}
-        </label>
-        <div className="relative group">
-          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-            <LinkIcon className="h-5 w-5 text-gray-500 group-focus-within:text-[#FE2C55] transition-colors" />
-          </div>
-          <input
-            type="url"
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
+        </Text>
+        
+        <Group gap={0} grow>
+          <TextInput
+            size="lg"
             placeholder={translations.form.videoUrlPlaceholder}
-            className="block w-full pl-12 pr-32 py-4 text-gray-900 placeholder-gray-500 bg-white border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-[#FE2C55]/20 focus:border-[#FE2C55] outline-none transition-all duration-300 text-base font-medium shadow-sm hover:shadow-md"
+            value={value}
+            onChange={(e) => onChange(e.currentTarget.value)}
+            leftSection={<IconLink size={20} />}
+            styles={{
+              input: {
+                borderTopRightRadius: 0,
+                borderBottomRightRadius: 0,
+                borderRight: 'none',
+                '&:focus': {
+                  borderColor: '#FE2C55',
+                  boxShadow: '0 0 0 2px rgba(254, 44, 85, 0.2)'
+                }
+              }
+            }}
           />
-          <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-            <button
-              type="button"
-              onClick={handleVerify}
-              disabled={isVerifying || !value.trim()}
-              className="inline-flex items-center px-6 py-2.5 text-sm font-bold text-white bg-gradient-to-r from-[#FE2C55] to-[#EE1D52] rounded-xl hover:from-[#EE1D52] hover:to-[#FE2C55] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-xl disabled:shadow-sm"
-            >
-              {isVerifying ? (
-                <>
-                  <LoadingSpinner size="sm" />
-                  <span>{translations.form.verifying}</span>
-                </>
-              ) : (
-                <>
-                  <EyeIcon className="w-4 h-4 mr-2" />
-                  <span>{translations.buttons.verify}</span>
-                </>
-              )}
-            </button>
-          </div>
-        </div>
+          <Button
+            size="lg"
+            onClick={handleVerify}
+            loading={isVerifying}
+            disabled={!value.trim()}
+            variant="gradient"
+            gradient={{ from: '#FE2C55', to: '#EE1D52' }}
+            leftSection={!isVerifying && <IconEye size={16} />}
+            styles={{
+              root: {
+                borderTopLeftRadius: 0,
+                borderBottomLeftRadius: 0
+              }
+            }}
+          >
+            {isVerifying ? translations.form.verifying : translations.buttons.verify}
+          </Button>
+        </Group>
 
         {error && (
           <motion.div
             initial={{ opacity: 0, y: -10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            className="flex items-center space-x-3 text-red-600 bg-red-50 p-4 rounded-xl border border-red-200"
           >
-            <ExclamationCircleIcon className="h-5 w-5 flex-shrink-0" />
-            <span className="text-sm font-medium">{error}</span>
+            <Alert
+              icon={<IconAlertCircle size={16} />}
+              color="red"
+              variant="light"
+              radius="md"
+            >
+              {error}
+            </Alert>
           </motion.div>
         )}
-      </div>
+      </Stack>
 
-      {/* Enhanced Verification Result */}
+      {/* Verification Result */}
       <AnimatePresence>
         {verificationResult && (
           <motion.div
@@ -156,140 +194,227 @@ export default function VideoUrlInput({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -30, scale: 0.95 }}
             transition={{ type: "spring", stiffness: 200, damping: 20 }}
-            className="bg-gradient-to-br from-white to-gray-50 border-2 border-green-200 rounded-2xl p-6 shadow-xl"
           >
-            {/* Header */}
-            <div className="flex items-center space-x-3 mb-6">
-              <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center shadow-lg">
-                <CheckCircleIcon className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <h3 className="text-lg font-bold text-gray-900">
-                  {translations.form.videoVerification}
-                </h3>
-                <p className="text-sm text-gray-600">{translations.form.success}</p>
-              </div>
-            </div>
-
-            {/* Video Content */}
-            <div className="flex flex-col lg:flex-row space-y-6 lg:space-y-0 lg:space-x-6">
-              {/* Enhanced Video Thumbnail */}
-              <div className="flex-shrink-0 relative group">
-                <div className="relative">
-                  <img
-                    src={verificationResult.url}
-                    alt="Video thumbnail"
-                    className="w-32 h-40 lg:w-24 lg:h-32 object-cover rounded-2xl shadow-lg group-hover:shadow-xl transition-all duration-300"
-                  />
-                  <div className="absolute inset-0 bg-black/30 rounded-2xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <PlayIcon className="w-8 h-8 text-white" />
-                  </div>
-                  {/* Duration badge */}
-                  <div className="absolute bottom-2 right-2 bg-black/80 text-white px-2 py-1 rounded-lg text-xs font-medium">
-                    {formatDuration(verificationResult.video?.duration || 0)}
-                  </div>
+            <Card
+              shadow="xl"
+              radius="xl"
+              padding="xl"
+              withBorder
+              style={{
+                background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+                borderColor: '#51cf66'
+              }}
+            >
+              {/* Header */}
+              <Group gap="md" mb="xl">
+                <ActionIcon
+                  size="xl"
+                  radius="xl"
+                  variant="gradient"
+                  gradient={{ from: 'teal', to: 'lime' }}
+                >
+                  <IconCheck size={24} />
+                </ActionIcon>
+                <div>
+                  <Text size="xl" fw={700} c="dark">
+                    {translations.form.videoVerification}
+                  </Text>
+                  <Text size="sm" c="dimmed">
+                    {translations.form.success}
+                  </Text>
                 </div>
-              </div>
+              </Group>
 
-              {/* Enhanced Video Info */}
-              <div className="flex-1 space-y-4">
-                {/* Author Info */}
-                <div className="flex items-center space-x-3">
-                  <img
-                    src={verificationResult.author?.avatarThumb || ''}
-                    alt={verificationResult.author?.nickname || ''}
-                    className="w-10 h-10 rounded-full object-cover border-2 border-gray-200"
-                  />
-                  <div>
-                    <div className="flex items-center space-x-2">
-                      <span className="font-bold text-gray-900">
-                        {verificationResult.author?.nickname || verificationResult.tiktokID}
-                      </span>
-                      {verificationResult.author?.verified && (
-                        <div className="w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
-                          <CheckCircleIcon className="w-3 h-3 text-white" />
-                        </div>
-                      )}
-                    </div>
-                    <div className="bg-gradient-to-r from-[#FE2C55] to-[#EE1D52] text-white px-3 py-1 rounded-full text-sm font-bold inline-block">
-                      @{verificationResult.tiktokID}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Video Description */}
-                {verificationResult.desc && (
-                  <div className="bg-gray-50 p-3 rounded-xl border border-gray-200">
-                    <p className="text-sm text-gray-700 line-clamp-2">
-                      {verificationResult.desc}
-                    </p>
-                  </div>
-                )}
-
-                {/* Stats Grid */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                  {[
-                    {
-                      label: 'Views',
-                      value: formatCount(verificationResult.playCount),
-                      color: 'text-blue-600',
-                      bg: 'bg-blue-50',
-                      icon: <EyeIcon className="w-4 h-4" />
-                    },
-                    {
-                      label: 'Likes',
-                      value: formatCount(verificationResult.diggCount),
-                      color: 'text-[#FE2C55]',
-                      bg: 'bg-pink-50',
-                      icon: <HeartIcon className="w-4 h-4" />
-                    },
-                    {
-                      label: 'Comments',
-                      value: formatCount(verificationResult.commentCount),
-                      color: 'text-emerald-600',
-                      bg: 'bg-emerald-50',
-                      icon: <ChatBubbleLeftIcon className="w-4 h-4" />
-                    },
-                    {
-                      label: 'Shares',
-                      value: formatCount(verificationResult.shareCount),
-                      color: 'text-purple-600',
-                      bg: 'bg-purple-50',
-                      icon: <ShareIcon className="w-4 h-4" />
-                    }
-                  ].map((stat, index) => (
-                    <motion.div
-                      key={stat.label}
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: index * 0.1 }}
-                      className={`text-center p-3 ${stat.bg} rounded-xl border border-gray-100 hover:shadow-md transition-shadow`}
+              {/* Video Content */}
+              <Flex
+                direction={{ base: 'column', lg: 'row' }}
+                gap="xl"
+                align="flex-start"
+              >
+                {/* Video Thumbnail */}
+                <Box style={{ position: 'relative', flexShrink: 0 }}>
+                  <Paper
+                    radius="xl"
+                    shadow="lg"
+                    style={{
+                      overflow: 'hidden',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        transform: 'scale(1.02)',
+                        boxShadow: '0 20px 40px rgba(0,0,0,0.15)'
+                      }
+                    }}
+                  >
+                    <Image
+                      src={verificationResult.url}
+                      alt="Video thumbnail"
+                      w={128}
+                      h={160}
+                      fit="cover"
+                    />
+                    <Center
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        background: 'rgba(0,0,0,0.3)',
+                        opacity: 0,
+                        transition: 'opacity 0.3s ease',
+                        '&:hover': { opacity: 1 }
+                      }}
                     >
-                      <div className={`flex items-center justify-center space-x-1 mb-1 ${stat.color}`}>
-                        {stat.icon}
-                        <div className="text-lg font-bold">
-                          {stat.value}
-                        </div>
-                      </div>
-                      <div className="text-xs font-medium text-gray-700">{stat.label}</div>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-            </div>
+                      <ActionIcon size="xl" variant="light" c="white" radius="xl">
+                        <IconPlayerPlay size={32} />
+                      </ActionIcon>
+                    </Center>
+                  </Paper>
+                  
+                  {/* Duration Badge */}
+                  <Badge
+                    size="sm"
+                    c="white"
+                    bg="dark"
+                    radius="md"
+                    style={{
+                      position: 'absolute',
+                      bottom: 8,
+                      right: 8
+                    }}
+                  >
+                    {formatDuration(verificationResult.video?.duration || 0)}
+                  </Badge>
+                </Box>
 
-            {/* Success Footer */}
-            <div className="mt-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
-              <div className="flex items-center space-x-2">
-                <CheckCircleIcon className="w-5 h-5 text-green-600" />
-                <p className="text-sm font-medium text-green-800">
-                  {translations.form.ready}
-                </p>
-              </div>
-            </div>
+                {/* Video Info */}
+                <Stack gap="md" style={{ flex: 1 }}>
+                  {/* Author Info */}
+                  <Group gap="md">
+                    <Avatar
+                      src={verificationResult.author?.avatarThumb}
+                      size="lg"
+                      radius="xl"
+                    />
+                    <div>
+                      <Group gap="xs">
+                        <Text fw={700} c="dark">
+                          {verificationResult.author?.nickname || verificationResult.tiktokID}
+                        </Text>
+                        {verificationResult.author?.verified && (
+                          <ActionIcon size="sm" c="white" bg="blue" radius="xl">
+                            <IconCheckbox size={12} />
+                          </ActionIcon>
+                        )}
+                      </Group>
+                      <Badge
+                        variant="gradient"
+                        gradient={{ from: '#FE2C55', to: '#EE1D52' }}
+                        size="sm"
+                        radius="xl"
+                      >
+                        @{verificationResult.tiktokID}
+                      </Badge>
+                    </div>
+                  </Group>
+
+                  {/* Video Description */}
+                  {verificationResult.desc && (
+                    <Paper p="md" radius="md" bg="gray.1" withBorder>
+                      <Text size="sm" c="dark" lineClamp={2}>
+                        {verificationResult.desc}
+                      </Text>
+                    </Paper>
+                  )}
+
+                  {/* Stats Grid */}
+                  <SimpleGrid cols={{ base: 2, lg: 4 }} spacing="md">
+                    {[
+                      {
+                        label: 'Views',
+                        value: formatCount(verificationResult.playCount),
+                        color: 'blue',
+                        icon: <IconEye size={16} />
+                      },
+                      {
+                        label: 'Likes',
+                        value: formatCount(verificationResult.diggCount),
+                        color: 'pink',
+                        icon: <IconHeart size={16} />
+                      },
+                      {
+                        label: 'Comments',
+                        value: formatCount(verificationResult.commentCount),
+                        color: 'teal',
+                        icon: <IconMessageCircle size={16} />
+                      },
+                      {
+                        label: 'Shares',
+                        value: formatCount(verificationResult.shareCount),
+                        color: 'grape',
+                        icon: <IconShare size={16} />
+                      }
+                    ].map((stat, index) => (
+                      <motion.div
+                        key={stat.label}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: index * 0.1 }}
+                      >
+                        <Paper
+                          p="md"
+                          radius="md"
+                          style={{
+                            textAlign: 'center',
+                            background: `light-dark(var(--mantine-color-${stat.color}-0), var(--mantine-color-${stat.color}-9))`,
+                            border: `1px solid light-dark(var(--mantine-color-${stat.color}-2), var(--mantine-color-${stat.color}-7))`,
+                            transition: 'all 0.3s ease',
+                            '&:hover': {
+                              transform: 'translateY(-2px)',
+                              boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                            }
+                          }}
+                        >
+                          <Group justify="center" gap="xs" mb="xs">
+                            <Box c={`${stat.color}.6`}>
+                              {stat.icon}
+                            </Box>
+                            <Text size="xl" fw={700} c={`${stat.color}.7`}>
+                              {stat.value}
+                            </Text>
+                          </Group>
+                          <Text size="xs" fw={500} c="dimmed">
+                            {stat.label}
+                          </Text>
+                        </Paper>
+                      </motion.div>
+                    ))}
+                  </SimpleGrid>
+                </Stack>
+              </Flex>
+
+              {/* Success Footer */}
+              <Paper
+                mt="xl"
+                p="md"
+                radius="md"
+                style={{
+                  background: 'light-dark(linear-gradient(90deg, #d3f9d8 0%, #b2f2bb 100%), linear-gradient(90deg, #2b8a3e 0%, #37b24d 100%))',
+                  border: '1px solid var(--mantine-color-green-4)'
+                }}
+              >
+                <Group gap="sm">
+                  <IconCheck size={20} color="var(--mantine-color-green-7)" />
+                  <Text size="sm" fw={600} c="green.8">
+                    {translations.form.ready}
+                  </Text>
+                </Group>
+              </Paper>
+            </Card>
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </Stack>
   );
 }

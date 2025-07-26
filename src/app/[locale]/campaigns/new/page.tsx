@@ -4,10 +4,6 @@
 import { getTranslations } from 'next-intl/server';
 import CreateCampaignContainer from './components/CreateCampaignContainer';
 
-// page.tsx - Sửa lại để load cả 2 namespaces
-
-// page.tsx - ServerTranslations clean, không có ICU format
-
 export default async function CreateCampaignPage({ params }: { params: Promise<{ locale: string }> }) {
     const { locale } = await params;
 
@@ -21,20 +17,28 @@ export default async function CreateCampaignPage({ params }: { params: Promise<{
             selectType: tCreate('steps.selectType'),
             configure: tCreate('steps.configure'),
             review: tCreate('steps.review'),
+            selectTypeDescription: tCreate('steps.selectTypeDescription'),
+            configureDescription: tCreate('steps.configureDescription'),
+            reviewDescription: tCreate('steps.reviewDescription'),
         },
         campaignTypes: {
+            title: tCreate('campaignTypes.title'),
+            availableInteractions: tCreate('campaignTypes.availableInteractions'),
             video: {
                 title: tCreate('campaignTypes.video.title'),
                 description: tCreate('campaignTypes.video.description'),
                 interactions: {
                     view: tCreate('campaignTypes.video.interactions.view'),
                     like: tCreate('campaignTypes.video.interactions.like'),
-                    comment: tCreate('campaignTypes.video.interactions.comment'),
+                    comment: tCreate('campaignTypes.video.interactions.comment')
                 }
             },
             follow: {
                 title: tCreate('campaignTypes.follow.title'),
                 description: tCreate('campaignTypes.follow.description'),
+                interactions: {
+                    follow: tCreate('campaignTypes.follow.interactions.follow'),
+                }
             }
         },
         form: {

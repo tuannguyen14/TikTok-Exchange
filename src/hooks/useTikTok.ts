@@ -359,7 +359,7 @@ export function useTikTokFollowersPaginated(uniqueId: string | null, pageSize: n
   useEffect(() => {
     reset();
     loadMore();
-  }, [uniqueId]);
+  }, [uniqueId, loadMore, reset]);
 
   return {
     followers,

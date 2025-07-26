@@ -16,6 +16,8 @@ import CampaignHeaderActions from './CampaignHeaderActions';
 import CampaignTable from './CampaignTable';
 import CampaignDeleteModal from './CampaignDeleteModal';
 
+import LoadingSpinner from '@/components/ui/loading/loading-overlay';
+
 interface ServerTranslations {
   title: string;
   description: string;
@@ -169,30 +171,6 @@ const ErrorAlert = memo(({ error, onClear }: { error: string; onClear: () => voi
 
 ErrorAlert.displayName = 'ErrorAlert';
 
-// Memoized loading component
-const LoadingState = memo(() => (
-  <Stack align="center" justify="center" style={{ minHeight: 400 }}>
-    <Box style={{ position: 'relative' }}>
-      <Loader size="xl" color="violet" />
-      <Box
-        style={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: '120px',
-          height: '120px',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%)',
-          filter: 'blur(20px)',
-          pointerEvents: 'none'
-        }}
-      />
-    </Box>
-  </Stack>
-));
-
-LoadingState.displayName = 'LoadingState';
 
 export default function CampaignsClient({ locale, serverTranslations }: CampaignsClientProps) {
   const {
@@ -324,7 +302,7 @@ export default function CampaignsClient({ locale, serverTranslations }: Campaign
 
   // Loading state for initial load
   if (loading && campaigns.length === 0) {
-    return <LoadingState />;
+    return <LoadingSpinner isVisible={loading} />;
   }
 
   return (

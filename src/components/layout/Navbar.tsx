@@ -36,117 +36,12 @@ import {
 } from '@tabler/icons-react'
 import LocaleSelector from '@/components/common/LocaleSelector'
 import { useAuth } from '@/hooks/useAuth'
-import { useTikTokApi } from '@/hooks/useTikTok'
 import classes from './Navbar.module.css'
 import Image from 'next/image';
-
-// Key cho localStorage
-const TIKTOK_AVATAR_STORAGE_KEY = 'tiktok_avatars'
-const AVATAR_CACHE_DURATION = 1 * 24 * 60 * 60 * 1000 // 7 ngày (ms)
-
-// Interface cho cached avatar
-interface CachedAvatar {
-  url: string
-  timestamp: number
-  username: string
-}
-
-// Interface cho avatar cache storage
-interface AvatarCache {
-  [username: string]: CachedAvatar
-}
-
-// Helper functions cho localStorage
-const getAvatarFromStorage = (username: string): string | null => {
-  try {
-    const stored = localStorage.getItem(TIKTOK_AVATAR_STORAGE_KEY)
-    if (!stored) return null
-
-    const cache: AvatarCache = JSON.parse(stored)
-    const cachedAvatar = cache[username]
-
-    if (!cachedAvatar) return null
-
-    // Kiểm tra thời gian hết hạn
-    const now = Date.now()
-    if (now - cachedAvatar.timestamp > AVATAR_CACHE_DURATION) {
-      // Xóa avatar đã hết hạn
-      delete cache[username]
-      localStorage.setItem(TIKTOK_AVATAR_STORAGE_KEY, JSON.stringify(cache))
-      return null
-    }
-
-    return cachedAvatar.url
-  } catch (error) {
-    console.error('Error reading avatar from localStorage:', error)
-    return null
-  }
-}
-
-const saveAvatarToStorage = (username: string, avatarUrl: string): void => {
-  try {
-    const stored = localStorage.getItem(TIKTOK_AVATAR_STORAGE_KEY)
-    let cache: AvatarCache = {}
-
-    if (stored) {
-      cache = JSON.parse(stored)
-    }
-
-    // Lưu avatar với timestamp
-    cache[username] = {
-      url: avatarUrl,
-      timestamp: Date.now(),
-      username
-    }
-
-    // Giới hạn số lượng avatar trong cache (tối đa 50)
-    const cacheEntries = Object.entries(cache)
-    if (cacheEntries.length > 50) {
-      // Sắp xếp theo timestamp và giữ lại 40 avatar mới nhất
-      const sortedEntries = cacheEntries.sort((a, b) => b[1].timestamp - a[1].timestamp)
-      const limitedCache: AvatarCache = {}
-
-      sortedEntries.slice(0, 40).forEach(([key, value]) => {
-        limitedCache[key] = value
-      })
-
-      cache = limitedCache
-    }
-
-    localStorage.setItem(TIKTOK_AVATAR_STORAGE_KEY, JSON.stringify(cache))
-  } catch (error) {
-    console.error('Error saving avatar to localStorage:', error)
-  }
-}
-
-const clearExpiredAvatars = (): void => {
-  try {
-    const stored = localStorage.getItem(TIKTOK_AVATAR_STORAGE_KEY)
-    if (!stored) return
-
-    const cache: AvatarCache = JSON.parse(stored)
-    const now = Date.now()
-    let hasExpired = false
-
-    Object.keys(cache).forEach(username => {
-      if (now - cache[username].timestamp > AVATAR_CACHE_DURATION) {
-        delete cache[username]
-        hasExpired = true
-      }
-    })
-
-    if (hasExpired) {
-      localStorage.setItem(TIKTOK_AVATAR_STORAGE_KEY, JSON.stringify(cache))
-    }
-  } catch (error) {
-    console.error('Error clearing expired avatars:', error)
-  }
-}
+import { useProfile } from '@/hooks/useProfile';
 
 export default function Navbar() {
   const [mobileMenuOpened, { toggle: toggleMobileMenu, close: closeMobileMenu }] = useDisclosure(false)
-  const [tiktokAvatar, setTikTokAvatar] = useState<string | null>(null)
-  const [isLoadingAvatar, setIsLoadingAvatar] = useState(false)
 
   const t = useTranslations('Navigation')
   const locale = useLocale()
@@ -162,54 +57,14 @@ export default function Navbar() {
   } = useAuth()
 
   // Use TikTok hook
-  const { getProfile } = useTikTokApi()
-
-  // Clear expired avatars khi component mount
-  useEffect(() => {
-    clearExpiredAvatars()
-  }, [])
-
-  // Fetch TikTok avatar when profile changes
-  useEffect(() => {
-    if (!profile?.tiktok_username) {
-      setTikTokAvatar(null)
-      return
-    }
-
-    const username = profile.tiktok_username
-
-    // Thử lấy từ localStorage trước
-    const cachedAvatar = getAvatarFromStorage(username)
-    if (cachedAvatar) {
-      setTikTokAvatar(cachedAvatar)
-      return
-    }
-
-    // Nếu không có trong cache, fetch từ API
-    setIsLoadingAvatar(true)
-    getProfile(username)
-      .then(data => {
-        if (data?.data?.user?.avatarMedium) {
-          const avatarUrl = data.data.user.avatarMedium
-          setTikTokAvatar(avatarUrl)
-          // Lưu vào localStorage
-          saveAvatarToStorage(username, avatarUrl)
-        }
-      })
-      .catch(error => {
-        console.error('Error fetching TikTok avatar:', error)
-      })
-      .finally(() => {
-        setIsLoadingAvatar(false)
-      })
-  }, [profile?.tiktok_username, getProfile])
+  const { tiktokAvatar, clearAvatarCache, loading: profileLoading } = useProfile()
 
   // Handle logout
   const handleLogout = async () => {
     const { error } = await signOut()
     if (!error) {
-      // Clear avatar khi logout (tùy chọn)
-      setTikTokAvatar(null)
+      // Clear avatar khi logout
+      clearAvatarCache();
       router.push(`/${locale}/auth/login`)
     }
   }
@@ -349,7 +204,7 @@ export default function Navbar() {
                             <IconUser size={16} />
                           </Avatar>
                           {/* Loading indicator cho avatar */}
-                          {isLoadingAvatar && (
+                          {profileLoading && (
                             <Box
                               style={{
                                 position: 'absolute',

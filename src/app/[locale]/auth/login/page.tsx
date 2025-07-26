@@ -125,7 +125,8 @@ const LoginPage = () => {
     },
   });
 
-  const handleSubmit = useCallback(async (values: typeof form.values) => {
+  type FormValues = typeof form.values;
+  const handleSubmit = useCallback(async (values: FormValues) => {
     setIsLoading(true);
     setGeneralError('');
 

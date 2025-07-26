@@ -1,16 +1,7 @@
 // src/types/auth.ts
 // Types
-export interface Profile {
-    id: string;
-    email: string;
-    tiktok_username?: string;
-    credits: number;
-    total_earned: number;
-    total_spent: number;
-    status: 'active' | 'inactive' | 'suspended';
-    created_at: string;
-    updated_at: string;
-}
+
+import { Profile } from "./profile";
 
 export interface User {
     id: string;

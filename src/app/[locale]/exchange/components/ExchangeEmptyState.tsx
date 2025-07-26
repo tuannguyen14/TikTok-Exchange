@@ -2,25 +2,25 @@
 
 'use client';
 
-import { 
-    Stack, 
-    Title, 
-    Text, 
-    Button, 
-    Card, 
-    ThemeIcon, 
-    Group, 
+import {
+    Stack,
+    Title,
+    Text,
+    Button,
+    Card,
+    ThemeIcon,
+    Group,
     Box,
     Paper,
     Transition,
-    rem 
+    rem
 } from '@mantine/core';
-import { 
-    IconRefresh, 
-    IconSparkles, 
-    IconTrendingUp, 
-    IconHeart, 
-    IconUsers, 
+import {
+    IconRefresh,
+    IconSparkles,
+    IconTrendingUp,
+    IconHeart,
+    IconUsers,
     IconTarget,
     IconGift
 } from '@tabler/icons-react';
@@ -137,7 +137,7 @@ export default function ExchangeEmptyState({ onRefresh, loading = false }: Excha
                     >
                         <Stack gap="xl" align="center">
                             {/* Main Icon with Pulse Animation */}
-                            <Box style={{ position: 'relative' }}>
+                            {/* <Box style={{ position: 'relative' }}>
                                 <ThemeIcon
                                     size={100}
                                     radius="50%"
@@ -151,7 +151,6 @@ export default function ExchangeEmptyState({ onRefresh, loading = false }: Excha
                                     <IconSparkles size={50} />
                                 </ThemeIcon>
 
-                                {/* Orbital Elements */}
                                 <Box
                                     style={{
                                         position: 'absolute',
@@ -194,7 +193,7 @@ export default function ExchangeEmptyState({ onRefresh, loading = false }: Excha
                                         <IconUsers size={14} />
                                     </ThemeIcon>
                                 </Box>
-                            </Box>
+                            </Box> */}
 
                             {/* Title & Description */}
                             <Stack gap="sm" align="center">
@@ -219,7 +218,7 @@ export default function ExchangeEmptyState({ onRefresh, loading = false }: Excha
                                     c="dimmed"
                                     size="md"
                                     maw={360}
-                                    style={{ 
+                                    style={{
                                         lineHeight: 1.6,
                                         fontSize: rem(16)
                                     }}

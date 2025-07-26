@@ -1,5 +1,5 @@
 // src/hooks/useCampaigns.ts
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { CampaignsAPI, Campaign, CampaignStats, CampaignFilters, CreateCampaignData, UpdateCampaignData } from '@/lib/api/campaigns';
 
 export interface UseCampaignsReturn {
@@ -13,18 +13,18 @@ export interface UseCampaignsReturn {
     total: number;
     totalPages: number;
   };
-  
+
   // Actions
   fetchCampaigns: (filters?: CampaignFilters) => Promise<void>;
   fetchStats: () => Promise<void>;
   createCampaign: (data: CreateCampaignData) => Promise<Campaign>;
   updateCampaign: (data: UpdateCampaignData) => Promise<Campaign>;
   deleteCampaign: (id: string) => Promise<{ refunded: number }>;
-  
+
   // Filters
   filters: CampaignFilters;
   setFilters: (filters: CampaignFilters) => void;
-  
+
   // Pagination
   nextPage: () => void;
   prevPage: () => void;
@@ -47,19 +47,19 @@ export function useCampaigns(): UseCampaignsReturn {
     totalPages: 0,
   });
 
-  const api = new CampaignsAPI();
+  const api = useMemo(() => new CampaignsAPI(), []);
 
   const fetchCampaigns = useCallback(async (newFilters?: CampaignFilters) => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const filterToUse = newFilters || filters;
       const response = await api.getCampaigns(filterToUse);
-      
+
       setCampaigns(response.campaigns);
       setPagination(response.pagination);
-      
+
       if (newFilters) {
         setFilters(newFilters);
       }
@@ -68,7 +68,7 @@ export function useCampaigns(): UseCampaignsReturn {
     } finally {
       setLoading(false);
     }
-  }, [filters]);
+  }, [filters, api]);
 
   const fetchStats = useCallback(async () => {
     try {
@@ -77,19 +77,19 @@ export function useCampaigns(): UseCampaignsReturn {
     } catch (err) {
       console.error('Failed to fetch stats:', err);
     }
-  }, []);
+  }, [api]);
 
   const createCampaign = useCallback(async (data: CreateCampaignData): Promise<Campaign> => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const newCampaign = await api.createCampaign(data);
-      
+
       // Refresh campaigns and stats
       await fetchCampaigns();
       await fetchStats();
-      
+
       return newCampaign;
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to create campaign';
@@ -98,23 +98,23 @@ export function useCampaigns(): UseCampaignsReturn {
     } finally {
       setLoading(false);
     }
-  }, [fetchCampaigns, fetchStats]);
+  }, [fetchCampaigns, fetchStats, api]);
 
   const updateCampaign = useCallback(async (data: UpdateCampaignData): Promise<Campaign> => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const updatedCampaign = await api.updateCampaign(data);
-      
+
       // Update local state
-      setCampaigns(prev => prev.map(c => 
+      setCampaigns(prev => prev.map(c =>
         c.id === data.id ? updatedCampaign : c
       ));
-      
+
       // Refresh stats
       await fetchStats();
-      
+
       return updatedCampaign;
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to update campaign';
@@ -123,21 +123,21 @@ export function useCampaigns(): UseCampaignsReturn {
     } finally {
       setLoading(false);
     }
-  }, [fetchStats]);
+  }, [fetchStats, api]);
 
   const deleteCampaign = useCallback(async (id: string): Promise<{ refunded: number }> => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const result = await api.deleteCampaign(id);
-      
+
       // Remove from local state
       setCampaigns(prev => prev.filter(c => c.id !== id));
-      
+
       // Refresh stats
       await fetchStats();
-      
+
       return result;
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to delete campaign';
@@ -146,7 +146,7 @@ export function useCampaigns(): UseCampaignsReturn {
     } finally {
       setLoading(false);
     }
-  }, [fetchStats]);
+  }, [fetchStats, api]);
 
   const nextPage = useCallback(() => {
     if (pagination.page < pagination.totalPages) {
@@ -171,7 +171,7 @@ export function useCampaigns(): UseCampaignsReturn {
   useEffect(() => {
     fetchCampaigns();
     fetchStats();
-  }, []);
+  }, [api, fetchCampaigns, fetchStats]);
 
   return {
     campaigns,
@@ -179,18 +179,18 @@ export function useCampaigns(): UseCampaignsReturn {
     loading,
     error,
     pagination,
-    
+
     // Actions
     fetchCampaigns,
     fetchStats,
     createCampaign,
     updateCampaign,
     deleteCampaign,
-    
+
     // Filters
     filters,
     setFilters,
-    
+
     // Pagination
     nextPage,
     prevPage,

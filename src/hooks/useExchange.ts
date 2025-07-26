@@ -158,7 +158,7 @@ export function useExchange() {
     setVerifyLoading(true);
     try {
       // Get target user's followers list to check if current user is following
-      const followersResponse = await tikTokApi.getFollowers(targetUsername);
+      const followersResponse = await tikTokApi.getFollowers(currentUserTikTok);
 
       if (!followersResponse.success) {
         return {
@@ -168,9 +168,10 @@ export function useExchange() {
       }
 
       // Check if current user is in the target user's followers list
-      const userList = followersResponse.data?.followers || [];
+      const userList = followersResponse.data?.responseData?.userList || [];
+      
       const isFollowing = userList.some(
-        (follower: any) => follower.user.uniqueId.toLowerCase() === currentUserTikTok.toLowerCase()
+        (follower: any) => follower.user.uniqueId.toLowerCase() === targetUsername.toLowerCase()
       );
 
       if (isFollowing) {

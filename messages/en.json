@@ -335,10 +335,15 @@
     "subtitle": "Boost your TikTok presence with our community",
     "steps": {
       "selectType": "Select Type",
+      "selectTypeDescription": "Choose campaign type",
       "configure": "Configure",
-      "review": "Review"
+      "configureDescription": "Configure settings",
+      "review": "Review",
+      "reviewDescription": "Review and create"
     },
     "campaignTypes": {
+      "title": "Choose Your Campaign Type",
+      "availableInteractions": "Available Interactions",
       "video": {
         "title": "Video Campaign",
         "description": "Get likes, views, or comments on your TikTok video",
@@ -350,7 +355,10 @@
       },
       "follow": {
         "title": "Follow Campaign",
-        "description": "Get followers for your TikTok account"
+        "description": "Get followers for your TikTok account",
+        "interactions": {
+          "follow": "Follows"
+        }
       }
     },
     "form": {
@@ -428,6 +436,9 @@
       "daysToComplete": "Days to complete campaign",
       "creditsToReceive": "{type}s to receive",
       "followersToReceive": "followers to receive",
+      "costForEachInteraction": "Cost for each interaction",
+      "creditsRequiredToStart": "Credits required to start",
+      "totalCampaignCost": "Total Campaign Cost",
       "currentBalance": "Current Balance",
       "balanceAfter": "Balance After",
       "remainingCredits": "Remaining credits after campaign",
@@ -736,6 +747,8 @@
     "copied": "Copied!",
     "share": "Share",
     "download": "Download",
-    "upload": "Upload"
+    "upload": "Upload",
+    "NeedToConnectTikTok": "Need to connect TikTok",
+    "PleaseConnectYourTikTokAccountToUseThisFeature": "Please connect your TikTok account to use this feature."
   }
 }

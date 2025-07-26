@@ -1,8 +1,31 @@
 'use client';
-
-import { motion } from 'framer-motion';
-import { VideoCameraIcon, UserPlusIcon, SparklesIcon } from '@heroicons/react/24/outline';
-import { HeartIcon, EyeIcon, ChatBubbleLeftIcon } from '@heroicons/react/24/solid';
+import {
+  Card,
+  Group,
+  Stack,
+  Text,
+  Badge,
+  Box,
+  Center,
+  ThemeIcon,
+  Paper,
+  Grid,
+  Flex,
+  ActionIcon
+} from '@mantine/core';
+import { useHover, useReducedMotion } from '@mantine/hooks';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  IconVideo,
+  IconUserPlus,
+  IconSparkles,
+  IconHeart,
+  IconEye,
+  IconMessageCircle,
+  IconCheck,
+  IconPlus
+} from '@tabler/icons-react';
+import classes from './CampaignTypeSelector.module.css';
 
 interface CampaignTypeSelectorProps {
   selectedType: 'video' | 'follow' | null;
@@ -11,12 +34,15 @@ interface CampaignTypeSelectorProps {
   translations: any;
 }
 
-export default function CampaignTypeSelector({ 
-  selectedType, 
-  onTypeSelect, 
+export default function CampaignTypeSelector({
+  selectedType,
+  onTypeSelect,
   actionCredits,
-  translations 
+  translations
 }: CampaignTypeSelectorProps) {
+  const reducedMotion = useReducedMotion();
+  const { hovered, ref } = useHover();
+
   const getCreditValue = (actionType: string) => {
     const action = actionCredits.find(a => a.action_type === actionType);
     return action?.credit_value || 0;
@@ -27,32 +53,30 @@ export default function CampaignTypeSelector({
       type: 'video' as const,
       title: translations.campaignTypes.video.title,
       description: translations.campaignTypes.video.description,
-      icon: VideoCameraIcon,
-      gradient: 'from-[#FE2C55] via-[#FF6B9D] to-[#EE1D52]',
-      glowColor: 'shadow-[#FE2C55]/30',
+      icon: IconVideo,
+      gradient: 'linear-gradient(135deg, #FE2C55 0%, #FF6B9D 50%, #EE1D52 100%)',
+      primaryColor: '#FE2C55',
+      shadowColor: 'rgba(254, 44, 85, 0.25)',
       interactions: [
-        { 
-          type: 'view', 
-          icon: EyeIcon, 
-          label: translations.campaignTypes.video.interactions.view, 
-          color: 'text-blue-600',
-          bgColor: 'bg-blue-100',
+        {
+          type: 'view',
+          icon: IconEye,
+          label: translations.campaignTypes.video.interactions.view,
+          color: 'blue',
           credits: getCreditValue('view')
         },
-        { 
-          type: 'like', 
-          icon: HeartIcon, 
-          label: translations.campaignTypes.video.interactions.like, 
-          color: 'text-[#FE2C55]',
-          bgColor: 'bg-pink-100',
+        {
+          type: 'like',
+          icon: IconHeart,
+          label: translations.campaignTypes.video.interactions.like,
+          color: 'pink',
           credits: getCreditValue('like')
         },
-        { 
-          type: 'comment', 
-          icon: ChatBubbleLeftIcon, 
-          label: translations.campaignTypes.video.interactions.comment, 
-          color: 'text-emerald-600',
-          bgColor: 'bg-emerald-100',
+        {
+          type: 'comment',
+          icon: IconMessageCircle,
+          label: translations.campaignTypes.video.interactions.comment,
+          color: 'teal',
           credits: getCreditValue('comment')
         }
       ]
@@ -61,118 +85,353 @@ export default function CampaignTypeSelector({
       type: 'follow' as const,
       title: translations.campaignTypes.follow.title,
       description: translations.campaignTypes.follow.description,
-      icon: UserPlusIcon,
-      gradient: 'from-[#25F4EE] via-[#00D4FF] to-[#0EA5E9]',
-      glowColor: 'shadow-[#25F4EE]/30',
+      icon: IconUserPlus,
+      gradient: 'linear-gradient(135deg, #25F4EE 0%, #00D4FF 50%, #0EA5E9 100%)',
+      primaryColor: '#25F4EE',
+      shadowColor: 'rgba(37, 244, 238, 0.25)',
       credits: getCreditValue('follow'),
-      interactions: []
+      interactions: [{
+        type: 'follow',
+        icon: IconPlus,
+        label: translations.campaignTypes.follow.interactions.follow,
+        color: 'teal',
+        credits: getCreditValue('follow')
+      }]
     }
   ];
 
+  // Animation configurations with proper types
+  const springConfig = {
+    type: "spring" as const,
+    stiffness: 200,
+    damping: 20
+  };
+
+  const fastSpring = {
+    type: "spring" as const,
+    stiffness: 400,
+    damping: 25
+  };
+
+  const getCardAnimation = (index: number) => ({
+    initial: { opacity: 0, y: 50, scale: 0.9 },
+    animate: {
+      opacity: 1,
+      y: 0,
+      scale: 1
+    },
+    transition: {
+      ...springConfig,
+      delay: reducedMotion ? 0 : index * 0.2
+    },
+    whileHover: reducedMotion ? {} : {
+      y: -8,
+      scale: 1.02
+    },
+    whileTap: { scale: 0.98 }
+  });
+
+  const getInteractionAnimation = (index: number) => ({
+    initial: { opacity: 0, x: -20 },
+    animate: {
+      opacity: 1,
+      x: 0
+    },
+    transition: {
+      ...springConfig,
+      delay: reducedMotion ? 0 : index * 0.1
+    }
+  });
+
   return (
-    <div className="space-y-8">
-      <div className="text-center">
+    <Stack gap="xl" p="md">
+      {/* Header Section */}
+      <Center>
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="inline-flex items-center space-x-2 bg-gradient-to-r from-[#FE2C55]/10 to-[#25F4EE]/10 rounded-full px-6 py-3 mb-6"
+          transition={{ duration: 0.6, type: "spring" }}
         >
-          <SparklesIcon className="w-5 h-5 text-[#FE2C55]" />
-          <span className="text-gray-800 font-medium">Choose Your Campaign Type</span>
-        </motion.div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {typeOptions.map((option, index) => (
-          <motion.div
-            key={option.type}
-            initial={{ opacity: 0, y: 40, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ delay: index * 0.15, duration: 0.4 }}
-            whileHover={{ scale: 1.02, y: -5 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => onTypeSelect(option.type)}
-            className={`group relative overflow-hidden cursor-pointer rounded-3xl border-2 transition-all duration-500 ${
-              selectedType === option.type
-                ? `border-transparent bg-white shadow-2xl ${option.glowColor}`
-                : 'border-gray-100 bg-white hover:border-gray-200 shadow-xl hover:shadow-2xl'
-            }`}
+          <Paper
+            radius="xl"
+            p="md"
+            style={{
+              background: 'linear-gradient(135deg, rgba(254, 44, 85, 0.1) 0%, rgba(37, 244, 238, 0.1) 100%)',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              backdropFilter: 'blur(10px)'
+            }}
           >
-            {/* Animated Gradient Background */}
-            <div className={`absolute inset-0 bg-gradient-to-br ${option.gradient} transition-opacity duration-500 ${
-              selectedType === option.type ? 'opacity-[0.02]' : 'opacity-0 group-hover:opacity-[0.01]'
-            }`} />
-            
-            {/* Animated Orbs */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/20 to-transparent rounded-full blur-2xl transform translate-x-16 -translate-y-16" />
-            <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-white/10 to-transparent rounded-full blur-xl transform -translate-x-12 translate-y-12" />
+            <Group gap="xs">
+              <ThemeIcon
+                size="sm"
+                radius="xl"
+                variant="gradient"
+                gradient={{ from: '#FE2C55', to: '#25F4EE' }}
+              >
+                <IconSparkles size={16} />
+              </ThemeIcon>
+              <Text fw={600} c="dark.7">
+                {translations.campaignTypes.title}
+              </Text>
+            </Group>
+          </Paper>
+        </motion.div>
+      </Center>
 
-            <div className="relative p-8">
-              {/* Header with Icon */}
-              <div className="flex items-center justify-between mb-6">
-                <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br ${option.gradient} shadow-lg`}>
-                  <option.icon className="w-8 h-8 text-white" />
-                </div>
-                
-                {/* Credit Badge for Follow */}
-                {option.type === 'follow' && (
-                  <div className="bg-gradient-to-r from-[#25F4EE] to-[#0EA5E9] text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg">
-                    {option.credits} credits
-                  </div>
-                )}
-              </div>
+      {/* Campaign Cards */}
+      <Grid>
+        {typeOptions.map((option, index) => {
+          const isSelected = selectedType === option.type;
 
-              {/* Content */}
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">
-                {option.title}
-              </h3>
-              <p className="text-gray-700 mb-6 leading-relaxed text-base">
-                {option.description}
-              </p>
-
-              {/* Interactions for video type */}
-              {option.interactions.length > 0 && (
-                <div className="space-y-3">
-                  <p className="text-sm font-semibold text-gray-800 mb-4">Available interactions:</p>
-                  <div className="grid gap-3">
-                    {option.interactions.map((interaction) => (
-                      <div key={interaction.type} className="flex items-center justify-between p-3 bg-gray-50/80 rounded-xl border border-gray-100">
-                        <div className="flex items-center space-x-3">
-                          <div className={`w-8 h-8 ${interaction.bgColor} rounded-lg flex items-center justify-center`}>
-                            <interaction.icon className={`w-5 h-5 ${interaction.color}`} />
-                          </div>
-                          <span className="text-sm font-medium text-gray-800">{interaction.label}</span>
-                        </div>
-                        <div className="bg-white px-3 py-1 rounded-full border border-gray-200">
-                          <span className="text-sm font-bold text-gray-900">{interaction.credits} credits</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Selection indicator with animation */}
-              {selectedType === option.type && (
-                <motion.div
-                  initial={{ scale: 0, rotate: -180 }}
-                  animate={{ scale: 1, rotate: 0 }}
-                  transition={{ type: "spring", stiffness: 200, damping: 15 }}
-                  className="absolute top-6 right-6 w-8 h-8 bg-gradient-to-br from-[#FE2C55] to-[#EE1D52] rounded-full flex items-center justify-center shadow-lg"
+          return (
+            <Grid.Col key={option.type} span={{ base: 12, lg: 6 }}>
+              <motion.div
+                ref={ref}
+                initial={getCardAnimation(index).initial}
+                animate={getCardAnimation(index).animate}
+                transition={getCardAnimation(index).transition}
+                whileHover={getCardAnimation(index).whileHover}
+                whileTap={getCardAnimation(index).whileTap}
+                onClick={() => onTypeSelect(option.type)}
+                style={{ height: '100%' }}
+              >
+                <Card
+                  radius="xl"
+                  p="xl"
+                  shadow={isSelected ? "xl" : hovered ? "lg" : "md"}
+                  style={{
+                    height: '100%',
+                    cursor: 'pointer',
+                    position: 'relative',
+                    overflow: 'hidden',
+                    border: isSelected
+                      ? `2px solid ${option.primaryColor}`
+                      : '1px solid var(--mantine-color-gray-2)',
+                    background: isSelected
+                      ? `linear-gradient(135deg, ${option.primaryColor}05, ${option.primaryColor}02)`
+                      : 'white',
+                    boxShadow: isSelected
+                      ? `0 20px 40px ${option.shadowColor}, 0 0 0 1px ${option.primaryColor}20`
+                      : undefined,
+                    transition: 'all 0.3s ease'
+                  }}
                 >
-                  <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                </motion.div>
-              )}
+                  {/* Animated Background Orbs */}
+                  <Box
+                    style={{
+                      position: 'absolute',
+                      top: -50,
+                      right: -50,
+                      width: 120,
+                      height: 120,
+                      background: `radial-gradient(circle, ${option.primaryColor}15, transparent)`,
+                      borderRadius: '50%',
+                      filter: 'blur(20px)',
+                      opacity: hovered || isSelected ? 1 : 0.5,
+                      transition: 'opacity 0.3s ease'
+                    }}
+                  />
 
-              {/* Hover Effect Border */}
-              <div className={`absolute inset-0 rounded-3xl border-2 border-transparent bg-gradient-to-br ${option.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} 
-                   style={{ mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)', maskComposite: 'xor' }} />
-            </div>
-          </motion.div>
-        ))}
-      </div>
-    </div>
+                  <Box
+                    style={{
+                      position: 'absolute',
+                      bottom: -30,
+                      left: -30,
+                      width: 80,
+                      height: 80,
+                      background: `radial-gradient(circle, ${option.primaryColor}10, transparent)`,
+                      borderRadius: '50%',
+                      filter: 'blur(15px)',
+                      opacity: hovered || isSelected ? 0.8 : 0.3,
+                      transition: 'opacity 0.3s ease'
+                    }}
+                  />
+
+                  <Stack gap="lg" style={{ position: 'relative', zIndex: 1 }}>
+                    {/* Header */}
+                    <Flex justify="space-between" align="flex-start">
+                      <motion.div
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ ...springConfig, delay: 0.6 }}
+                      >
+                        <ThemeIcon
+                          size={64}
+                          radius="xl"
+                          variant="gradient"
+                          gradient={{ from: option.primaryColor, to: option.primaryColor + '80' }}
+                          style={{
+                            boxShadow: `0 8px 20px ${option.shadowColor}`
+                          }}
+                        >
+                          <option.icon size={32} />
+                        </ThemeIcon>
+                      </motion.div>
+
+                      {/* Selection Indicator */}
+                      <AnimatePresence>
+                        {isSelected && (
+                          <motion.div
+                            initial={{ scale: 0, rotate: -180 }}
+                            animate={{ scale: 1, rotate: 0 }}
+                            exit={{ scale: 0, rotate: 180 }}
+                            transition={{ type: "spring", stiffness: 200, damping: 15 }}
+                          >
+                            <ActionIcon
+                              size="lg"
+                              radius="xl"
+                              variant="gradient"
+                              gradient={{ from: option.primaryColor, to: option.primaryColor + '80' }}
+                              style={{
+                                boxShadow: `0 4px 12px ${option.shadowColor}`
+                              }}
+                            >
+                              <IconCheck size={20} />
+                            </ActionIcon>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+
+                      {/* Credit Badge for Follow */}
+                      {option.type === 'follow' && (
+                        <motion.div
+                          initial={{ scale: 0, x: 20 }}
+                          animate={{ scale: 1, x: 0 }}
+                          transition={{ delay: 0.3, type: "spring" }}
+                        >
+                          <Badge
+                            size="lg"
+                            radius="xl"
+                            variant="gradient"
+                            gradient={{ from: option.primaryColor, to: option.primaryColor + '80' }}
+                            style={{
+                              boxShadow: `0 4px 12px ${option.shadowColor}`
+                            }}
+                          >
+                            {option.credits} credits
+                          </Badge>
+                        </motion.div>
+                      )}
+                    </Flex>
+
+                    {/* Content */}
+                    <Stack gap="sm">
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 + index * 0.1 }}
+                      >
+                        <Text size="xl" fw={700} c="dark.8">
+                          {option.title}
+                        </Text>
+                      </motion.div>
+
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3 + index * 0.1 }}
+                      >
+                        <Text c="dark.6" size="sm" lh={1.6}>
+                          {option.description}
+                        </Text>
+                      </motion.div>
+                    </Stack>
+
+                    {/* Interactions */}
+                    {option.interactions.length > 0 && (
+                      <Stack gap="xs">
+                        <motion.div
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ delay: 0.4 + index * 0.1 }}
+                        >
+                          <Text size="sm" fw={600} c="dark.7">
+                            {translations.campaignTypes.availableInteractions}
+                          </Text>
+                        </motion.div>
+
+                        <Stack gap="xs">
+                          {option.interactions.map((interaction, interactionIndex) => (
+                            <motion.div
+                              key={interaction.type}
+                              initial={getInteractionAnimation(interactionIndex).initial}
+                              animate={getInteractionAnimation(interactionIndex).animate}
+                              transition={getInteractionAnimation(interactionIndex).transition}
+                            >
+                              <Paper
+                                p="sm"
+                                radius="lg"
+                                bg="gray.0"
+                                style={{
+                                  border: '1px solid var(--mantine-color-gray-2)',
+                                  transition: 'all 0.2s ease'
+                                }}
+                                className={classes.interactionCard}
+                              >
+                                <Flex justify="space-between" align="center">
+                                  <Group gap="sm">
+                                    <ThemeIcon
+                                      size="sm"
+                                      radius="lg"
+                                      color={interaction.color}
+                                      variant="light"
+                                    >
+                                      <interaction.icon size={16} />
+                                    </ThemeIcon>
+                                    <Text size="sm" fw={500}>
+                                      {interaction.label}
+                                    </Text>
+                                  </Group>
+
+                                  <Badge
+                                    size="sm"
+                                    radius="lg"
+                                    color="gray"
+                                    variant="light"
+                                  >
+                                    {interaction.credits} credits
+                                  </Badge>
+                                </Flex>
+                              </Paper>
+                            </motion.div>
+                          ))}
+                        </Stack>
+                      </Stack>
+                    )}
+                  </Stack>
+
+                  {/* Glow Effect */}
+                  <AnimatePresence>
+                    {isSelected && !reducedMotion && (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{
+                          opacity: [0, 0.3, 0],
+                          scale: [0.8, 1.1, 1]
+                        }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        transition={{
+                          duration: 2,
+                          repeat: Infinity,
+                          ease: "easeInOut"
+                        }}
+                        style={{
+                          position: 'absolute',
+                          inset: -2,
+                          background: option.gradient,
+                          borderRadius: 'var(--mantine-radius-xl)',
+                          zIndex: -1,
+                          filter: 'blur(10px)'
+                        }}
+                      />
+                    )}
+                  </AnimatePresence>
+                </Card>
+              </motion.div>
+            </Grid.Col>
+          );
+        })}
+      </Grid>
+    </Stack>
   );
 }

@@ -123,6 +123,34 @@ export default function ExchangePage() {
                     zIndex: 1
                 }}
             >
+                {/* TikTok Connection Alert - Compact */}
+                <Transition
+                    mounted={needsTikTokConnection}
+                    transition="slide-down"
+                    duration={200}
+                    timingFunction="ease"
+                >
+                    {(styles) => (
+                        <Paper
+                            style={{
+                                ...styles,
+                                background: 'linear-gradient(135deg, #ff9a56 0%, #ff6b6b 100%)',
+                                borderRadius: rem(16),
+                                padding: `${rem(8)} ${rem(16)}`,
+                                marginBottom: rem(12),
+                                boxShadow: '0 4px 16px rgba(255, 154, 86, 0.25)'
+                            }}
+                        >
+                            <Group gap="xs" align="center">
+                                <IconInfoCircle size={16} color="white" />
+                                <Text size="xs" style={{ color: 'white', fontWeight: 500 }}>
+                                    {t('alerts.connectTikTok.title')}
+                                </Text>
+                            </Group>
+                        </Paper>
+                    )}
+                </Transition>
+
                 {/* Compact Header - Filters Only */}
                 <Group justify="center" mb="sm">
                     <SegmentedControl
@@ -152,7 +180,7 @@ export default function ExchangePage() {
                                 boxShadow: '0 2px 8px rgba(102, 126, 234, 0.4)'
                             },
                             label: {
-                                '&[data-active]': {
+                                '&[dataActive="true"]': {
                                     color: 'white !important',
                                     fontWeight: 600
                                 }
@@ -160,34 +188,6 @@ export default function ExchangePage() {
                         }}
                     />
                 </Group>
-
-                {/* TikTok Connection Alert - Compact */}
-                <Transition
-                    mounted={needsTikTokConnection}
-                    transition="slide-down"
-                    duration={200}
-                    timingFunction="ease"
-                >
-                    {(styles) => (
-                        <Paper
-                            style={{
-                                ...styles,
-                                background: 'linear-gradient(135deg, #ff9a56 0%, #ff6b6b 100%)',
-                                borderRadius: rem(16),
-                                padding: `${rem(8)} ${rem(16)}`,
-                                marginBottom: rem(12),
-                                boxShadow: '0 4px 16px rgba(255, 154, 86, 0.25)'
-                            }}
-                        >
-                            <Group gap="xs" align="center">
-                                <IconInfoCircle size={16} color="white" />
-                                <Text size="xs" style={{ color: 'white', fontWeight: 500 }}>
-                                    {t('alerts.connectTikTok.title')}
-                                </Text>
-                            </Group>
-                        </Paper>
-                    )}
-                </Transition>
 
                 {/* Main Content */}
                 <Box

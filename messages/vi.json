@@ -335,10 +335,15 @@
     "subtitle": "Thúc đẩy sự hiện diện TikTok của bạn với cộng đồng chúng tôi",
     "steps": {
       "selectType": "Chọn Loại",
+      "selectTypeDescription": "Chọn loại chiến dịch",
       "configure": "Cấu Hình",
-      "review": "Xem Lại"
+      "configureDescription": "Cấu hình cài đặt",
+      "review": "Xem Lại",
+      "reviewDescription": "Xem lại và tạo"
     },
     "campaignTypes": {
+      "title": "Chọn Loại Chiến Dịch",
+      "availableInteractions": "Chức năng hiện đang có:",
       "video": {
         "title": "Chiến Dịch Video",
         "description": "Nhận lượt thích, xem hoặc bình luận trên video TikTok của bạn",
@@ -350,7 +355,10 @@
       },
       "follow": {
         "title": "Chiến Dịch Theo Dõi",
-        "description": "Nhận người theo dõi cho tài khoản TikTok của bạn"
+        "description": "Nhận người theo dõi cho tài khoản TikTok của bạn",
+        "interactions": {
+          "follow": "Theo dõi"
+        }
       }
     },
     "form": {
@@ -428,6 +436,9 @@
       "daysToComplete": "Số ngày để hoàn thành chiến dịch",
       "creditsToReceive": "{type} sẽ nhận",
       "followersToReceive": "người theo dõi sẽ nhận",
+      "costForEachInteraction": "Chi phí mỗi hành động",
+      "creditsRequiredToStart": "Credits cần thiết để bắt đầu",
+      "totalCampaignCost": "Tổng chi phí chiến dịch",
       "currentBalance": "Số Dư Hiện Tại",
       "balanceAfter": "Số Dư Sau",
       "remainingCredits": "Tín dụng còn lại sau chiến dịch",
@@ -736,6 +747,8 @@
     "copied": "Đã Sao Chép!",
     "share": "Chia Sẻ",
     "download": "Tải Xuống",
-    "upload": "Tải Lên"
+    "upload": "Tải Lên",
+    "NeedToConnectTikTok": "Cần kết nối TikTok",
+    "PleaseConnectYourTikTokAccountToUseThisFeature": "Vui lòng kết nối tài khoản TikTok của bạn để sử dụng tính năng này."
   }
 }

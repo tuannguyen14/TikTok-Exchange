@@ -3,20 +3,18 @@
 import { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react';
 import { normalizeError, getUserFriendlyErrorMessage, logError, retryAsync } from '@/lib/utils/errors';
 import { createClient } from '@/lib/supabase/supabase';
-import type { User, AuthState, Profile, ApiResponse } from '@/types/auth';
+import type { User, AuthState, ApiResponse } from '@/types/auth';
+import type { Profile } from '@/types/profile';
 import type { RealtimeChannel } from '@supabase/supabase-js';
 
 export interface AuthContextType extends AuthState {
   signUp: (email: string, password: string) => Promise<{ error: string | null; success: boolean }>;
   signIn: (email: string, password: string) => Promise<{ error: string | null; success: boolean }>;
   signOut: () => Promise<{ error: string | null; success: boolean }>;
-  updateProfile: (updates: Partial<Profile>) => Promise<{ error: string | null; success: boolean }>;
-  refreshProfile: () => Promise<{ error: string | null; success: boolean }>;
-  connectTikTok: (tiktokUsername: string) => Promise<{ error: string | null; success: boolean }>;
   resetPassword: (email: string) => Promise<{ error: string | null; success: boolean }>;
   changePassword: (currentPassword: string, newPassword: string) => Promise<{ error: string | null; success: boolean }>;
   checkSession: () => Promise<void>;
-  realtimeCredits: number; // Realtime credits value
+  realtimeCredits: number;
 }
 
 // Create context
@@ -34,7 +32,7 @@ const apiCall = async <T = any>(
           'Content-Type': 'application/json',
           ...options.headers,
         },
-        credentials: 'include', // Important for cookies
+        credentials: 'include',
         ...options,
       });
 
@@ -43,7 +41,7 @@ const apiCall = async <T = any>(
       }
 
       return res;
-    }, 2, 1000); // Retry up to 2 times with 1s delay
+    }, 2, 1000);
 
     const result: ApiResponse<T> = await response.json();
 
@@ -179,7 +177,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
   }, [cleanupRealtimeCredits]);
 
-  // Sign up method (simplified - no username required)
+  // Sign up method
   const signUp = async (
     email: string,
     password: string
@@ -196,7 +194,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
 
       if (success) {
-        // After successful signup, check session to get user data
         await checkSession();
         return { error: null, success: true };
       } else {
@@ -231,7 +228,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           error: null,
           isAuthenticated: true,
         });
-        // Set up realtime credits
         setupRealtimeCredits(data.user.id, data.profile.credits || 0);
         return { error: null, success: true };
       } else {
@@ -254,7 +250,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         method: 'POST',
       });
 
-      // Always clear local state and realtime subscription, even if API call fails
       cleanupRealtimeCredits();
       setState({
         user: null,
@@ -277,109 +272,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         isAuthenticated: false,
       });
       setRealtimeCredits(0);
-      return { error: errorMessage, success: false };
-    }
-  };
-
-  // Update profile method
-  const updateProfile = async (
-    updates: Partial<Profile>
-  ): Promise<{ error: string | null; success: boolean }> => {
-    try {
-      if (!state.user) {
-        return { error: 'User not authenticated', success: false };
-      }
-
-      setState(prev => ({ ...prev, loading: true, error: null }));
-
-      const { data, error, success } = await apiCall<Profile>('/api/user/profile', {
-        method: 'PUT',
-        body: JSON.stringify(updates),
-      });
-
-      if (success && data) {
-        setState(prev => ({
-          ...prev,
-          profile: data,
-          loading: false,
-          error: null,
-        }));
-        // Update realtime credits if changed
-        if (data.credits !== undefined) {
-          setRealtimeCredits(data.credits);
-        }
-        return { error: null, success: true };
-      } else {
-        setState(prev => ({ ...prev, error, loading: false }));
-        return { error: error || 'Profile update failed', success: false };
-      }
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Profile update failed';
-      setState(prev => ({ ...prev, error: errorMessage, loading: false }));
-      return { error: errorMessage, success: false };
-    }
-  };
-
-  // Refresh profile method
-  const refreshProfile = async (): Promise<{ error: string | null; success: boolean }> => {
-    try {
-      if (!state.user) {
-        return { error: 'User not authenticated', success: false };
-      }
-
-      const { data, error, success } = await apiCall<Profile>('/api/user/profile');
-
-      if (success && data) {
-        setState(prev => ({
-          ...prev,
-          profile: data,
-          error: null,
-        }));
-        // Update realtime credits
-        if (data.credits !== undefined) {
-          setRealtimeCredits(data.credits);
-        }
-        return { error: null, success: true };
-      } else {
-        return { error: error || 'Profile refresh failed', success: false };
-      }
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Profile refresh failed';
-      return { error: errorMessage, success: false };
-    }
-  };
-
-  // Connect TikTok method
-  const connectTikTok = async (
-    tiktokUsername: string
-  ): Promise<{ error: string | null; success: boolean }> => {
-    try {
-      if (!state.user) {
-        return { error: 'User not authenticated', success: false };
-      }
-
-      setState(prev => ({ ...prev, loading: true, error: null }));
-
-      const { data, error, success } = await apiCall<Profile>('/api/user/tiktok', {
-        method: 'POST',
-        body: JSON.stringify({ tiktok_username: tiktokUsername }),
-      });
-
-      if (success && data) {
-        setState(prev => ({
-          ...prev,
-          profile: data,
-          loading: false,
-          error: null,
-        }));
-        return { error: null, success: true };
-      } else {
-        setState(prev => ({ ...prev, error, loading: false }));
-        return { error: error || 'TikTok connection failed', success: false };
-      }
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'TikTok connection failed';
-      setState(prev => ({ ...prev, error: errorMessage, loading: false }));
       return { error: errorMessage, success: false };
     }
   };
@@ -431,9 +323,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     signUp,
     signIn,
     signOut,
-    updateProfile,
-    refreshProfile,
-    connectTikTok,
     resetPassword,
     changePassword,
     checkSession,
@@ -486,25 +375,27 @@ export function withAuth<P extends object>(
   };
 }
 
-// Utility hook for auth status
+// Utility hooks with renamed functions to avoid conflicts
+
+// Basic auth profile getter
+export function useAuthProfile() {
+  const { profile } = useAuth();
+  return { profile };
+}
+
+// Auth status only
 export function useAuthStatus() {
   const { isAuthenticated, loading } = useAuth();
   return { isAuthenticated, loading };
 }
 
-// Utility hook for user profile only (updated for email)
-export function useProfile() {
-  const { profile, refreshProfile } = useAuth();
-  return { profile, refreshProfile };
-}
-
-// Utility hook for credits only (updated to use realtime credits)
-export function useUserCredits() {
-  const { profile, refreshProfile, realtimeCredits } = useAuth();
+// Credits with realtime updates
+export function useAuthCredits() {
+  const { profile, realtimeCredits, checkSession } = useAuth();
   return {
-    credits: realtimeCredits, // Use realtime credits instead of profile.credits
+    credits: realtimeCredits,
     totalEarned: profile?.total_earned || 0,
     totalSpent: profile?.total_spent || 0,
-    refreshCredits: refreshProfile,
+    refreshCredits: checkSession,
   };
 }

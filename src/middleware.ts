@@ -4,95 +4,140 @@ import { createMiddlewareClient } from '@/lib/supabase/supabase-server'
 import createIntlMiddleware from 'next-intl/middleware'
 import { routing } from '@/i18n/routing'
 
+// Configuration constants
+const CONFIG = {
+  HOME_PATH: '/tiktok-exchange',
+  DEFAULT_AUTH_REDIRECT: '/exchange',
+} as const
+
 // Routes that require authentication
 const PROTECTED_ROUTES = [
-  // '/dashboard',
-  '/exchange', 
+  '/exchange',
   '/campaigns',
   '/profile',
-]
+] as const
 
 // Routes that should redirect authenticated users (login/register pages)
 const AUTH_ROUTES = [
   '/auth/login',
   '/auth/register',
-]
+] as const
 
-// API routes that should be excluded from middleware
-const API_ROUTES = [
+// Routes and patterns that should be excluded from middleware processing
+const EXCLUDED_PATTERNS = [
   '/api',
   '/_next',
   '/favicon.ico',
   '/robots.txt',
   '/sitemap.xml',
-]
+  '/images',
+  '/icons',
+  '/sounds',
+] as const
 
-// Create the next-intl middleware
+// File extensions to exclude
+const EXCLUDED_EXTENSIONS = [
+  'png', 'jpg', 'jpeg', 'svg', 'webp', 'ico',
+  'css', 'js', 'mp3', 'mp4', 'json'
+] as const
+
+// Create the next-intl middleware with optimized config
 const intlMiddleware = createIntlMiddleware({
   locales: routing.locales,
   defaultLocale: routing.defaultLocale,
   localePrefix: 'always',
 })
 
-// Helper function to check if path is protected
-function isProtectedRoute(pathname: string): boolean {
-  const pathWithoutLocale = pathname.replace(/^\/[a-z]{2}/, '') || '/'
-  return PROTECTED_ROUTES.some(route => 
-    pathWithoutLocale === route || pathWithoutLocale.startsWith(route + '/')
-  )
-}
-
-// Helper function to check if path is auth route
-function isAuthRoute(pathname: string): boolean {
-  const pathWithoutLocale = pathname.replace(/^\/[a-z]{2}/, '') || '/'
-  return AUTH_ROUTES.some(route => 
-    pathWithoutLocale === route || pathWithoutLocale.startsWith(route + '/')
-  )
-}
-
-// Helper function to check if should skip middleware
-function shouldSkipMiddleware(pathname: string): boolean {
-  return API_ROUTES.some(route => pathname.startsWith(route))
-}
-
-// Helper function to get locale from pathname
-function getLocaleFromPathname(pathname: string): string | null {
+/**
+ * Extract locale from pathname
+ * Returns null if no valid locale found
+ */
+function extractLocale(pathname: string): string | null {
   const segments = pathname.split('/').filter(Boolean)
   const firstSegment = segments[0]
-  
-  if (firstSegment && routing.locales.includes(firstSegment as any)) {
-    return firstSegment
-  }
-  
-  return null
+
+  return firstSegment && routing.locales.includes(firstSegment as any)
+    ? firstSegment
+    : null
 }
 
-// Helper function to detect locale from request
-function detectLocale(request: NextRequest): string {
-  const localeFromPath = getLocaleFromPathname(request.nextUrl.pathname)
+/**
+ * Remove locale prefix from pathname
+ */
+function stripLocale(pathname: string): string {
+  const withoutLocale = pathname.replace(/^\/[a-z]{2}(?=\/|$)/, '')
+  return withoutLocale || '/'
+}
+
+/**
+ * Check if path should be excluded from middleware processing
+ */
+function shouldExcludeFromMiddleware(pathname: string): boolean {
+  // Check excluded patterns
+  if (EXCLUDED_PATTERNS.some(pattern => pathname.startsWith(pattern))) {
+    return true
+  }
+
+  // Check file extensions
+  const extension = pathname.split('.').pop()?.toLowerCase()
+  if (extension && EXCLUDED_EXTENSIONS.includes(extension as any)) {
+    return true
+  }
+
+  return false
+}
+
+/**
+ * Check if route requires authentication
+ */
+function isProtectedRoute(pathname: string): boolean {
+  const pathWithoutLocale = stripLocale(pathname)
+  return PROTECTED_ROUTES.some(route =>
+    pathWithoutLocale === route || pathWithoutLocale.startsWith(`${route}/`)
+  )
+}
+
+/**
+ * Check if route is auth-related (login/register)
+ */
+function isAuthRoute(pathname: string): boolean {
+  const pathWithoutLocale = stripLocale(pathname)
+  return AUTH_ROUTES.some(route =>
+    pathWithoutLocale === route || pathWithoutLocale.startsWith(`${route}/`)
+  )
+}
+
+/**
+ * Detect preferred locale from request
+ */
+function detectPreferredLocale(request: NextRequest): string {
+  // 1. Check URL path
+  const localeFromPath = extractLocale(request.nextUrl.pathname)
   if (localeFromPath) {
     return localeFromPath
   }
 
+  // 2. Check cookie
   const localeFromCookie = request.cookies.get('NEXT_LOCALE')?.value
   if (localeFromCookie && routing.locales.includes(localeFromCookie as any)) {
     return localeFromCookie
   }
 
+  // 3. Check Accept-Language header
   const acceptLanguage = request.headers.get('Accept-Language')
   if (acceptLanguage) {
-    const languages = acceptLanguage
+    const preferredLanguages = acceptLanguage
       .split(',')
       .map(lang => {
-        const [code, q] = lang.trim().split(';q=')
-        return { 
-          code: code.split('-')[0],
-          quality: q ? parseFloat(q) : 1.0 
+        const [code, quality = '1.0'] = lang.trim().split(';q=')
+        return {
+          code: code.split('-')[0].toLowerCase(),
+          quality: parseFloat(quality)
         }
       })
       .sort((a, b) => b.quality - a.quality)
 
-    for (const { code } of languages) {
+    for (const { code } of preferredLanguages) {
       if (routing.locales.includes(code as any)) {
         return code
       }
@@ -102,132 +147,149 @@ function detectLocale(request: NextRequest): string {
   return routing.defaultLocale
 }
 
-export async function middleware(request: NextRequest) {
-  const { pathname, searchParams } = request.nextUrl
+/**
+ * Create URL with locale prefix
+ */
+function createLocalizedUrl(request: NextRequest, path: string, locale?: string): URL {
+  const targetLocale = locale || detectPreferredLocale(request)
+  const url = new URL(`/${targetLocale}${path}`, request.url)
 
-  // Skip middleware for API routes, static files, etc.
-  if (shouldSkipMiddleware(pathname)) {
-    return NextResponse.next()
+  // Preserve search params
+  const searchParams = request.nextUrl.searchParams.toString()
+  if (searchParams) {
+    url.search = searchParams
   }
 
-  // Handle root path - redirect to default locale
-  if (pathname === '/') {
-    const locale = detectLocale(request)
-    const url = new URL(`/${locale}`, request.url)
-    
-    if (searchParams.toString()) {
-      url.search = searchParams.toString()
-    }
-    
-    return NextResponse.redirect(url)
-  }
+  return url
+}
 
-  // Handle paths without locale - redirect to add locale
-  const localeFromPath = getLocaleFromPathname(pathname)
-  if (!localeFromPath) {
-    const locale = detectLocale(request)
-    const url = new URL(`/${locale}${pathname}`, request.url)
-    
-    if (searchParams.toString()) {
-      url.search = searchParams.toString()
-    }
-    
-    return NextResponse.redirect(url)
-  }
-
-  // Create Supabase client for auth check
-  const { supabase, response } = createMiddlewareClient(request)
-
+/**
+ * Handle authentication check and redirects
+ */
+async function handleAuthenticationFlow(
+  request: NextRequest,
+  pathname: string,
+  supabase: any
+): Promise<NextResponse | null> {
   try {
-    // Get authenticated user
     const { data: { user }, error } = await supabase.auth.getUser()
-    
     const isAuthenticated = !!user && !error
     const isProtected = isProtectedRoute(pathname)
     const isAuth = isAuthRoute(pathname)
+    const currentLocale = extractLocale(pathname) || routing.defaultLocale
 
-    console.log('Auth check:', { 
-      pathname, 
-      isAuthenticated, 
-      isProtected, 
-      isAuth, 
-      user: user?.email || 'none',
-      error: error?.message || 'none'
-    })
-
-    // If user is authenticated and trying to access auth pages, redirect to dashboard
-    if (isAuthenticated && isAuth) {
-      const locale = getLocaleFromPathname(pathname) || routing.defaultLocale
-      const url = new URL(`/${locale}/exchange`, request.url)
-      return NextResponse.redirect(url)
-    }
-
-    // FIX: Kiểm tra chặt chẽ hơn cho protected routes
-    if (isProtected) {
-      if (!isAuthenticated) {
-        const locale = getLocaleFromPathname(pathname) || routing.defaultLocale
-        const url = new URL(`/${locale}/auth/login`, request.url)
-        
-        const returnTo = encodeURIComponent(pathname + (searchParams.toString() ? `?${searchParams.toString()}` : ''))
-        url.searchParams.set('returnTo', returnTo)
-        
-        console.log('Redirecting to login:', url.toString())
-        return NextResponse.redirect(url)
-      }
-    }
-
-    // Apply next-intl middleware for locale handling
-    const intlResponse = intlMiddleware(request)
-    
-    if (intlResponse instanceof Response && intlResponse.status >= 300 && intlResponse.status < 400) {
-      return intlResponse
-    }
-
-    // Set locale cookie for future requests
-    const currentLocale = getLocaleFromPathname(pathname)
-    if (currentLocale) {
-      response.cookies.set('NEXT_LOCALE', currentLocale, {
-        maxAge: 60 * 60 * 24 * 365,
-        httpOnly: false,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
+    // Debug logging
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Auth flow:', {
+        pathname: stripLocale(pathname),
+        isAuthenticated,
+        isProtected,
+        isAuth,
+        user: user?.email || 'anonymous',
+        locale: currentLocale
       })
     }
 
-    return response
+    // Redirect authenticated users away from auth pages
+    if (isAuthenticated && isAuth) {
+      const redirectUrl = createLocalizedUrl(request, CONFIG.DEFAULT_AUTH_REDIRECT, currentLocale)
+      return NextResponse.redirect(redirectUrl)
+    }
+
+    // Redirect unauthenticated users from protected routes
+    if (isProtected && !isAuthenticated) {
+      const loginUrl = createLocalizedUrl(request, '/auth/login', currentLocale)
+
+      // Add return URL for post-login redirect
+      const returnPath = pathname + (request.nextUrl.search || '')
+      loginUrl.searchParams.set('returnTo', encodeURIComponent(returnPath))
+
+      return NextResponse.redirect(loginUrl)
+    }
+
+    return null // Continue processing
 
   } catch (error) {
-    console.error('Middleware error:', error)
-    
-    // FIX: Nếu có lỗi với auth, vẫn cần kiểm tra protected routes
-    const isProtected = isProtectedRoute(pathname)
-    
-    if (isProtected) {
-      // Nếu không thể xác thực và đang truy cập protected route
-      // -> redirect về login
-      const locale = getLocaleFromPathname(pathname) || routing.defaultLocale
-      const url = new URL(`/${locale}/auth/login`, request.url)
-      
-      const returnTo = encodeURIComponent(pathname + (searchParams.toString() ? `?${searchParams.toString()}` : ''))
-      url.searchParams.set('returnTo', returnTo)
-      
-      return NextResponse.redirect(url)
+    console.error('Authentication error:', error)
+
+    // On auth error, redirect protected routes to login
+    if (isProtectedRoute(pathname)) {
+      const currentLocale = extractLocale(pathname) || routing.defaultLocale
+      const loginUrl = createLocalizedUrl(request, '/auth/login', currentLocale)
+
+      const returnPath = pathname + (request.nextUrl.search || '')
+      loginUrl.searchParams.set('returnTo', encodeURIComponent(returnPath))
+
+      return NextResponse.redirect(loginUrl)
     }
-    
-    // Nếu không phải protected route, tiếp tục với intl middleware
-    return intlMiddleware(request)
+
+    return null // Continue with intl middleware
   }
 }
 
+/**
+ * Main middleware function
+ */
+export async function middleware(request: NextRequest) {
+  const { pathname, searchParams } = request.nextUrl
+
+  // Skip processing for excluded routes and static files
+  if (shouldExcludeFromMiddleware(pathname)) {
+    return NextResponse.next()
+  }
+
+  // Handle root path redirect to home
+  if (pathname === '/') {
+    const homeUrl = createLocalizedUrl(request, CONFIG.HOME_PATH)
+    return NextResponse.redirect(homeUrl)
+  }
+
+  // Handle paths without locale prefix
+  const currentLocale = extractLocale(pathname)
+  if (!currentLocale) {
+    const localizedUrl = createLocalizedUrl(request, pathname)
+    return NextResponse.redirect(localizedUrl)
+  }
+
+  // Create Supabase client for authentication
+  const { supabase, response } = createMiddlewareClient(request)
+
+  // Handle authentication flow
+  const authResult = await handleAuthenticationFlow(request, pathname, supabase)
+  if (authResult) {
+    return authResult
+  }
+
+  // Apply internationalization middleware
+  const intlResponse = intlMiddleware(request)
+  if (intlResponse instanceof Response && intlResponse.status >= 300 && intlResponse.status < 400) {
+    return intlResponse
+  }
+
+  // Set locale cookie for future requests
+  if (currentLocale) {
+    response.cookies.set('NEXT_LOCALE', currentLocale, {
+      maxAge: 60 * 60 * 24 * 365, // 1 year
+      httpOnly: false,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+    })
+  }
+
+  return response
+}
+
+// Optimized matcher configuration
 export const config = {
   matcher: [
     /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public folder files
+     * Match all request paths except:
+     * - API routes (/api/*)
+     * - Next.js internals (/_next/*)
+     * - Static files (favicon.ico, robots.txt, etc.)
+     * - Public assets (/images/*, /icons/*, /sounds/*)
+     * - Files with common extensions
      */
     '/((?!api|_next|favicon.ico|robots.txt|sitemap.xml|images|icons|sounds|.*\\.(?:png|jpg|jpeg|svg|webp|ico|css|js|mp3|mp4|json)).*)',
   ],

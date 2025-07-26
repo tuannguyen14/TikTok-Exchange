@@ -63,23 +63,12 @@ export default function ProfilePage() {
                         <Box className={classes.avatarContainer}>
                             <Avatar
                                 src={tiktokAvatar}
-                                size={120}
+                                size={210}
                                 radius="xl"
                                 className={classes.profileAvatar}
                             >
                                 {profile.email.charAt(0).toUpperCase()}
                             </Avatar>
-                            {profile.tiktok_username && (
-                                <Badge 
-                                    className={classes.verifiedBadge}
-                                    size="lg"
-                                    radius="xl"
-                                    variant="gradient"
-                                    gradient={{ from: '#FE2C55', to: '#25F4EE' }}
-                                >
-                                    <IconSparkles size={14} /> TikTok Connected
-                                </Badge>
-                            )}
                         </Box>
 
                         {/* User Info */}
@@ -91,16 +80,16 @@ export default function ProfilePage() {
                         </Text>
 
                         {/* Quick Stats */}
-                        <Group gap="xl" className={classes.quickStats}>
+                        <Group gap="sm" className={classes.quickStats}>
                             <Box className={classes.statItem}>
-                                <Text size="2rem" fw={700} className={classes.statNumber}>
+                                <Text size="1rem" fw={700} className={classes.statNumber}>
                                     {profile.credits.toLocaleString()}
                                 </Text>
                                 <Text size="sm" c="dimmed">Credits</Text>
                             </Box>
                             <Box className={classes.statDivider} />
                             <Box className={classes.statItem}>
-                                <Text size="2rem" fw={700} className={classes.statNumber}>
+                                <Text size="1rem" fw={700} className={classes.statNumber}>
                                     {profile.total_earned.toLocaleString()}
                                 </Text>
                                 <Text size="sm" c="dimmed">Earned</Text>
@@ -108,8 +97,8 @@ export default function ProfilePage() {
                             <Box className={classes.statDivider} />
                             <Box className={classes.statItem}>
                                 <Group gap={4} align="center">
-                                    <IconTrendingUp size={24} className={classes.trendIcon} />
-                                    <Text size="2rem" fw={700} className={classes.statNumber}>
+                                    <IconTrendingUp size={18} className={classes.trendIcon} />
+                                    <Text size="1rem" fw={700} className={classes.statNumber}>
                                         {((profile.total_earned / (profile.total_spent || 1)) * 100).toFixed(0)}%
                                     </Text>
                                 </Group>

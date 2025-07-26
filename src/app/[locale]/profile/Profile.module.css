@@ -1,284 +1,294 @@
 /* src/app/[locale]/profile/Profile.module.css */
 
 .pageWrapper {
-    min-height: 100vh;
-    background: linear-gradient(to bottom, #fafafa 0%, #ffffff 100%);
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #fafafa 0%, #ffffff 100%);
+}
+
+/* Loading State */
+.loadingContainer {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.loaderWrapper {
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  backdrop-filter: blur(10px);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.loadingText {
+  color: white !important;
+  font-weight: 500;
+}
+
+/* Error Alert */
+.errorAlert {
+  box-shadow: 0 10px 40px rgba(254, 44, 85, 0.2);
+  border: none;
+}
+
+/* Hero Section */
+.heroSection {
+  background: linear-gradient(135deg, #FE2C55 0%, #25F4EE 100%);
+  padding: 4rem 0 6rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.heroSection::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  animation: rotate 30s linear infinite;
+}
+
+.heroSection::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 100px;
+  background: linear-gradient(to bottom, transparent 0%, #fafafa 100%);
+}
+
+.heroContent {
+  position: relative;
+  z-index: 1;
+}
+
+/* Avatar */
+.avatarContainer {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.profileAvatar {
+  border: 4px solid white;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  background: white;
+  animation: float 6s ease-in-out infinite;
+}
+
+.verifiedBadge {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: bounceIn 0.6s ease-out;
+}
+
+/* User Info */
+.userName {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.userEmail {
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-size: 1rem;
+  margin-bottom: 2rem;
+}
+
+/* Quick Stats */
+.quickStats {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  padding: 0.5rem 1.5rem;
+  border-radius: 100px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.statItem {
+  text-align: center;
+}
+
+.statNumber {
+  color: white;
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.statItem> :global(.mantine-Text-root:last-child) {
+  color: rgba(255, 255, 255, 0.8) !important;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.statDivider {
+  width: 1px;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.trendIcon {
+  color: #00ff88;
+  filter: drop-shadow(0 0 8px rgba(0, 255, 136, 0.5));
+}
+
+/* Main Content */
+.mainContent {
+  margin-top: -3rem;
+  position: relative;
+  z-index: 1;
+  padding-bottom: 3rem;
+}
+
+/* Section Cards */
+.sectionCard {
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.sectionCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12);
+}
+
+.sectionHeader {
+  margin-bottom: 1.5rem;
+}
+
+.sectionIcon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #FE2C55 0%, #25F4EE 100%);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.sectionTitle {
+  color: #1a1a1a;
+  font-weight: 700;
+}
+
+/* Sections */
+.tiktokSection,
+.settingsSection {
+  animation: fadeInUp 0.6s ease-out;
+  animation-fill-mode: both;
+}
+
+.tiktokSection {
+  animation-delay: 0.1s;
+}
+
+.settingsSection {
+  animation-delay: 0.2s;
+}
+
+/* Animations */
+@keyframes pulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
   }
-  
-  /* Loading State */
-  .loadingContainer {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
   }
-  
-  .loaderWrapper {
-    padding: 2rem;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-    backdrop-filter: blur(10px);
-    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
   }
-  
-  .loadingText {
-    color: white !important;
-    font-weight: 500;
+
+  to {
+    transform: rotate(360deg);
   }
-  
-  /* Error Alert */
-  .errorAlert {
-    box-shadow: 0 10px 40px rgba(254, 44, 85, 0.2);
-    border: none;
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
   }
-  
-  /* Hero Section */
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: translateX(-50%) scale(0.3);
+    opacity: 0;
+  }
+
+  50% {
+    transform: translateX(-50%) scale(1.05);
+  }
+
+  100% {
+    transform: translateX(-50%) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
   .heroSection {
-    background: linear-gradient(135deg, #FE2C55 0%, #25F4EE 100%);
-    padding: 4rem 0 6rem;
-    position: relative;
-    overflow: hidden;
+    padding: 3rem 0 5rem;
   }
-  
-  .heroSection::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-    animation: rotate 30s linear infinite;
-  }
-  
-  .heroSection::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    right: 0;
-    height: 100px;
-    background: linear-gradient(to bottom, transparent 0%, #fafafa 100%);
-  }
-  
-  .heroContent {
-    position: relative;
-    z-index: 1;
-  }
-  
-  /* Avatar */
-  .avatarContainer {
-    position: relative;
-    margin-bottom: 1.5rem;
-  }
-  
-  .profileAvatar {
-    border: 4px solid white;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-    background: white;
-    animation: float 6s ease-in-out infinite;
-  }
-  
-  .verifiedBadge {
-    position: absolute;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    animation: bounceIn 0.6s ease-out;
-  }
-  
-  /* User Info */
+
   .userName {
-    color: white;
-    font-size: 2.5rem;
-    font-weight: 800;
-    margin-bottom: 0.5rem;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 2rem;
   }
-  
-  .userEmail {
-    color: rgba(255, 255, 255, 0.9) !important;
-    font-size: 1.1rem;
-    margin-bottom: 2rem;
-  }
-  
-  /* Quick Stats */
+
   .quickStats {
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
-    padding: 1.5rem 2.5rem;
-    border-radius: 100px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    padding: 1rem 1.5rem;
+    gap: 1.5rem;
   }
-  
-  .statItem {
-    text-align: center;
-  }
-  
+
   .statNumber {
-    color: white;
-    line-height: 1;
-    margin-bottom: 0.25rem;
+    font-size: 1.5rem;
   }
-  
-  .statItem > :global(.mantine-Text-root:last-child) {
-    color: rgba(255, 255, 255, 0.8) !important;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-  
-  .statDivider {
-    width: 1px;
-    height: 50px;
-    background: rgba(255, 255, 255, 0.3);
-  }
-  
-  .trendIcon {
-    color: #00ff88;
-    filter: drop-shadow(0 0 8px rgba(0, 255, 136, 0.5));
-  }
-  
-  /* Main Content */
+
   .mainContent {
-    margin-top: -3rem;
-    position: relative;
-    z-index: 1;
-    padding-bottom: 3rem;
+    padding: 0 1rem 2rem;
   }
-  
-  /* Section Cards */
+
   .sectionCard {
-    background: white;
-    border-radius: 20px;
-    padding: 2rem;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    transition: all 0.3s ease;
+    padding: 1.5rem;
   }
-  
-  .sectionCard:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12);
-  }
-  
-  .sectionHeader {
-    margin-bottom: 1.5rem;
-  }
-  
-  .sectionIcon {
-    width: 40px;
-    height: 40px;
-    background: linear-gradient(135deg, #FE2C55 0%, #25F4EE 100%);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-  }
-  
-  .sectionTitle {
-    color: #1a1a1a;
-    font-weight: 700;
-  }
-  
-  /* Sections */
-  .tiktokSection,
-  .settingsSection {
-    animation: fadeInUp 0.6s ease-out;
-    animation-fill-mode: both;
-  }
-  
-  .tiktokSection {
-    animation-delay: 0.1s;
-  }
-  
-  .settingsSection {
-    animation-delay: 0.2s;
-  }
-  
-  /* Animations */
-  @keyframes pulse {
-    0%, 100% {
-      transform: scale(1);
-      opacity: 1;
-    }
-    50% {
-      transform: scale(1.05);
-      opacity: 0.8;
-    }
-  }
-  
-  @keyframes rotate {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
-  
-  @keyframes float {
-    0%, 100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-10px);
-    }
-  }
-  
-  @keyframes bounceIn {
-    0% {
-      transform: translateX(-50%) scale(0.3);
-      opacity: 0;
-    }
-    50% {
-      transform: translateX(-50%) scale(1.05);
-    }
-    100% {
-      transform: translateX(-50%) scale(1);
-      opacity: 1;
-    }
-  }
-  
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  /* Responsive */
-  @media (max-width: 768px) {
-    .heroSection {
-      padding: 3rem 0 5rem;
-    }
-  
-    .userName {
-      font-size: 2rem;
-    }
-  
-    .quickStats {
-      padding: 1rem 1.5rem;
-      gap: 1.5rem;
-    }
-  
-    .statNumber {
-      font-size: 1.5rem;
-    }
-  
-    .mainContent {
-      padding: 0 1rem 2rem;
-    }
-  
-    .sectionCard {
-      padding: 1.5rem;
-    }
-  }
+}

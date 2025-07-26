@@ -2,7 +2,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import {
     Card,
     Button,
@@ -86,6 +86,9 @@ export default function CampaignCard({
     const exchange = useExchange();
     const tikTokApi = useTikTokApi();
 
+    const exchangeRef = useRef(exchange);
+    const tikTokApiRef = useRef(tikTokApi); 
+
     // States
     const [actionState, setActionState] = useState<'idle' | 'opened' | 'claiming' | 'completed'>('idle');
     const [initialVideoInfo, setInitialVideoInfo] = useState<any>(null);
@@ -102,27 +105,20 @@ export default function CampaignCard({
     const canPerform = exchange.canPerformAction(campaign, userActions);
     const progressPercentage = exchange.getProgressPercentage(campaign.current_count, campaign.target_count);
 
-    // Reset states when campaign changes
     useEffect(() => {
-        setActionState('idle');
-        setCompletedAnimation(false);
-        setInitialVideoInfo(null);
-        setTikTokInfo({});
-        setTikTokInfoError(null);
-
-        // Fetch TikTok info for new campaign
-        fetchTikTokInfo();
-    }, [campaign.id]);
+        exchangeRef.current = exchange;
+        tikTokApiRef.current = tikTokApi;
+    }, [exchange, tikTokApi]);
 
     // Fetch TikTok information using new API hooks
-    const fetchTikTokInfo = async () => {
+    const fetchTikTokInfo = useCallback(async () => {
         if (!campaign.target_tiktok_username) return;
 
         setIsLoadingTikTokInfo(true);
         setTikTokInfoError(null);
         try {
             if (campaign.campaign_type === 'video' && campaign.tiktok_video_id) {
-                const postResponse = await tikTokApi.getPostDetail(exchange.generateTikTokUrl(campaign));
+                const postResponse = await tikTokApiRef.current.getPostDetail(exchangeRef.current.generateTikTokUrl(campaign));
 
                 if (postResponse.success && postResponse.data) {
                     const postDetail = postResponse.data;
@@ -151,7 +147,7 @@ export default function CampaignCard({
                     setTikTokInfoError(postResponse.error || 'Failed to fetch post info');
                 }
             } else if (campaign.campaign_type === 'follow') {
-                const profileResponse = await tikTokApi.getProfile(campaign.target_tiktok_username);
+                const profileResponse = await tikTokApiRef.current.getProfile(campaign.target_tiktok_username);
 
                 if (profileResponse.success && profileResponse.data) {
                     const userInfo = {
@@ -174,7 +170,20 @@ export default function CampaignCard({
         } finally {
             setIsLoadingTikTokInfo(false);
         }
-    };
+    }, [campaign]);
+
+
+    // Reset states when campaign changes
+    useEffect(() => {
+        setActionState('idle');
+        setCompletedAnimation(false);
+        setInitialVideoInfo(null);
+        setTikTokInfo({});
+        setTikTokInfoError(null);
+
+        // Fetch TikTok info for new campaign
+        fetchTikTokInfo();
+    }, [campaign.id, fetchTikTokInfo]);
 
     // Helper functions
     const getActionIcon = () => {

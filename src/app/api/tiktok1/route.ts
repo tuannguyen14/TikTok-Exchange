@@ -1,5 +1,6 @@
 import axios from 'axios';
 import * as cheerio from 'cheerio';
+import xbogus from 'xbogus';
 
 // Types
 interface TikTokUserStats {
@@ -172,6 +173,8 @@ async function getFollowsList(id: string): Promise<[boolean, Array<any>, number,
             const deviceInfo = getDeviceInfo();
             const userAgent = generateUserAgent();
 
+            const xbogus_parameter = xbogus(`https://www.tiktok.com/@${id}`, userAgent);
+
             const params = new URLSearchParams({
                 aid: '1988',
                 app_language: 'en',
@@ -204,6 +207,7 @@ async function getFollowsList(id: string): Promise<[boolean, Array<any>, number,
                 tz_name: encodeURIComponent(deviceInfo.timezone),
                 webcast_language: 'en',
                 msToken: msToken,
+                "X-Bogus": xbogus_parameter,
                 _signature: signature
             });
 
@@ -211,12 +215,12 @@ async function getFollowsList(id: string): Promise<[boolean, Array<any>, number,
 
             const response = await axios.get(url, {
                 headers: {
-                    'User-Agent': userAgent,
-                    'Accept': 'application/json, text/plain, */*',
-                    'Accept-Language': deviceInfo.language,
-                    'Accept-Encoding': 'gzip, deflate, br',
+                    "Host": "www.tiktok.com",
                     'Referer': `https://www.tiktok.com/@${id}`,
-                    'X-Requested-With': 'XMLHttpRequest'
+                    'User-Agent': userAgent,
+                    'Accept': '*/*',
+                    'Accept-Language': deviceInfo.language,
+                    'Accept-Encoding': 'gzip, deflate, br, zstd'
                 }
             });
 

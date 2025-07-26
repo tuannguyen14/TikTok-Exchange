@@ -1,13 +1,17 @@
-// 2. Container Component: src/app / [locale] / campaigns / create / components / CreateCampaignContainer.tsx
+// CreateCampaignContainer.tsx với Mantine V8
 import { Suspense } from 'react';
+import {
+    Container,
+    Title,
+    Text,
+    Stack,
+    Box,
+    Paper,
+    Loader,
+    Center,
+    Group
+} from '@mantine/core';
 import CreateCampaignClient from './CreateCampaignClient';
-import LoadingSpinner from '@/components/ui/LoadingSpinner';
-
-// CreateCampaignContainer.tsx - Cập nhật ServerTranslations interface
-
-// CreateCampaignContainer.tsx - Cập nhật ServerTranslations interface
-
-// CreateCampaignContainer.tsx - Interface tương ứng
 
 interface ServerTranslations {
     title: string;
@@ -58,7 +62,6 @@ interface ServerTranslations {
         topUpCredits: string;
         targetCountPlaceholder: string;
         loadingCampaign: string;
-        // Bỏ: insufficientCreditsDesc, targetInfo, followersTargetInfo
     };
     buttons: {
         next: string;
@@ -115,8 +118,6 @@ interface ServerTranslations {
             realUsers: string;
             resultsVary: string;
         };
-        // Bỏ: boostVideoWith, creditsPerAction, creditsToReceive, needMoreCredits, 
-        // campaignStartsImmediately, withinDays, withinWeeks
     };
     campaigns: {
         status: {
@@ -140,27 +141,104 @@ interface CreateCampaignContainerProps {
     serverTranslations: ServerTranslations;
 }
 
-export default function CreateCampaignContainer({ locale, serverTranslations }: CreateCampaignContainerProps) {
+// Loading fallback component
+function LoadingFallback() {
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
-            <div className="container mx-auto px-4 py-8">
-                {/* Header */}
-                <div className="text-center mb-12">
-                    <h1 className="text-4xl font-bold bg-gradient-to-r from-[#FE2C55] to-[#EE1D52] bg-clip-text text-transparent mb-4">
-                        {serverTranslations.title}
-                    </h1>
-                    <p className="text-gray-600 text-lg">
-                        {serverTranslations.subtitle}
-                    </p>
-                </div>
+        <Paper
+            shadow="sm"
+            radius="lg"
+            p="xl"
+            style={{
+                minHeight: '400px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+            }}
+        >
+            <Center>
+                <Stack align="center" gap="md">
+                    <Loader size="lg" color="#FE2C55" />
+                    <Text size="sm" c="dimmed">
+                        Loading campaign creator...
+                    </Text>
+                </Stack>
+            </Center>
+        </Paper>
+    );
+}
 
-                <Suspense fallback={<LoadingSpinner />}>
-                    <CreateCampaignClient
-                        locale={locale}
-                        serverTranslations={serverTranslations}
-                    />
-                </Suspense>
-            </div>
-        </div>
+export default function CreateCampaignContainer({
+    locale,
+    serverTranslations
+}: CreateCampaignContainerProps) {
+    return (
+        <Box
+            style={{
+                minHeight: '100vh',
+                background: 'linear-gradient(135deg, #f8f9fc 0%, #ffffff 100%)',
+            }}
+        >
+            <Container size="lg" py="xl">
+                {/* Header Section */}
+                <Paper
+                    radius="xl"
+                    p="xl"
+                    mb="xl"
+                    style={{
+                        background: 'linear-gradient(135deg, #FE2C55 0%, #EE1D52 100%)',
+                        color: 'white',
+                        textAlign: 'center',
+                        border: 'none',
+                    }}
+                >
+                    <Stack gap="md" align="center">
+                        <Title
+                            order={1}
+                            size="h1"
+                            fw={700}
+                            style={{
+                                fontSize: '2.5rem',
+                                lineHeight: 1.2,
+                                textShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                            }}
+                        >
+                            {serverTranslations.title}
+                        </Title>
+                        <Text
+                            size="lg"
+                            style={{
+                                opacity: 0.9,
+                                maxWidth: '600px',
+                                lineHeight: 1.5
+                            }}
+                        >
+                            {serverTranslations.subtitle}
+                        </Text>
+                    </Stack>
+                </Paper>
+
+                {/* Main Content */}
+                <Paper
+                    shadow="lg"
+                    radius="xl"
+                    p="xl"
+                    style={{
+                        background: 'white',
+                        border: '1px solid #f1f3f4',
+                        overflow: 'hidden'
+                    }}
+                >
+                    <Suspense fallback={<LoadingFallback />}>
+                        <CreateCampaignClient
+                            locale={locale}
+                            serverTranslations={serverTranslations}
+                        />
+                    </Suspense>
+                </Paper>
+
+                {/* Footer spacing */}
+                <Box h="xl" />
+            </Container>
+        </Box>
     );
 }

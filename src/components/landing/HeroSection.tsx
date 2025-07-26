@@ -104,7 +104,7 @@ const HeroSection = () => {
         />
       </Box>
 
-      <Container size="xl" style={{ position: 'relative', zIndex: 10, marginBottom: '10rem' }}>
+      <Container size="xl" style={{ position: 'relative', zIndex: 10, marginBottom: '3rem' }}>
         <Center>
           <Stack align="center" gap="xl">
             {/* Badge */}
@@ -138,7 +138,7 @@ const HeroSection = () => {
                     background: 'linear-gradient(135deg, #1f2937, #db2777, #8b5cf6)',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
-                    lineHeight: 1.2,
+                    lineHeight: 1,
                     fontWeight: 700
                   }}
                 >
@@ -154,8 +154,9 @@ const HeroSection = () => {
                       background: 'linear-gradient(135deg, #db2777, #ef4444)',
                       WebkitBackgroundClip: 'text',
                       WebkitTextFillColor: 'transparent',
-                      lineHeight: 1.2,
-                      fontWeight: 700
+                      lineHeight: 1,
+                      fontWeight: 700,
+                      paddingBottom: 10
                     }}
                   >
                     {t('subtitle')}
@@ -189,6 +190,7 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
+              style={{ marginTop: 30 }}
             >
               <Text
                 size="xl"

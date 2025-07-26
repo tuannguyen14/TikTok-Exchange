@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { useCampaigns } from '@/hooks/useCampaigns';
@@ -11,9 +11,33 @@ import CampaignTypeSelector from './CampaignTypeSelector';
 import VideoUrlInput from './VideoUrlInput';
 import CampaignConfigForm from './CampaignConfigForm';
 import CampaignReview from './CampaignReview';
-import LoadingSpinner from '@/components/ui/LoadingSpinner';
-import { CheckIcon, ArrowLeftIcon, SparklesIcon } from '@heroicons/react/24/outline';
 import { CreateCampaignData } from '@/lib/api/campaigns';
+import { useTranslations } from 'next-intl';
+
+// Mantine v8 imports
+import {
+    Container,
+    Stepper,
+    Button,
+    Group,
+    Paper,
+    Loader,
+    Stack,
+    Flex,
+    Box,
+    rem
+} from '@mantine/core';
+import {
+    IconCheck,
+    IconArrowLeft,
+    IconSparkles,
+    IconTarget,
+    IconSettings,
+    IconEye,
+    IconAlertCircle
+} from '@tabler/icons-react';
+import LoadingSpinner from '@/components/ui/loading/loading-overlay';
+import { notifications } from '@mantine/notifications';
 
 interface CreateCampaignClientProps {
     locale: string;
@@ -27,7 +51,7 @@ export default function CreateCampaignClient({ locale, serverTranslations }: Cre
     const [actionCredits, setActionCredits] = useState<any[]>([]);
     const [loadingCredits, setLoadingCredits] = useState(true);
 
-    const [currentStep, setCurrentStep] = useState(1);
+    const [currentStep, setCurrentStep] = useState(0);
     const [campaignType, setCampaignType] = useState<'video' | 'follow' | null>(null);
     const [videoUrl, setVideoUrl] = useState('');
     const [verifiedVideoData, setVerifiedVideoData] = useState<any>(null);
@@ -36,6 +60,8 @@ export default function CreateCampaignClient({ locale, serverTranslations }: Cre
         credits_per_action: 2,
         target_count: 100
     });
+
+    const t = useTranslations('Common');
 
     // Load action credits on mount
     useEffect(() => {
@@ -48,39 +74,49 @@ export default function CreateCampaignClient({ locale, serverTranslations }: Cre
         loadActionCredits();
     }, []);
 
-    const steps = [
+    useEffect(() => {
+        if (profile && !userLoading) {
+            if (!profile.tiktok_username) {
+                router.push('/profile');
+                notifications.show({
+                    title: t('NeedToConnectTikTok'),
+                    message: t('PleaseConnectYourTikTokAccountToUseThisFeature'),
+                    color: 'red',
+                    icon: <IconAlertCircle size={16} />,
+                });
+            }
+        }
+    }, [profile, userLoading, router, t]);
+
+    const stepData = [
         {
-            number: 1,
-            title: serverTranslations.steps.selectType,
-            completed: campaignType !== null,
-            icon: '🎯'
+            label: serverTranslations.steps.selectType,
+            icon: IconTarget,
+            description: serverTranslations.steps.selectTypeDescription
         },
         {
-            number: 2,
-            title: serverTranslations.steps.configure,
-            completed: false,
-            icon: '⚙️'
+            label: serverTranslations.steps.configure,
+            icon: IconSettings,
+            description: serverTranslations.steps.configureDescription
         },
         {
-            number: 3,
-            title: serverTranslations.steps.review,
-            completed: false,
-            icon: '👀'
+            label: serverTranslations.steps.review,
+            icon: IconEye,
+            description: serverTranslations.steps.reviewDescription
         },
     ];
 
     const handleTypeSelect = (type: 'video' | 'follow') => {
-        console.log('Selected campaign type:', type); // Debug
+        console.log('Selected campaign type:', type);
         setCampaignType(type);
 
-        // QUAN TRỌNG: Set formData dựa theo campaign type
         if (type === 'follow') {
             const actionCreditsAPI = new ActionCreditsAPI();
             const followCredits = actionCreditsAPI.getCreditValue('follow', actionCredits);
 
             setFormData(prev => ({
                 ...prev,
-                interaction_type: 'follow', // ← SET THÀNH 'follow'
+                interaction_type: 'follow',
                 credits_per_action: followCredits
             }));
 
@@ -94,7 +130,7 @@ export default function CreateCampaignClient({ locale, serverTranslations }: Cre
 
             setFormData(prev => ({
                 ...prev,
-                interaction_type: 'like', // Default cho video
+                interaction_type: 'like',
                 credits_per_action: likeCredits
             }));
 
@@ -105,25 +141,25 @@ export default function CreateCampaignClient({ locale, serverTranslations }: Cre
         }
 
         // Auto-advance to next step
-        setTimeout(() => setCurrentStep(2), 300);
+        setTimeout(() => setCurrentStep(1), 300);
     };
 
     const handleVideoVerified = (videoData: any) => {
         setVerifiedVideoData(videoData);
     };
 
-    const handleFormChange = (field: string, value: any) => {
+    const handleFormChange = useCallback((field: string, value: any) => {
         setFormData(prev => ({ ...prev, [field]: value }));
-    };
+    }, []);
 
     const handleNext = () => {
-        if (currentStep < 3) {
+        if (currentStep < 2) {
             setCurrentStep(currentStep + 1);
         }
     };
 
     const handleBack = () => {
-        if (currentStep > 1) {
+        if (currentStep > 0) {
             setCurrentStep(currentStep - 1);
         }
     };
@@ -132,11 +168,10 @@ export default function CreateCampaignClient({ locale, serverTranslations }: Cre
         if (!profile || !campaignType) return;
 
         const actionCreditsAPI = new ActionCreditsAPI();
-        const creditsPerAction = campaignType === 'follow'
+        const currentCreditsPerAction = campaignType === 'follow'
             ? actionCreditsAPI.getCreditValue('follow', actionCredits)
             : actionCreditsAPI.getCreditValue(formData.interaction_type, actionCredits);
-
-        const totalCost = creditsPerAction * formData.target_count;
+        const totalCost = currentCreditsPerAction * formData.target_count;
 
         if (profile.credits < totalCost) {
             toast.error(serverTranslations.messages.insufficientCredits);
@@ -148,7 +183,7 @@ export default function CreateCampaignClient({ locale, serverTranslations }: Cre
 
             const campaignData = {
                 campaign_type: campaignType,
-                credits_per_action: creditsPerAction,
+                credits_per_action: currentCreditsPerAction,
                 target_count: formData.target_count,
                 expires_at: expiresAt.toISOString(),
                 ...(campaignType === 'video' && {
@@ -174,18 +209,17 @@ export default function CreateCampaignClient({ locale, serverTranslations }: Cre
 
     const canProceed = () => {
         switch (currentStep) {
-            case 1:
+            case 0:
                 return campaignType !== null;
-            case 2:
+            case 1:
                 if (campaignType === 'video') {
                     return verifiedVideoData !== null &&
                         formData.interaction_type &&
                         formData.interaction_type !== '' &&
                         formData.target_count > 0;
                 }
-                // Cho follow campaign, không cần interaction_type
                 return formData.target_count > 0;
-            case 3:
+            case 2:
                 return true;
             default:
                 return false;
@@ -200,207 +234,287 @@ export default function CreateCampaignClient({ locale, serverTranslations }: Cre
 
     if (userLoading || loadingCredits) {
         return (
-            <div className="flex items-center justify-center min-h-[500px]">
-                <div className="text-center space-y-4">
-                    <LoadingSpinner />
-                    <p className="text-gray-600 font-medium">{serverTranslations.messages.loadingCampaign || 'Loading campaign creator...'}</p>
-                </div>
-            </div>
+            <LoadingSpinner isVisible={true} />
         );
     }
 
     return (
-        <div className="max-w-5xl mx-auto">
-            {/* Enhanced Progress Steps */}
-            <div className="mb-16">
-                <div className="flex items-center justify-between relative">
-                    {/* Progress Line */}
-                    <div className="absolute top-6 left-6 right-6 h-1 bg-gray-200 rounded-full">
-                        <motion.div
-                            initial={{ width: '0%' }}
-                            animate={{ width: `${((currentStep - 1) / (steps.length - 1)) * 100}%` }}
-                            transition={{ duration: 0.5, ease: "easeInOut" }}
-                            className="h-full bg-gradient-to-r from-[#FE2C55] to-[#EE1D52] rounded-full"
-                        />
-                    </div>
-
-                    {steps.map((step, index) => (
-                        <motion.div
-                            key={step.number}
-                            className="relative flex flex-col items-center z-10"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.1 }}
-                        >
-                            <motion.div
-                                className={`flex items-center justify-center w-12 h-12 rounded-full border-4 transition-all duration-300 ${currentStep >= step.number
-                                    ? 'bg-gradient-to-r from-[#FE2C55] to-[#EE1D52] border-[#FE2C55] text-white shadow-lg'
-                                    : 'bg-white border-gray-300 text-gray-400 shadow-md'
-                                    }`}
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                            >
-                                {step.completed ? (
-                                    <CheckIcon className="w-7 h-7" />
-                                ) : currentStep >= step.number ? (
-                                    <span className="text-2xl">{step.icon}</span>
-                                ) : (
-                                    <span className="font-bold text-lg">{step.number}</span>
-                                )}
-                            </motion.div>
-                            <div className="mt-4 text-center max-w-[120px]">
-                                <div className={`font-bold text-sm ${currentStep >= step.number ? 'text-gray-900' : 'text-gray-400'
-                                    }`}>
-                                    {step.title}
-                                </div>
-                            </div>
-                        </motion.div>
-                    ))}
-                </div>
-            </div>
-
-            {/* Enhanced Step Content with Better Animations */}
-            <div className="min-h-[600px]">
-                <AnimatePresence mode="wait">
-                    {currentStep === 1 && (
-                        <motion.div
-                            key="step1"
-                            initial={{ opacity: 0, x: 100, scale: 0.95 }}
-                            animate={{ opacity: 1, x: 0, scale: 1 }}
-                            exit={{ opacity: 0, x: -100, scale: 0.95 }}
-                            transition={{ duration: 0.4, ease: "easeInOut" }}
-                        >
-                            <CampaignTypeSelector
-                                selectedType={campaignType}
-                                onTypeSelect={handleTypeSelect}
-                                actionCredits={actionCredits}
-                                translations={serverTranslations}
-                            />
-                        </motion.div>
-                    )}
-
-                    {currentStep === 2 && (
-                        <motion.div
-                            key="step2"
-                            initial={{ opacity: 0, x: 100, scale: 0.95 }}
-                            animate={{ opacity: 1, x: 0, scale: 1 }}
-                            exit={{ opacity: 0, x: -100, scale: 0.95 }}
-                            transition={{ duration: 0.4, ease: "easeInOut" }}
-                            className="space-y-8"
-                        >
-                            {campaignType === 'video' && (
-                                <VideoUrlInput
-                                    value={videoUrl}
-                                    onChange={setVideoUrl}
-                                    onVideoVerified={handleVideoVerified}
-                                    translations={serverTranslations}
-                                />
-                            )}
-
-                            <CampaignConfigForm
-                                campaignType={campaignType!}
-                                formData={formData}
-                                onChange={handleFormChange}
-                                userProfile={profile}
-                                actionCredits={actionCredits}
-                                translations={serverTranslations}
-                            />
-                        </motion.div>
-                    )}
-
-                    {currentStep === 3 && (
-                        <motion.div
-                            key="step3"
-                            initial={{ opacity: 0, x: 100, scale: 0.95 }}
-                            animate={{ opacity: 1, x: 0, scale: 1 }}
-                            exit={{ opacity: 0, x: -100, scale: 0.95 }}
-                            transition={{ duration: 0.4, ease: "easeInOut" }}
-                        >
-                            <CampaignReview
-                                campaignType={campaignType!}
-                                formData={formData}
-                                verifiedVideoData={verifiedVideoData}
-                                userProfile={profile}
-                                totalCost={totalCost}
-                                currentCreditsPerAction={currentCreditsPerAction}
-                                translations={serverTranslations}
-                            />
-                        </motion.div>
-                    )}
-                </AnimatePresence>
-            </div>
-
-            {/* Enhanced Navigation Buttons */}
-            <motion.div
-                className="flex justify-between mt-12 pt-8 border-t-2 border-gray-100"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-            >
-                <motion.button
-                    onClick={handleBack}
-                    disabled={currentStep === 1}
-                    whileHover={{ scale: currentStep === 1 ? 1 : 1.02 }}
-                    whileTap={{ scale: currentStep === 1 ? 1 : 0.98 }}
-                    className={`inline-flex items-center px-8 py-4 border-2 rounded-2xl text-base font-bold transition-all duration-300 ${currentStep === 1
-                        ? 'text-gray-400 border-gray-200 cursor-not-allowed'
-                        : 'text-gray-700 border-gray-300 hover:border-gray-400 hover:bg-gray-50 shadow-lg hover:shadow-xl'
-                        }`}
+        <Container size="lg">
+            <Stack gap="xl">
+                {/* Custom Stepper with Enhanced Design */}
+                <Paper
+                    p="xl"
+                    radius="xl"
+                    style={(theme) => ({
+                        background: theme.white,
+                        border: `2px solid ${theme.colors.gray[2]}`,
+                        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+                    })}
                 >
-                    <ArrowLeftIcon className="w-5 h-5 mr-3" />
-                    {serverTranslations.buttons.back}
-                </motion.button>
-
-                <div className="flex space-x-4">
-                    <motion.button
-                        onClick={() => router.push('/campaigns')}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        className="px-8 py-4 border-2 border-gray-300 rounded-2xl text-base font-bold text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-all duration-300 shadow-lg hover:shadow-xl"
+                    <Stepper
+                        active={currentStep}
+                        color="pink"
+                        size="lg"
+                        radius="xl"
+                        styles={(theme) => ({
+                            step: {
+                                backgroundColor: theme.white,
+                                borderWidth: rem(3),
+                                borderColor: theme.colors.gray[3],
+                                transition: 'all 0.3s ease',
+                                '&[dataCompleted]': {
+                                    background: `linear-gradient(135deg, ${theme.colors.pink[6]} 0%, ${theme.colors.red[6]} 100%)`,
+                                    borderColor: theme.colors.pink[6],
+                                },
+                                '&[dataProgress]': {
+                                    background: `linear-gradient(135deg, ${theme.colors.pink[6]} 0%, ${theme.colors.red[6]} 100%)`,
+                                    borderColor: theme.colors.pink[6],
+                                },
+                            },
+                            stepIcon: {
+                                fontSize: rem(20),
+                                fontWeight: 600,
+                            },
+                            stepLabel: {
+                                fontSize: rem(16),
+                                fontWeight: 700,
+                                color: theme.colors.gray[8],
+                                marginTop: rem(8),
+                            },
+                            stepDescription: {
+                                fontSize: rem(14),
+                                fontWeight: 500,
+                                color: theme.colors.gray[7],
+                                marginTop: rem(4),
+                            },
+                        })}
                     >
-                        {serverTranslations.buttons.cancel}
-                    </motion.button>
+                        {stepData.map((step, index) => (
+                            <Stepper.Step
+                                key={index}
+                                label={step.label}
+                                description={step.description}
+                                icon={<step.icon size={20} />}
+                                completedIcon={<IconCheck size={20} />}
+                            />
+                        ))}
+                    </Stepper>
+                </Paper>
 
-                    {currentStep < 3 ? (
-                        <motion.button
-                            onClick={handleNext}
-                            disabled={!canProceed()}
-                            whileHover={{ scale: canProceed() ? 1.02 : 1 }}
-                            whileTap={{ scale: canProceed() ? 0.98 : 1 }}
-                            className={`inline-flex items-center px-8 py-4 rounded-2xl text-base font-bold transition-all duration-300 ${canProceed()
-                                ? 'bg-gradient-to-r from-[#FE2C55] to-[#EE1D52] text-white hover:from-[#EE1D52] hover:to-[#FE2C55] shadow-lg hover:shadow-xl'
-                                : 'bg-gray-300 text-gray-500 cursor-not-allowed shadow-md'
-                                }`}
-                        >
-                            <SparklesIcon className="w-5 h-5 mr-3" />
-                            {serverTranslations.buttons.next}
-                        </motion.button>
-                    ) : (
-                        <motion.button
-                            onClick={handleCreateCampaign}
-                            disabled={campaignLoading || profile != undefined && profile?.credits < totalCost}
-                            whileHover={{ scale: (!campaignLoading && profile != undefined && profile?.credits >= totalCost) ? 1.02 : 1 }}
-                            whileTap={{ scale: (!campaignLoading && profile != undefined && profile?.credits >= totalCost) ? 0.98 : 1 }}
-                            className={`inline-flex items-center px-8 py-4 rounded-2xl text-base font-bold transition-all duration-300 ${campaignLoading || profile != undefined && profile?.credits < totalCost
-                                ? 'bg-gray-300 text-gray-500 cursor-not-allowed shadow-md'
-                                : 'bg-gradient-to-r from-[#FE2C55] to-[#EE1D52] text-white hover:from-[#EE1D52] hover:to-[#FE2C55] shadow-lg hover:shadow-xl'
-                                }`}
-                        >
-                            {campaignLoading ? (
-                                <>
-                                    <LoadingSpinner size="sm" />
-                                    {serverTranslations.buttons.creating}
-                                </>
-                            ) : (
-                                <>
-                                    <SparklesIcon className="w-5 h-5 mr-3" />
-                                    {serverTranslations.buttons.create}
-                                </>
+                {/* Step Content */}
+                <Paper
+                    p="xl"
+                    radius="xl"
+                    style={(theme) => ({
+                        background: theme.white,
+                        border: `1px solid ${theme.colors.gray[2]}`,
+                        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+                        minHeight: rem(600),
+                        overflow: 'visible',
+                        position: 'relative',
+                        zIndex: 1,
+                    })}
+                >
+                    <Box pos="relative" style={{ overflow: 'visible' }}>
+                        <AnimatePresence mode="wait">
+                            {currentStep === 0 && (
+                                <motion.div
+                                    key="step0"
+                                    initial={{ opacity: 0, x: 50 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -50 }}
+                                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                                    style={{ position: 'relative', zIndex: 10 }}
+                                >
+                                    <CampaignTypeSelector
+                                        selectedType={campaignType}
+                                        onTypeSelect={handleTypeSelect}
+                                        actionCredits={actionCredits}
+                                        translations={serverTranslations}
+                                    />
+                                </motion.div>
                             )}
-                        </motion.button>
-                    )}
-                </div>
-            </motion.div>
-        </div>
+
+                            {currentStep === 1 && (
+                                <motion.div
+                                    key="step1"
+                                    initial={{ opacity: 0, x: 50 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -50 }}
+                                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                                    style={{ position: 'relative', zIndex: 10 }}
+                                >
+                                    <Stack gap="xl">
+                                        {campaignType === 'video' && (
+                                            <VideoUrlInput
+                                                value={videoUrl}
+                                                onChange={setVideoUrl}
+                                                onVideoVerified={handleVideoVerified}
+                                                translations={serverTranslations}
+                                            />
+                                        )}
+
+                                        <CampaignConfigForm
+                                            campaignType={campaignType!}
+                                            formData={formData}
+                                            onChange={handleFormChange}
+                                            userProfile={profile}
+                                            actionCredits={actionCredits}
+                                            translations={serverTranslations}
+                                        />
+                                    </Stack>
+                                </motion.div>
+                            )}
+
+                            {currentStep === 2 && (
+                                <motion.div
+                                    key="step2"
+                                    initial={{ opacity: 0, x: 50 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -50 }}
+                                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                                    style={{ position: 'relative', zIndex: 10 }}
+                                >
+                                    <CampaignReview
+                                        campaignType={campaignType!}
+                                        formData={formData}
+                                        verifiedVideoData={verifiedVideoData}
+                                        userProfile={profile}
+                                        totalCost={totalCost}
+                                        currentCreditsPerAction={currentCreditsPerAction}
+                                        translations={serverTranslations}
+                                    />
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </Box>
+                </Paper>
+
+                {/* Navigation Buttons */}
+                <Paper
+                    p="xl"
+                    radius="xl"
+                    style={(theme) => ({
+                        borderTop: `2px solid ${theme.colors.gray[2]}`,
+                        background: theme.white,
+                        boxShadow: '0 -4px 20px rgba(0, 0, 0, 0.04)',
+                        position: 'relative',
+                        zIndex: 2,
+                    })}
+                >
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                    >
+                        <Flex justify="space-between" align="center">
+                            <Button
+                                leftSection={<IconArrowLeft size={20} />}
+                                variant="outline"
+                                size="lg"
+                                radius="xl"
+                                disabled={currentStep === 0}
+                                onClick={handleBack}
+                                color="gray"
+                                styles={{
+                                    root: {
+                                        fontWeight: 600,
+                                        padding: '12px 32px',
+                                        border: '2px solid',
+                                        transition: 'all 0.2s ease',
+                                        '&:not(:disabled):hover': {
+                                            transform: 'translateY(-2px)',
+                                            boxShadow: '0 6px 20px rgba(0, 0, 0, 0.15)',
+                                        },
+                                    },
+                                }}
+                            >
+                                {serverTranslations.buttons.back}
+                            </Button>
+
+                            <Group gap="md">
+                                <Button
+                                    variant="outline"
+                                    size="lg"
+                                    radius="xl"
+                                    onClick={() => router.push('/campaigns')}
+                                    color="gray"
+                                    styles={{
+                                        root: {
+                                            fontWeight: 600,
+                                            padding: '12px 32px',
+                                            border: '2px solid',
+                                            transition: 'all 0.2s ease',
+                                            '&:hover': {
+                                                transform: 'translateY(-2px)',
+                                                boxShadow: '0 6px 20px rgba(0, 0, 0, 0.15)',
+                                            },
+                                        },
+                                    }}
+                                >
+                                    {serverTranslations.buttons.cancel}
+                                </Button>
+
+                                {currentStep < 2 ? (
+                                    <Button
+                                        rightSection={<IconSparkles size={20} />}
+                                        size="lg"
+                                        radius="xl"
+                                        disabled={!canProceed()}
+                                        onClick={handleNext}
+                                        gradient={{ from: 'pink.6', to: 'red.6', deg: 135 }}
+                                        variant="gradient"
+                                        styles={{
+                                            root: {
+                                                fontWeight: 600,
+                                                padding: '12px 32px',
+                                                transition: 'all 0.2s ease',
+                                                '&:not(:disabled):hover': {
+                                                    transform: 'translateY(-2px)',
+                                                    boxShadow: '0 8px 24px rgba(254, 44, 85, 0.4)',
+                                                },
+                                            },
+                                        }}
+                                    >
+                                        {serverTranslations.buttons.next}
+                                    </Button>
+                                ) : (
+                                    <Button
+                                        rightSection={
+                                            campaignLoading ?
+                                                <Loader size="sm" color="white" /> :
+                                                <IconSparkles size={20} />
+                                        }
+                                        size="lg"
+                                        radius="xl"
+                                        disabled={campaignLoading || profile != undefined && profile?.credits < totalCost}
+                                        onClick={handleCreateCampaign}
+                                        gradient={{ from: 'pink.6', to: 'red.6', deg: 135 }}
+                                        variant="gradient"
+                                        loading={campaignLoading}
+                                        styles={{
+                                            root: {
+                                                fontWeight: 600,
+                                                padding: '12px 32px',
+                                                transition: 'all 0.2s ease',
+                                                '&:not(:disabled):hover': {
+                                                    transform: 'translateY(-2px)',
+                                                    boxShadow: '0 8px 24px rgba(254, 44, 85, 0.4)',
+                                                },
+                                            },
+                                        }}
+                                    >
+                                        {campaignLoading ?
+                                            serverTranslations.buttons.creating :
+                                            serverTranslations.buttons.create
+                                        }
+                                    </Button>
+                                )}
+                            </Group>
+                        </Flex>
+                    </motion.div>
+                </Paper>
+            </Stack>
+        </Container>
     );
 }

@@ -1,6 +1,16 @@
 'use client';
 
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import {
+  Group,
+  Text,
+  Pagination as MantinePagination,
+  Stack,
+  Paper,
+  Flex,
+  Badge,
+  ActionIcon,
+} from '@mantine/core';
+import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 
 interface PaginationProps {
   currentPage: number;
@@ -25,67 +35,218 @@ export default function Pagination({
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
 
   return (
-    <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
-      <div className="flex-1 flex justify-between sm:hidden">
-        <button
-          onClick={onPrevious}
-          disabled={currentPage === 1}
-          className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Previous
-        </button>
-        <button
-          onClick={onNext}
-          disabled={currentPage === totalPages}
-          className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Next
-        </button>
-      </div>
-      
-      <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-        <div>
-          <p className="text-sm text-gray-700">
-            Showing <span className="font-medium">{startItem}</span> to{' '}
-            <span className="font-medium">{endItem}</span> of{' '}
-            <span className="font-medium">{totalItems}</span> results
-          </p>
-        </div>
-        
-        <div>
-          <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
-            <button
+    <Paper
+      shadow="xs"
+      p="md"
+      radius="md"
+      style={{
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+      }}
+    >
+      <Stack gap="md">
+        {/* Mobile View */}
+        <Group justify="space-between" hiddenFrom="sm">
+          <ActionIcon
+            onClick={onPrevious}
+            disabled={currentPage === 1}
+            variant="light"
+            color="white"
+            size="lg"
+            radius="xl"
+            style={{
+              background: 'rgba(255, 255, 255, 0.15)',
+              backdropFilter: 'blur(10px)',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+            }}
+          >
+            <IconChevronLeft size={18} />
+          </ActionIcon>
+
+          <Badge
+            size="lg"
+            variant="light"
+            color="white"
+            style={{
+              background: 'rgba(255, 255, 255, 0.2)',
+              backdropFilter: 'blur(10px)',
+              border: '1px solid rgba(255, 255, 255, 0.3)',
+              color: 'white',
+              fontWeight: 600,
+            }}
+          >
+            {currentPage} / {totalPages}
+          </Badge>
+
+          <ActionIcon
+            onClick={onNext}
+            disabled={currentPage === totalPages}
+            variant="light"
+            color="white"
+            size="lg"
+            radius="xl"
+            style={{
+              background: 'rgba(255, 255, 255, 0.15)',
+              backdropFilter: 'blur(10px)',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+            }}
+          >
+            <IconChevronRight size={18} />
+          </ActionIcon>
+        </Group>
+
+        {/* Desktop View */}
+        <Group justify="space-between" visibleFrom="sm">
+          <Flex align="center" gap="sm">
+            <Text
+              size="sm"
+              c="white"
+              style={{
+                textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
+                fontWeight: 500,
+              }}
+            >
+              Showing
+            </Text>
+            <Badge
+              variant="light"
+              color="white"
+              style={{
+                background: 'rgba(255, 255, 255, 0.2)',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                color: 'white',
+                fontWeight: 600,
+              }}
+            >
+              {startItem} - {endItem}
+            </Badge>
+            <Text
+              size="sm"
+              c="white"
+              style={{
+                textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
+                fontWeight: 500,
+              }}
+            >
+              of {totalItems.toLocaleString()} results
+            </Text>
+          </Flex>
+
+          <Group gap="xs" align="center">
+            <ActionIcon
               onClick={onPrevious}
               disabled={currentPage === 1}
-              className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              variant="light"
+              color="white"
+              size="md"
+              radius="md"
+              style={{
+                background: 'rgba(255, 255, 255, 0.15)',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                transition: 'all 0.2s ease',
+              }}
             >
-              <ChevronLeftIcon className="h-5 w-5" />
-            </button>
-            
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-              <button
-                key={page}
-                onClick={() => onPageChange(page)}
-                className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
-                  page === currentPage
-                    ? 'z-10 bg-pink-50 border-pink-500 text-pink-600'
-                    : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
-                }`}
-              >
-                {page}
-              </button>
-            ))}
-            
-            <button
+              <IconChevronLeft size={16} />
+            </ActionIcon>
+
+            <MantinePagination
+              value={currentPage}
+              onChange={onPageChange}
+              total={totalPages}
+              siblings={1}
+              boundaries={1}
+              size="sm"
+              radius="md"
+              styles={{
+                control: {
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  color: 'white',
+                  fontWeight: 500,
+                  transition: 'all 0.2s ease',
+
+                  '&:hover': {
+                    background: 'rgba(255, 255, 255, 0.2)',
+                    transform: 'translateY(-1px)',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                  },
+
+                  '&[data-active]': {
+                    background: 'rgba(255, 255, 255, 0.3)',
+                    border: '1px solid rgba(255, 255, 255, 0.4)',
+                    color: 'white',
+                    fontWeight: 700,
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
+                  },
+
+                  '&[data-disabled]': {
+                    background: 'rgba(255, 255, 255, 0.05)',
+                    color: 'rgba(255, 255, 255, 0.4)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                  },
+                },
+              }}
+            />
+
+            <ActionIcon
               onClick={onNext}
               disabled={currentPage === totalPages}
-              className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              variant="light"
+              color="white"
+              size="md"
+              radius="md"
+              style={{
+                background: 'rgba(255, 255, 255, 0.15)',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                transition: 'all 0.2s ease',
+              }}
             >
-              <ChevronRightIcon className="h-5 w-5" />
-            </button>
-          </nav>
-        </div>
-      </div>
-    </div>
+              <IconChevronRight size={16} />
+            </ActionIcon>
+          </Group>
+        </Group>
+
+        {/* Additional Info */}
+        <Group justify="center" gap="xl" visibleFrom="md">
+          <Flex align="center" gap="xs">
+            <Text size="xs" c="rgba(255, 255, 255, 0.8)" fw={500}>
+              Items per page:
+            </Text>
+            <Badge
+              size="sm"
+              variant="light"
+              style={{
+                background: 'rgba(255, 255, 255, 0.15)',
+                color: 'white',
+                fontWeight: 600,
+              }}
+            >
+              {itemsPerPage}
+            </Badge>
+          </Flex>
+
+          <Flex align="center" gap="xs">
+            <Text size="xs" c="rgba(255, 255, 255, 0.8)" fw={500}>
+              Total pages:
+            </Text>
+            <Badge
+              size="sm"
+              variant="light"
+              style={{
+                background: 'rgba(255, 255, 255, 0.15)',
+                color: 'white',
+                fontWeight: 600,
+              }}
+            >
+              {totalPages}
+            </Badge>
+          </Flex>
+        </Group>
+      </Stack>
+    </Paper>
   );
 }
