@@ -12,7 +12,7 @@ const CONFIG = {
 
 // Routes that require authentication
 const PROTECTED_ROUTES = [
-  // '/get-tiktok-followers-likes',
+  '/get-tiktok-followers-likes',
   '/campaigns',
   '/profile',
 ] as const

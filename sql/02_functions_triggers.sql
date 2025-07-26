@@ -330,29 +330,51 @@ CREATE TRIGGER trigger_update_campaigns_updated_at
 -- =============================================================================
 -- 5. FUNCTION: Tự động tạo profile khi có user mới (existing, no changes)
 -- =============================================================================
+-- Function: Tạo profile cho user mới
 CREATE OR REPLACE FUNCTION create_profile_for_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
-    INSERT INTO profiles (id, email, credits, total_earned, total_spent, status, tiktok_stats, notification_settings, last_active_at, created_at, updated_at)
+    -- Chỉ tạo profile nếu chưa tồn tại (tránh duplicate)
+    INSERT INTO public.profiles (
+        id, 
+        email, 
+        credits, 
+        total_earned, 
+        total_spent, 
+        status, 
+        tiktok_stats, 
+        notification_settings, 
+        last_active_at, 
+        created_at, 
+        updated_at
+    )
     VALUES (
         NEW.id,
-        NEW.email,
-        0, -- credits khởi tạo = 0
-        0, -- total_earned = 0
-        0, -- total_spent = 0
+        COALESCE(NEW.email, NEW.raw_user_meta_data->>'email'), -- Lấy email từ metadata nếu cần
+        0, -- credits khởi tạo
+        0, -- total_earned
+        0, -- total_spent
         'active', -- status mặc định
         '{}', -- tiktok_stats rỗng
         '{"email": true, "push": true}', -- notification_settings mặc định
         CURRENT_TIMESTAMP,
         CURRENT_TIMESTAMP,
         CURRENT_TIMESTAMP
-    );
+    )
+    ON CONFLICT (id) DO NOTHING; -- Tránh lỗi nếu profile đã tồn tại
+    
     RETURN NEW;
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Log lỗi nhưng không làm fail quá trình signup
+        RAISE WARNING 'Could not create profile for user %: %', NEW.id, SQLERRM;
+        RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- Trigger: Tự động tạo profile khi có user mới trong auth.users
+-- Trigger: Tự động tạo profile khi có user mới
 DROP TRIGGER IF EXISTS trigger_create_profile_on_signup ON auth.users;
+
 CREATE TRIGGER trigger_create_profile_on_signup
     AFTER INSERT ON auth.users
     FOR EACH ROW

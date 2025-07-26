@@ -20,7 +20,8 @@ import {
   ThemeIcon,
   Divider,
   Center,
-  rem
+  rem,
+  Image
 } from '@mantine/core';
 import {
   IconMail,
@@ -148,11 +149,11 @@ const LoginPage = () => {
           message: t(isLogin === 'login' ? 'Auth.login.success' : 'Auth.register.success'),
           color: 'green',
           icon: <IconCheck size={16} />,
-          style: {
-            background: 'rgba(34, 197, 94, 0.15)',
-            border: '1px solid rgba(34, 197, 94, 0.4)',
-            color: '#bbf7d0',
-          },
+          // style: {
+          //   background: 'rgba(34, 197, 94, 0.15)',
+          //   border: '1px solid rgba(34, 197, 94, 0.4)',
+          //   color: '#bbf7d0',
+          // },
         });
         window.location.href = '/get-tiktok-followers-likes';
       } else {
@@ -198,14 +199,11 @@ const LoginPage = () => {
 
           {/* Logo & Brand */}
           <Stack align="center" mb="xl">
-            <ThemeIcon
-              size={60}
-              radius="xl"
-              variant="gradient"
-              gradient={{ from: 'pink', to: 'violet', deg: 135 }}
-            >
-              <IconTrendingUp size={30} />
-            </ThemeIcon>
+            <Image
+              src="/logo.png"
+              alt="Logo"
+              style={{ width: 100, height: 100, borderRadius: '50%' }}
+            />
 
             <Title
               order={1}
